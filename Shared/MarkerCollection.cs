@@ -1,45 +1,19 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using Scintilla.NET.Abstractions;
-using static Scintilla.NET.Abstractions.ScintillaConstants;
+using Scintilla.NET.Abstractions.Collections;
 
 namespace ScintillaNET;
 
 /// <summary>
 /// An immutable collection of markers in a <see cref="Scintilla" /> control.
 /// </summary>
-public class MarkerCollection : IEnumerable<Marker>
+public class MarkerCollection : MarkerCollectionBase<MarkerCollection, StyleCollection, IndicatorCollection, LineCollection, MarginCollection, SelectionCollection, SCNotificationEventArgs, Marker>, IEnumerable<Marker>
+
 {
-    private readonly IScintillaApi<MarkerCollection, StyleCollection, IndicatorCollection, LineCollection, MarginCollection, SelectionCollection, SCNotificationEventArgs> scintilla;
-
-    /// <summary>
-    /// Provides an enumerator that iterates through the collection.
-    /// </summary>
-    /// <returns>An object for enumerating all <see cref="Marker" /> objects within the <see cref="MarkerCollection" />.</returns>
-    public IEnumerator<Marker> GetEnumerator()
-    {
-        int count = Count;
-        for (int i = 0; i < count; i++)
-            yield return this[i];
-
-        yield break;
-    }
-
     IEnumerator IEnumerable.GetEnumerator()
     {
         return this.GetEnumerator();
-    }
-
-    /// <summary>
-    /// Gets the number of markers in the <see cref="MarkerCollection" />.
-    /// </summary>
-    /// <returns>This property always returns 32.</returns>
-    public int Count
-    {
-        get
-        {
-            return (MARKER_MAX + 1);
-        }
     }
 
     /// <summary>
@@ -48,7 +22,7 @@ public class MarkerCollection : IEnumerable<Marker>
     /// <param name="index">The marker index.</param>
     /// <returns>An object representing the marker at the specified <paramref name="index" />.</returns>
     /// <remarks>Markers 25 through 31 are used by Scintilla for folding.</remarks>
-    public Marker this[int index]
+    protected override Marker this[int index]
     {
         get
         {
@@ -61,8 +35,8 @@ public class MarkerCollection : IEnumerable<Marker>
     /// Initializes a new instance of the <see cref="MarkerCollection" /> class.
     /// </summary>
     /// <param name="scintilla">The <see cref="Scintilla" /> control that created this collection.</param>
-    public MarkerCollection(IScintillaApi<MarkerCollection, StyleCollection, IndicatorCollection, LineCollection, MarginCollection, SelectionCollection, SCNotificationEventArgs> scintilla)
+    public MarkerCollection(IScintillaApi<MarkerCollection, StyleCollection, IndicatorCollection, LineCollection, MarginCollection, SelectionCollection, SCNotificationEventArgs> scintilla) : base(scintilla)
     {
-        this.scintilla = scintilla;
+
     }
 }
