@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<ProjectGuid>{22AE2386-60F1-476E-9303-61CDB0AAC4CF}</ProjectGuid>
-		<TargetFrameworks>netcoreapp3.1;net5.0-windows;net45;net6-windows;net7-windows</TargetFrameworks>
+		<TargetFrameworks>netcoreapp3.1;net5.0-windows;net462;net6-windows;net7-windows</TargetFrameworks>
 		<AssemblyTitle>ScintillaNET</AssemblyTitle>
 		<Company>Jacob Slusser, VPKSoft, cyber960</Company>
 		<Product>Scintilla.NET</Product>
@@ -18,7 +18,7 @@
 	<PropertyGroup>
 		<LangVersion>10</LangVersion>
 	</PropertyGroup>
-	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net45|AnyCPU'">
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net462|AnyCPU'">
 		<PlatformTarget>AnyCPU</PlatformTarget>
 	</PropertyGroup>
 	<PropertyGroup>
@@ -46,10 +46,10 @@
 		<DefineConstants>TRACE</DefineConstants>
 		<GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
 	</PropertyGroup>
-	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net45|AnyCPU'">
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net462|AnyCPU'">
 		<PlatformTarget>AnyCPU</PlatformTarget>
 	</PropertyGroup>
-	<ItemGroup Condition=" '$(TargetFramework)' == 'net45' ">
+	<ItemGroup Condition=" '$(TargetFramework)' == 'net462' ">
 		<Reference Include="System.Windows.Forms" />
 		<Reference Include="System.Data.DataSetExtensions" />
 		<Reference Include="Microsoft.CSharp" />

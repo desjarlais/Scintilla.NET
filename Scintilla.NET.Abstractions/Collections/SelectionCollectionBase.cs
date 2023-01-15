@@ -4,9 +4,9 @@ using static Scintilla.NET.Abstractions.ScintillaConstants;
 namespace Scintilla.NET.Abstractions.Collections;
 
 /// <summary>
-/// An immutable collection of markers in a <see cref="Scintilla" /> control.
+/// A multiple selection collection.
 /// </summary>
-public abstract class MarkerCollectionBase<TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs, TMarker, TStyle, TIndicator, TLine, TMargin, TSelection, TBitmap, TColor> : IEnumerable<TMarker>
+public abstract class SelectionCollectionBase<TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs, TMarker, TStyle, TIndicator, TLine, TMargin, TSelection, TBitmap, TColor> : IEnumerable<TSelection>
     where TMarkers : MarkerCollectionBase<TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs, TMarker, TStyle, TIndicator, TLine, TMargin, TSelection, TBitmap, TColor>, IEnumerable
     where TStyles : StyleCollectionBase<TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs, TMarker, TStyle, TIndicator, TLine, TMargin, TSelection, TBitmap, TColor>, IEnumerable
     where TIndicators :IndicatorCollectionBase<TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs, TMarker, TStyle, TIndicator, TLine, TMargin, TSelection, TBitmap, TColor>, IEnumerable
@@ -28,8 +28,8 @@ public abstract class MarkerCollectionBase<TMarkers, TStyles, TIndicators, TLine
     /// <summary>
     /// Provides an enumerator that iterates through the collection.
     /// </summary>
-    /// <returns>An object for enumerating all <see cref="MarkerBase{TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs, TMarker, TStyle, TIndicator, TLine, TMargin, TSelection, TBitmap, TColor}" />.</returns>
-    public IEnumerator<TMarker> GetEnumerator()
+    /// <returns>An object that contains all <see cref="SelectionBase{TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs, TMarker, TStyle, TIndicator, TLine, TMargin, TSelection, TBitmap, TColor}" /> objects within the <see cref="SelectionCollectionBase{TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs, TMarker, TStyle, TIndicator, TLine, TMargin, TSelection, TBitmap, TColor}" />.</returns>
+    public virtual IEnumerator<TSelection> GetEnumerator()
     {
         int count = Count;
         for (int i = 0; i < count; i++)
@@ -42,24 +42,41 @@ public abstract class MarkerCollectionBase<TMarkers, TStyles, TIndicators, TLine
     }
 
     /// <summary>
-    /// Gets the number of markers in the <see cref="MarkerCollectionBase{TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs, TMarker, TStyle, TIndicator, TLine, TMargin, TSelection, TBitmap, TColor}" />.
+    /// Gets the number of active selections.
     /// </summary>
-    /// <returns>This property always returns 32.</returns>
-    public int Count => (MARKER_MAX + 1);
+    /// <returns>The number of selections in the <see cref="SelectionCollectionBase{TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs, TMarker, TStyle, TIndicator, TLine, TMargin, TSelection, TBitmap, TColor}" />.</returns>
+    public virtual int Count
+    {
+        get
+        {
+            return scintilla.DirectMessage(SCI_GETSELECTIONS).ToInt32();
+        }
+    }
 
     /// <summary>
-    /// Gets a <typeparamref name="TMarker"/> object at the specified index.
+    /// Gets a value indicating whether all selection ranges are empty.
     /// </summary>
-    /// <param name="index">The marker index.</param>
-    /// <returns>An object representing the marker at the specified <paramref name="index" />.</returns>
-    /// <remarks>Markers 25 through 31 are used by Scintilla for folding.</remarks>
-    protected abstract TMarker this[int index] { get; }
+    /// <returns>true if all selection ranges are empty; otherwise, false.</returns>
+    public virtual bool IsEmpty
+    {
+        get
+        {
+            return scintilla.DirectMessage(SCI_GETSELECTIONEMPTY) != IntPtr.Zero;
+        }
+    }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="MarkerCollectionBase{TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs, TMarker, TStyle, TIndicator, TLine, TMargin, TSelection, TBitmap, TColor}" /> class.
+    /// Gets the <see cref="SelectionBase{TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs, TMarker, TStyle, TIndicator, TLine, TMargin, TSelection, TBitmap, TColor}" /> at the specified zero-based index.
     /// </summary>
-    /// <param name="scintilla">The <see cref="Scintilla" /> control that created this collection.</param>
-    protected MarkerCollectionBase(IScintillaApi<TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs, TMarker, TStyle, TIndicator, TLine, TMargin, TSelection, TBitmap, TColor> scintilla)
+    /// <param name="index">The zero-based index of the <see cref="SelectionBase{TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs, TMarker, TStyle, TIndicator, TLine, TMargin, TSelection, TBitmap, TColor}" /> to get.</param>
+    /// <returns>The <see cref="SelectionBase{TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs, TMarker, TStyle, TIndicator, TLine, TMargin, TSelection, TBitmap, TColor}" /> at the specified index.</returns>
+    public abstract TSelection this[int index] { get; }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="SelectionCollectionBase{TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs, TMarker, TStyle, TIndicator, TLine, TMargin, TSelection, TBitmap, TColor}" /> class.
+    /// </summary>
+    /// <param name="scintilla"></param>
+    public SelectionCollectionBase(IScintillaApi<TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs, TMarker, TStyle, TIndicator, TLine, TMargin, TSelection, TBitmap, TColor> scintilla)
     {
         this.scintilla = scintilla;
     }

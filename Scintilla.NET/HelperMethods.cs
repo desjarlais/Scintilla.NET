@@ -31,7 +31,7 @@ public static class HelperMethods
     public static void SetFoldingState(this IScintillaApi<MarkerCollection, StyleCollection, IndicatorCollection, LineCollection, MarginCollection, SelectionCollection, SCNotificationEventArgs, Marker, Style, Indicator, Line, Margin, Selection, Bitmap, Color> scintilla, string foldingState, string separator = ";")
     {
         scintilla.FoldAll(FoldAction.Expand);
-#if NET45
+#if NET462
             foreach (var index in foldingState.Split(separator[0]).Select(int.Parse))
 #else
         foreach (var index in foldingState.Split(separator).Select(int.Parse))
