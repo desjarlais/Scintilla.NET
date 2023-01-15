@@ -8,7 +8,7 @@ namespace ScintillaNET;
 /// <summary>
 /// A style definition in a <see cref="Scintilla" /> control.
 /// </summary>
-public class Style : StyleBase<Color, MarkerCollection, StyleCollection, IndicatorCollection, LineCollection, MarginCollection, SelectionCollection, SCNotificationEventArgs>
+public class Style : StyleBase<MarkerCollection, StyleCollection, IndicatorCollection, LineCollection, MarginCollection, SelectionCollection, SCNotificationEventArgs, Marker, Style, Indicator, Line, Margin, Selection, Bitmap, Color>
 {
     #region Properties
 
@@ -64,7 +64,7 @@ public class Style : StyleBase<Color, MarkerCollection, StyleCollection, Indicat
     /// </summary>
     /// <param name="scintilla">The <see cref="Scintilla" /> control that created this style.</param>
     /// <param name="index">The index of this style within the <see cref="StyleCollection" /> that created it.</param>
-    public Style(IScintillaApi<MarkerCollection, StyleCollection, IndicatorCollection, LineCollection, MarginCollection, SelectionCollection, SCNotificationEventArgs> scintilla, int index) : base(scintilla, index)
+    public Style(IScintillaApi<MarkerCollection, StyleCollection, IndicatorCollection, LineCollection, MarginCollection, SelectionCollection, SCNotificationEventArgs, Marker, Style, Indicator, Line, Margin, Selection, Bitmap, Color> scintilla, int index) : base(scintilla, index)
     {
     }
 

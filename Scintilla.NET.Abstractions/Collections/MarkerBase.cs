@@ -7,16 +7,18 @@ namespace Scintilla.NET.Abstractions.Collections;
 /// <summary>
 /// Represents a margin marker in a <see cref="Scintilla" /> control.
 /// </summary>
-public abstract class MarkerBase<TBitmap, TColor, TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs>
-    where TMarkers : IEnumerable
-    where TStyles : IEnumerable
+public abstract class MarkerBase<TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs, TMarker, TStyle, TIndicator, TLine, TMargin, TSelection, TBitmap, TColor>
+    where TMarkers : MarkerCollectionBase<TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs, TMarker, TStyle, TIndicator, TLine, TMargin, TSelection, TBitmap, TColor>
+    where TStyles : StyleCollectionBase<TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs, TMarker, TStyle, TIndicator, TLine, TMargin, TSelection, TBitmap, TColor>, IEnumerable
     where TIndicators : IEnumerable
-    where TLines : IEnumerable
+    where TLines : LineCollectionBase<TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs, TMarker, TStyle, TIndicator, TLine, TMargin, TSelection, TBitmap, TColor>
     where TMargins : IEnumerable
     where TSelections : IEnumerable
     where TEventArgs : EventArgs
+    where TMarker: MarkerBase<TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs, TMarker, TStyle, TIndicator, TLine, TMargin, TSelection, TBitmap, TColor>
+    where TStyle : StyleBase<TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs, TMarker, TStyle, TIndicator, TLine, TMargin, TSelection, TBitmap, TColor>
 {
-    public readonly IScintillaApi<TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs> scintilla;
+    public readonly IScintillaApi<TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs, TMarker, TStyle, TIndicator, TLine, TMargin, TSelection, TBitmap, TColor> scintilla;
 
     /// <summary>
     /// An unsigned 32-bit mask of all <see cref="Margin" /> indexes where each bit corresponds to a margin index.
@@ -139,7 +141,7 @@ public abstract class MarkerBase<TBitmap, TColor, TMarkers, TStyles, TIndicators
     /// </summary>
     /// <param name="scintilla">The <see cref="Scintilla" /> control that created this marker.</param>
     /// <param name="index">The index of this style within the <see cref="MarkerCollectionBase" /> that created it.</param>
-    public MarkerBase(IScintillaApi<TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs> scintilla, int index)
+    public MarkerBase(IScintillaApi<TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs, TMarker, TStyle, TIndicator, TLine, TMargin, TSelection, TBitmap, TColor> scintilla, int index)
     {
         this.scintilla = scintilla;
         Index = index;

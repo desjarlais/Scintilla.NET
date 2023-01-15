@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using Scintilla.NET.Abstractions;
 using static Scintilla.NET.Abstractions.ScintillaConstants;
 
@@ -9,7 +10,7 @@ namespace ScintillaNET;
 /// </summary>
 public class Selection
 {
-    private readonly IScintillaApi<MarkerCollection, StyleCollection, IndicatorCollection, LineCollection, MarginCollection, SelectionCollection, SCNotificationEventArgs> scintilla;
+    private readonly IScintillaApi<MarkerCollection, StyleCollection, IndicatorCollection, LineCollection, MarginCollection, SelectionCollection, SCNotificationEventArgs, Marker, Style, Indicator, Line, Margin, Selection, Bitmap, Color> scintilla;
 
     /// <summary>
     /// Gets or sets the anchor position of the selection.
@@ -144,7 +145,7 @@ public class Selection
     /// </summary>
     /// <param name="scintilla">The <see cref="Scintilla" /> control that created this selection.</param>
     /// <param name="index">The index of this selection within the <see cref="SelectionCollection" /> that created it.</param>
-    public Selection(IScintillaApi<MarkerCollection, StyleCollection, IndicatorCollection, LineCollection, MarginCollection, SelectionCollection, SCNotificationEventArgs> scintilla, int index)
+    public Selection(IScintillaApi<MarkerCollection, StyleCollection, IndicatorCollection, LineCollection, MarginCollection, SelectionCollection, SCNotificationEventArgs, Marker, Style, Indicator, Line, Margin, Selection, Bitmap, Color> scintilla, int index)
     {
         this.scintilla = scintilla;
         Index = index;

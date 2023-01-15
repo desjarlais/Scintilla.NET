@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace ScintillaNET;
+﻿namespace Scintilla.NET.Abstractions.Structs;
 
 /// <summary>
 /// A <see cref="Marker" /> handle.
@@ -11,7 +9,7 @@ namespace ScintillaNET;
 /// </remarks>
 public struct MarkerHandle
 {
-    internal IntPtr Value;
+    public IntPtr Value;
 
     /// <summary>
     /// A read-only field that represents an uninitialized handle.

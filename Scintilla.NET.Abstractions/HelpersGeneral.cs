@@ -133,5 +133,71 @@ public static class HelpersGeneral
             return buffer;
         }
     }
+
+    public static unsafe byte[] ByteToCharStyles(byte* styles, byte* text, int length, Encoding encoding)
+    {
+        // This is used by annotations and margins to get all the styles in one call.
+        // It converts an array of styles where each element corresponds to a BYTE
+        // to an array of styles where each element corresponds to a CHARACTER.
+
+        var bytePos = 0; // Position within text BYTES and style BYTES (should be the same)
+        var charPos = 0; // Position within style CHARACTERS
+        var decoder = encoding.GetDecoder();
+        var result = new byte[encoding.GetCharCount(text, length)];
+
+        while (bytePos < length)
+        {
+            if (decoder.GetCharCount(text + bytePos, 1, false) > 0)
+                result[charPos++] = *(styles + bytePos); // New char
+
+            bytePos++;
+        }
+
+        return result;
+    }
+
+    public static unsafe byte[] CharToByteStyles(byte[] styles, byte* text, int length, Encoding encoding)
+    {
+        // This is used by annotations and margins to style all the text in one call.
+        // It converts an array of styles where each element corresponds to a CHARACTER
+        // to an array of styles where each element corresponds to a BYTE.
+
+        var bytePos = 0; // Position within text BYTES and style BYTES (should be the same)
+        var charPos = 0; // Position within style CHARACTERS
+        var decoder = encoding.GetDecoder();
+        var result = new byte[length];
+
+        while (bytePos < length && charPos < styles.Length)
+        {
+            result[bytePos] = styles[charPos];
+            if (decoder.GetCharCount(text + bytePos, 1, false) > 0)
+                charPos++; // Move a char
+
+            bytePos++;
+        }
+
+        return result;
+    }
+
+    /// <summary>
+    /// Gets the number of CHARACTERS in a BYTE range.
+    /// </summary>
+    public static unsafe int GetCharCount(IntPtr text, int length, Encoding encoding)
+    {
+        if (text == IntPtr.Zero || length == 0)
+            return 0;
+
+        // Never use SCI_COUNTCHARACTERS. It counts CRLF as 1 char!
+        var count = encoding.GetCharCount((byte*)text, length);
+        return count;
+    }
+
+    public static unsafe string GetString(IntPtr bytes, int length, Encoding encoding)
+    {
+        var ptr = (sbyte*)bytes;
+        var str = new string(ptr, 0, length, encoding);
+
+        return str;
+    }
     #endregion
 }

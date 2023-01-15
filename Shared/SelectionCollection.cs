@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
 using Scintilla.NET.Abstractions;
 using static Scintilla.NET.Abstractions.ScintillaConstants;
 
@@ -11,7 +12,7 @@ namespace ScintillaNET;
 /// </summary>
 public class SelectionCollection : IEnumerable<Selection>
 {
-    private readonly IScintillaApi<MarkerCollection, StyleCollection, IndicatorCollection, LineCollection, MarginCollection, SelectionCollection, SCNotificationEventArgs> scintilla;
+    private readonly IScintillaApi<MarkerCollection, StyleCollection, IndicatorCollection, LineCollection, MarginCollection, SelectionCollection, SCNotificationEventArgs, Marker, Style, Indicator, Line, Margin, Selection, Bitmap, Color> scintilla;
 
     /// <summary>
     /// Provides an enumerator that iterates through the collection.
@@ -73,7 +74,7 @@ public class SelectionCollection : IEnumerable<Selection>
     /// Initializes a new instance of the <see cref="SelectionCollection" /> class.
     /// </summary>
     /// <param name="scintilla"></param>
-    public SelectionCollection(IScintillaApi<MarkerCollection, StyleCollection, IndicatorCollection, LineCollection, MarginCollection, SelectionCollection, SCNotificationEventArgs> scintilla)
+    public SelectionCollection(IScintillaApi<MarkerCollection, StyleCollection, IndicatorCollection, LineCollection, MarginCollection, SelectionCollection, SCNotificationEventArgs, Marker, Style, Indicator, Line, Margin, Selection, Bitmap, Color> scintilla)
     {
         this.scintilla = scintilla;
     }

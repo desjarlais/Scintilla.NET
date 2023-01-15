@@ -10,7 +10,7 @@ namespace ScintillaNET;
 /// <summary>
 /// Represents a margin marker in a <see cref="Scintilla" /> control.
 /// </summary>
-public class Marker : MarkerBase<Bitmap, Color, MarkerCollection, StyleCollection, IndicatorCollection, LineCollection, MarginCollection, SelectionCollection, SCNotificationEventArgs>
+public class Marker : MarkerBase<MarkerCollection, StyleCollection, IndicatorCollection, LineCollection, MarginCollection, SelectionCollection, SCNotificationEventArgs, Marker, Style, Indicator, Line, Margin, Selection, Bitmap, Color>
 {
     /// <summary>
     /// Sets the marker symbol to a custom image.
@@ -60,7 +60,7 @@ public class Marker : MarkerBase<Bitmap, Color, MarkerCollection, StyleCollectio
     /// </summary>
     /// <param name="scintilla">The <see cref="Scintilla" /> control that created this marker.</param>
     /// <param name="index">The index of this style within the <see cref="MarkerCollection" /> that created it.</param>
-    public Marker(IScintillaApi<MarkerCollection, StyleCollection, IndicatorCollection, LineCollection, MarginCollection, SelectionCollection, SCNotificationEventArgs> scintilla, int index) : base(scintilla, index)
+    public Marker(IScintillaApi<MarkerCollection, StyleCollection, IndicatorCollection, LineCollection, MarginCollection, SelectionCollection, SCNotificationEventArgs, Marker, Style, Indicator, Line, Margin, Selection, Bitmap, Color> scintilla, int index) : base(scintilla, index)
     {
     }
 }

@@ -25,7 +25,9 @@ SOFTWARE.
 #endregion
 
 using System.Collections;
+using System.Drawing;
 using System.Text;
+using Scintilla.NET.Abstractions.Collections;
 using Scintilla.NET.Abstractions.Enumerations;
 
 namespace Scintilla.NET.Abstractions;
@@ -122,14 +124,31 @@ public interface IScintillaApi
 /// <typeparam name="TMargins">The type of the margins collection of the Scintilla control implementation.</typeparam>
 /// <typeparam name="TSelections">The type of the selections collection of the Scintilla control implementation.</typeparam>
 /// <typeparam name="TEventArgs">The type of the Scintilla notification event handler <see cref="EventArgs"/> descendant implementation.</typeparam>
-public interface IScintillaApi<out TMarkers, out TStyles, out TIndicators, out TLines, out TMargins, out TSelections, TEventArgs> : IScintillaApi
-    where TMarkers : IEnumerable
-    where TStyles : IEnumerable
+public interface IScintillaApi<
+    out TMarkers, 
+    out TStyles,
+    out TIndicators, 
+    out TLines, 
+    out TMargins, 
+    out TSelections, 
+    TEventArgs, 
+    TMarker,
+    TStyle, 
+    TIndicator,
+    TLine,
+    TMargin,
+    TSelection,
+    TBitmap,
+    TColor> : IScintillaApi
+    where TMarkers : MarkerCollectionBase<TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs, TMarker, TStyle, TIndicator, TLine, TMargin, TSelection, TBitmap, TColor>
+    where TStyles : StyleCollectionBase<TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs, TMarker, TStyle, TIndicator, TLine, TMargin, TSelection, TBitmap, TColor>, IEnumerable
     where TIndicators : IEnumerable
-    where TLines : IEnumerable
+    where TLines : LineCollectionBase<TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs, TMarker, TStyle, TIndicator, TLine, TMargin, TSelection, TBitmap, TColor>
     where TMargins : IEnumerable
     where TSelections : IEnumerable
     where TEventArgs : EventArgs
+    where TMarker: MarkerBase<TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs, TMarker, TStyle, TIndicator, TLine, TMargin, TSelection, TBitmap, TColor>
+    where TStyle : StyleBase<TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs, TMarker, TStyle, TIndicator, TLine, TMargin, TSelection, TBitmap, TColor>
 {
     /// <summary>
     /// Gets a collection representing markers in a <see cref="IScintillaApi{TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs}" /> control.

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using Scintilla.NET.Abstractions;
 
 namespace ScintillaNET;
@@ -8,7 +9,7 @@ namespace ScintillaNET;
 /// </summary>
 public class DwellEventArgs : EventArgs
 {
-    private readonly IScintillaApi<MarkerCollection, StyleCollection, IndicatorCollection, LineCollection, MarginCollection, SelectionCollection, SCNotificationEventArgs> scintilla;
+    private readonly IScintillaApi<MarkerCollection, StyleCollection, IndicatorCollection, LineCollection, MarginCollection, SelectionCollection, SCNotificationEventArgs, Marker, Style, Indicator, Line, Margin, Selection, Bitmap, Color> scintilla;
     private readonly int bytePosition;
     private int? position;
 
@@ -46,7 +47,7 @@ public class DwellEventArgs : EventArgs
     /// <param name="bytePosition">The zero-based byte position within the document where the mouse pointer was lingering.</param>
     /// <param name="x">The x-coordinate of the mouse pointer relative to the <see cref="Scintilla" /> control.</param>
     /// <param name="y">The y-coordinate of the mouse pointer relative to the <see cref="Scintilla" /> control.</param>
-    public DwellEventArgs(IScintillaApi<MarkerCollection, StyleCollection, IndicatorCollection, LineCollection, MarginCollection, SelectionCollection, SCNotificationEventArgs> scintilla, int bytePosition, int x, int y)
+    public DwellEventArgs(IScintillaApi<MarkerCollection, StyleCollection, IndicatorCollection, LineCollection, MarginCollection, SelectionCollection, SCNotificationEventArgs, Marker, Style, Indicator, Line, Margin, Selection, Bitmap, Color> scintilla, int bytePosition, int x, int y)
     {
         this.scintilla = scintilla;
         this.bytePosition = bytePosition;

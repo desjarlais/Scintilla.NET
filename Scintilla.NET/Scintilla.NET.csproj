@@ -73,7 +73,6 @@
 		<Compile Include="..\Shared\DoubleClickEventArgs.cs" Link="DoubleClickEventArgs.cs" />
 		<Compile Include="..\Shared\DwellEventArgs.cs" Link="DwellEventArgs.cs" />
 		<Compile Include="..\Shared\FlagsEnumConverter.cs" Link="FlagsEnumConverter.cs" />
-		<Compile Include="..\Shared\GapBuffer.cs" Link="GapBuffer.cs" />
 		<Compile Include="..\Shared\Helpers.cs" Link="Helpers.cs" />
 		<Compile Include="..\Shared\HelperWinForms.cs" Link="HelperWinForms.cs" />
 		<Compile Include="..\Shared\HotspotClickEventArgs.cs" Link="HotspotClickEventArgs.cs" />
@@ -91,7 +90,6 @@
 		<Compile Include="..\Shared\MarginCollection.cs" Link="MarginCollection.cs" />
 		<Compile Include="..\Shared\Marker.cs" Link="Marker.cs" />
 		<Compile Include="..\Shared\MarkerCollection.cs" Link="MarkerCollection.cs" />
-		<Compile Include="..\Shared\MarkerHandle.cs" Link="MarkerHandle.cs" />
 		<Compile Include="..\Shared\ModificationEventArgs.cs" Link="ModificationEventArgs.cs" />
 		<Compile Include="..\Shared\NativeMemoryStream.cs" Link="NativeMemoryStream.cs" />
 		<Compile Include="..\Shared\NativeMethods.cs" Link="NativeMethods.cs" />

@@ -7,14 +7,16 @@ namespace Scintilla.NET.Abstractions.Collections;
 /// <summary>
 /// A style definition in a <see cref="Scintilla" /> control.
 /// </summary>
-public abstract class StyleBase<TColor, TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs>
-    where TMarkers : IEnumerable
-    where TStyles : IEnumerable
+public abstract class StyleBase<TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs, TMarker, TStyle, TIndicator, TLine, TMargin, TSelection, TBitmap, TColor>
+    where TMarkers : MarkerCollectionBase<TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs, TMarker, TStyle, TIndicator, TLine, TMargin, TSelection, TBitmap, TColor>
+    where TStyles : StyleCollectionBase<TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs, TMarker, TStyle, TIndicator, TLine, TMargin, TSelection, TBitmap, TColor>, IEnumerable
     where TIndicators : IEnumerable
-    where TLines : IEnumerable
+    where TLines : LineCollectionBase<TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs, TMarker, TStyle, TIndicator, TLine, TMargin, TSelection, TBitmap, TColor>
     where TMargins : IEnumerable
     where TSelections : IEnumerable
     where TEventArgs : EventArgs
+    where TMarker: MarkerBase<TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs, TMarker, TStyle, TIndicator, TLine, TMargin, TSelection, TBitmap, TColor>
+    where TStyle : StyleBase<TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs, TMarker, TStyle, TIndicator, TLine, TMargin, TSelection, TBitmap, TColor>
 {
     #region Constants
 
@@ -61,7 +63,7 @@ public abstract class StyleBase<TColor, TMarkers, TStyles, TIndicators, TLines, 
 
     #region Fields
 
-    protected readonly IScintillaApi<TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs> scintilla;
+    protected readonly IScintillaApi<TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs, TMarker, TStyle, TIndicator, TLine, TMargin, TSelection, TBitmap, TColor> scintilla;
 
     #endregion Fields
 
@@ -71,7 +73,7 @@ public abstract class StyleBase<TColor, TMarkers, TStyles, TIndicators, TLines, 
     /// Copies the current style to another style.
     /// </summary>
     /// <param name="destination">The <see cref="StyleBase" /> to which the current style should be copied.</param>
-    public void CopyTo(StyleBase<TColor, TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs>? destination)
+    public void CopyTo(StyleBase<TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs, TMarker, TStyle, TIndicator, TLine, TMargin, TSelection, TBitmap, TColor>? destination)
     {
         if (destination == null)
             return;
@@ -334,7 +336,7 @@ public abstract class StyleBase<TColor, TMarkers, TStyles, TIndicators, TLines, 
     /// </summary>
     /// <param name="scintilla">The <see cref="Scintilla" /> control that created this style.</param>
     /// <param name="index">The index of this style within the <see cref="StyleCollectionBase" /> that created it.</param>
-    public StyleBase(IScintillaApi<TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs> scintilla, int index)
+    public StyleBase(IScintillaApi<TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs, TMarker, TStyle, TIndicator, TLine, TMargin, TSelection, TBitmap, TColor> scintilla, int index)
     {
         this.scintilla = scintilla;
         Index = index;

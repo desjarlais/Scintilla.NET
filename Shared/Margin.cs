@@ -13,7 +13,7 @@ public class Margin
 {
     #region Fields
 
-    private readonly IScintillaApi<MarkerCollection, StyleCollection, IndicatorCollection, LineCollection, MarginCollection, SelectionCollection, SCNotificationEventArgs> scintilla;
+    private readonly IScintillaApi<MarkerCollection, StyleCollection, IndicatorCollection, LineCollection, MarginCollection, SelectionCollection, SCNotificationEventArgs, Marker, Style, Indicator, Line, Margin, Selection, Bitmap, Color> scintilla;
 
     #endregion Fields
 
@@ -150,7 +150,7 @@ public class Margin
     /// </summary>
     /// <param name="scintilla">The <see cref="Scintilla" /> control that created this margin.</param>
     /// <param name="index">The index of this margin within the <see cref="MarginCollection" /> that created it.</param>
-    public Margin(IScintillaApi<MarkerCollection, StyleCollection, IndicatorCollection, LineCollection, MarginCollection, SelectionCollection, SCNotificationEventArgs> scintilla, int index)
+    public Margin(IScintillaApi<MarkerCollection, StyleCollection, IndicatorCollection, LineCollection, MarginCollection, SelectionCollection, SCNotificationEventArgs, Marker, Style, Indicator, Line, Margin, Selection, Bitmap, Color> scintilla, int index)
     {
         this.scintilla = scintilla;
         Index = index;
