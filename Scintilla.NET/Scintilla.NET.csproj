@@ -27,12 +27,12 @@
 	<PropertyGroup>
 		<PackageId>Scintilla.NET</PackageId>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
-		<PackageProjectUrl>https://github.com/VPKSoft/ScintillaNET</PackageProjectUrl>
-		<RepositoryUrl>https://github.com/VPKSoft/ScintillaNET</RepositoryUrl>
+		<PackageProjectUrl>https://github.com/VPKSoft/Scintilla.NET</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/VPKSoft/Scintilla.NET</RepositoryUrl>
 		<PackageIcon>vpksoft_logo.png</PackageIcon>
 		<RepositoryType>git</RepositoryType>
 		<PackageTags>ScintillaNET Scintilla Editor</PackageTags>
-		<PackageReleaseNotes>Please visit https://github.com/VPKSoft/ScintillaNET/releases to view the release notes.</PackageReleaseNotes>
+		<PackageReleaseNotes>Please visit https://github.com/VPKSoft/Scintilla.NET/releases to view the release notes.</PackageReleaseNotes>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
 		<SignAssembly Condition="'$(SignAssembly)' == 'true'">true</SignAssembly>

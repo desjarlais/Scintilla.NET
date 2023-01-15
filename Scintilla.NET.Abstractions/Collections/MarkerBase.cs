@@ -19,12 +19,12 @@ public abstract class MarkerBase<TBitmap, TColor, TMarkers, TStyles, TIndicators
     public readonly IScintillaApi<TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs> scintilla;
 
     /// <summary>
-    /// An unsigned 32-bit mask of all <see cref="Margin" /> indexes where each bit cooresponds to a margin index.
+    /// An unsigned 32-bit mask of all <see cref="Margin" /> indexes where each bit corresponds to a margin index.
     /// </summary>
     public const uint MaskAll = unchecked((uint)-1);
 
     /// <summary>
-    /// An unsigned 32-bit mask of folder <see cref="Margin" /> indexes (25 through 31) where each bit cooresponds to a margin index.
+    /// An unsigned 32-bit mask of folder <see cref="Margin" /> indexes (25 through 31) where each bit corresponds to a margin index.
     /// </summary>
     /// <seealso cref="Margin.Mask" />
     public const uint MaskFolders = SC_MASK_FOLDERS;
@@ -138,7 +138,7 @@ public abstract class MarkerBase<TBitmap, TColor, TMarkers, TStyles, TIndicators
     /// Initializes a new instance of the <see cref="Marker" /> class.
     /// </summary>
     /// <param name="scintilla">The <see cref="Scintilla" /> control that created this marker.</param>
-    /// <param name="index">The index of this style within the <see cref="MarkerCollection" /> that created it.</param>
+    /// <param name="index">The index of this style within the <see cref="MarkerCollectionBase" /> that created it.</param>
     public MarkerBase(IScintillaApi<TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs> scintilla, int index)
     {
         this.scintilla = scintilla;

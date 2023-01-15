@@ -361,40 +361,14 @@ internal static class Helpers
 
     
 
-    public static unsafe byte[] GetBytes(string text, Encoding encoding, bool zeroTerminated)
+    public static byte[] GetBytes(string text, Encoding encoding, bool zeroTerminated)
     {
-        if (string.IsNullOrEmpty(text))
-            return (zeroTerminated ? new byte[] { 0 } : new byte[0]);
-
-        int count = encoding.GetByteCount(text);
-        byte[] buffer = new byte[count + (zeroTerminated ? 1 : 0)];
-
-        fixed (byte* bp = buffer)
-        fixed (char* ch = text)
-        {
-            encoding.GetBytes(ch, text.Length, bp, count);
-        }
-
-        if (zeroTerminated)
-            buffer[buffer.Length - 1] = 0;
-
-        return buffer;
+        return HelpersGeneral.GetBytes(text, encoding, zeroTerminated);
     }
 
-    public static unsafe byte[] GetBytes(char[] text, int length, Encoding encoding, bool zeroTerminated)
+    public static byte[] GetBytes(char[] text, int length, Encoding encoding, bool zeroTerminated)
     {
-        fixed (char* cp = text)
-        {
-            var count = encoding.GetByteCount(cp, length);
-            var buffer = new byte[count + (zeroTerminated ? 1 : 0)];
-            fixed (byte* bp = buffer)
-                encoding.GetBytes(cp, length, bp, buffer.Length);
-
-            if (zeroTerminated)
-                buffer[buffer.Length - 1] = 0;
-
-            return buffer;
-        }
+        return HelpersGeneral.GetBytes(text, length, encoding, zeroTerminated);
     }
 
     public static string GetHtml(IScintillaApi<MarkerCollection, StyleCollection, IndicatorCollection, LineCollection, MarginCollection, SelectionCollection, SCNotificationEventArgs> scintilla, int startBytePos, int endBytePos)

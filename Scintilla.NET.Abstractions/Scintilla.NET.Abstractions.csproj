@@ -1,15 +1,16 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-	  <TargetFrameworks>netstandard2.1;net45</TargetFrameworks>
-	  <Copyright>Copyright (c) VPKSoft 2023.</Copyright>
+	<TargetFrameworks>netstandard2.1;net45</TargetFrameworks>
+	<Copyright>Copyright (c) VPKSoft 2023.</Copyright>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+	<Description>General classes, enumerations and interfaces for the Scintilla.NET package.</Description>
   </PropertyGroup>
   <PropertyGroup>
 	<LangVersion>10</LangVersion>
 	  <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    </PropertyGroup>
+  </PropertyGroup>
 	
   <ItemGroup Condition="'$(TargetFramework)' == 'net45'">
 	<Reference Include="System.Net.Http" />
@@ -20,7 +21,29 @@
 	<DefineConstants>SCINTILLA5</DefineConstants>
   </PropertyGroup>
 
+  <PropertyGroup>
+	<PackageId>Scintilla.NET.Abstractions</PackageId>
+	<PackageLicenseExpression>MIT</PackageLicenseExpression>
+	<PackageProjectUrl>https://github.com/VPKSoft/Scintilla.NET</PackageProjectUrl>
+	<RepositoryUrl>https://github.com/VPKSoft/Scintilla.NET</RepositoryUrl>
+	<PackageIcon>vpksoft_logo.png</PackageIcon>
+	<RepositoryType>git</RepositoryType>
+	<PackageTags>ScintillaNET Scintilla Editor</PackageTags>
+	<PackageReleaseNotes>Please visit https://github.com/VPKSoft/Scintilla.NET/releases to view the release notes.</PackageReleaseNotes>
+	<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+	<PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+	<SignAssembly Condition="'$(SignAssembly)' == 'true'">true</SignAssembly>
+	<AssemblyOriginatorKeyFile>scintilla.net.pfx</AssemblyOriginatorKeyFile>
+	<AssemblyName>Scintilla.NET.Abstractions</AssemblyName>
+	<RootNamespace>Scintilla.NET.Abstractions</RootNamespace>
+	<Authors>Jacob Slusser, VPKSoft, cyber960</Authors>
+  </PropertyGroup>
+
   <ItemGroup>
-	<Folder Include="Enumerations\" />
+	<None Include="..\Shared\vpksoft_logo.png">
+	  <Pack>True</Pack>
+	  <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
+
 </Project>

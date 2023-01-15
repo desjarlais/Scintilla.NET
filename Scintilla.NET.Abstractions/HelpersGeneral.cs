@@ -24,6 +24,8 @@ SOFTWARE.
 */
 #endregion
 
+using System.Text;
+
 namespace Scintilla.NET.Abstractions;
 
 public static class HelpersGeneral
@@ -94,4 +96,42 @@ public static class HelpersGeneral
     }
 
     #endregion Types
+
+    #region Miscellaneous
+    public static unsafe byte[] GetBytes(string text, Encoding encoding, bool zeroTerminated)
+    {
+        if (string.IsNullOrEmpty(text))
+            return (zeroTerminated ? new byte[] { 0 } : new byte[0]);
+
+        int count = encoding.GetByteCount(text);
+        byte[] buffer = new byte[count + (zeroTerminated ? 1 : 0)];
+
+        fixed (byte* bp = buffer)
+        fixed (char* ch = text)
+        {
+            encoding.GetBytes(ch, text.Length, bp, count);
+        }
+
+        if (zeroTerminated)
+            buffer[buffer.Length - 1] = 0;
+
+        return buffer;
+    }
+
+    public static unsafe byte[] GetBytes(char[] text, int length, Encoding encoding, bool zeroTerminated)
+    {
+        fixed (char* cp = text)
+        {
+            var count = encoding.GetByteCount(cp, length);
+            var buffer = new byte[count + (zeroTerminated ? 1 : 0)];
+            fixed (byte* bp = buffer)
+                encoding.GetBytes(cp, length, bp, buffer.Length);
+
+            if (zeroTerminated)
+                buffer[buffer.Length - 1] = 0;
+
+            return buffer;
+        }
+    }
+    #endregion
 }
