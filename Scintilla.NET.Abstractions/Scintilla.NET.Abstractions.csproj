@@ -6,6 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
 	<Description>General classes, enumerations and interfaces for the Scintilla.NET package.</Description>
+    <DocumentationFile>bin\$(Configuration)\Scintilla.NET.Abstractions.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
 	<LangVersion>10</LangVersion>

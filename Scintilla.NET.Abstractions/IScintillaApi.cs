@@ -25,7 +25,6 @@ SOFTWARE.
 #endregion
 
 using System.Collections;
-using System.Drawing;
 using System.Text;
 using Scintilla.NET.Abstractions.Collections;
 using Scintilla.NET.Abstractions.Enumerations;
@@ -34,8 +33,8 @@ namespace Scintilla.NET.Abstractions;
 
 public interface IScintillaApi
 {
-        /// <summary>
-    /// The platform-depended implementation of the <see cref="IScintillaApi{TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs}.DirectMessage(int, IntPtr, IntPtr)"/> method.
+    /// <summary>
+    /// The platform-depended implementation of the <see cref="DirectMessage(int, IntPtr, IntPtr)"/> method.
     /// </summary>
     /// <param name="message">The message.</param>
     /// <param name="wParam">The message <c>wParam</c> field.</param>
@@ -87,7 +86,7 @@ public interface IScintillaApi
     void MarkerDeleteAll(int marker);
 
     /// <summary>
-    /// Gets the encoding of the <see cref="IScintillaApi{TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs}"/> control.
+    /// Gets the encoding of the <see cref="IScintillaApi"/> control interface.
     /// </summary>
     /// <value>The encoding of the control.</value>
     Encoding Encoding { get; }
@@ -129,7 +128,9 @@ public interface IScintillaNotificationEvent<TEventArgs>
 }
 
 /// <summary>
-/// An interface for messaging with the Scintilla native control.
+/// Interface IScintillaApi
+/// Implements the <see cref="Scintilla.NET.Abstractions.IScintillaApi" />
+/// Implements the <see cref="Scintilla.NET.Abstractions.IScintillaNotificationEvent{TEventArgs}" />
 /// </summary>
 /// <typeparam name="TMarkers">The type of the markers collection of the Scintilla control implementation.</typeparam>
 /// <typeparam name="TStyles">The type of the styles collection of the Scintilla control implementation.</typeparam>
@@ -138,6 +139,16 @@ public interface IScintillaNotificationEvent<TEventArgs>
 /// <typeparam name="TMargins">The type of the margins collection of the Scintilla control implementation.</typeparam>
 /// <typeparam name="TSelections">The type of the selections collection of the Scintilla control implementation.</typeparam>
 /// <typeparam name="TEventArgs">The type of the Scintilla notification event handler <see cref="EventArgs"/> descendant implementation.</typeparam>
+/// <typeparam name="TMarker">The type of the item in the <typeparamref name="TMarkers"/> collection.</typeparam>
+/// <typeparam name="TStyle">The type of the item in the <typeparamref name="TStyles"/> collection.</typeparam>
+/// <typeparam name="TIndicator">The type of the item in the <typeparamref name="TIndicators"/> collection.</typeparam>
+/// <typeparam name="TLine">The type of the item in the <typeparamref name="TLines"/> collection.</typeparam>
+/// <typeparam name="TMargin">The type of the item in the <typeparamref name="TMargin"/> collection.</typeparam>
+/// <typeparam name="TSelection">The type of the item in the <typeparamref name="TSelections"/> collection.</typeparam>
+/// <typeparam name="TBitmap">The type of the bitmap used in the platform.</typeparam>
+/// <typeparam name="TColor">The type of the color used in the platform.</typeparam>
+/// <seealso cref="Scintilla.NET.Abstractions.IScintillaApi" />
+/// <seealso cref="Scintilla.NET.Abstractions.IScintillaNotificationEvent{TEventArgs}" />
 public interface IScintillaApi<
     out TMarkers, 
     out TStyles,
@@ -171,13 +182,13 @@ public interface IScintillaApi<
     where TColor: struct
 {
     /// <summary>
-    /// Gets a collection representing markers in a <see cref="IScintillaApi{TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs}" /> control.
+    /// Gets a collection representing markers in a <see cref="IScintillaApi{TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs, TMarker, TStyle, TIndicator, TLine, TMargin, TSelection, TBitmap, TColor}" /> control.
     /// </summary>
     /// <returns>A collection of markers.</returns>
     TMarkers Markers { get; }
 
     /// <summary>
-    /// Gets a collection representing style definitions in a <see cref="IScintillaApi{TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs}" /> control.
+    /// Gets a collection representing style definitions in a <see cref="IScintillaApi{TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs, TMarker, TStyle, TIndicator, TLine, TMargin, TSelection, TBitmap, TColor}" /> control.
     /// </summary>
     /// <returns>A collection of style definitions.</returns>
     TStyles Styles { get; }
@@ -189,19 +200,19 @@ public interface IScintillaApi<
     TIndicators Indicators { get; }
 
     /// <summary>
-    /// Gets a collection representing lines of text in the <see cref="Scintilla" /> control.
+    /// Gets a collection representing lines of text in the <see cref="IScintillaApi{TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs, TMarker, TStyle, TIndicator, TLine, TMargin, TSelection, TBitmap, TColor}" /> control interface.
     /// </summary>
     /// <returns>A collection of text lines.</returns>
     TLines Lines { get; }
         
     /// <summary>
-    /// Gets a collection representing margins in a <see cref="Scintilla" /> control.
+    /// Gets a collection representing margins in a <see cref="IScintillaApi{TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs, TMarker, TStyle, TIndicator, TLine, TMargin, TSelection, TBitmap, TColor}" /> control interface.
     /// </summary>
     /// <returns>A collection of margins.</returns>
     TMargins Margins { get; }
 
     /// <summary>
-    /// Gets a collection representing multiple selections in a <see cref="Scintilla" /> control.
+    /// Gets a collection representing multiple selections in a <see cref="IScintillaApi{TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs, TMarker, TStyle, TIndicator, TLine, TMargin, TSelection, TBitmap, TColor}" /> control interface.
     /// </summary>
     /// <returns>A collection of selections.</returns>
     TSelections Selections { get; }

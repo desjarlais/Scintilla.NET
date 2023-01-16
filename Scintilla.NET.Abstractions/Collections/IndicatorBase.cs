@@ -24,8 +24,10 @@ public abstract class IndicatorBase<TMarkers, TStyles, TIndicators, TLines, TMar
     where TBitmap: class
     where TColor: struct
 {
-    #region Fields
-
+    #region Fields    
+    /// <summary>
+    /// A reference to the Scintilla control interface.
+    /// </summary>
     protected readonly IScintillaApi<TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs, TMarker, TStyle, TIndicator, TLine, TMargin, TSelection, TBitmap, TColor> scintilla;
 
     #endregion Fields

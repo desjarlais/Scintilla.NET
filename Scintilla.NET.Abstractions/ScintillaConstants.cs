@@ -27,6 +27,7 @@ SOFTWARE.
 // ReSharper disable InconsistentNaming
 // ReSharper disable IdentifierTypo
 // ReSharper disable UnusedMember.Global
+#pragma warning disable CS1591
 namespace Scintilla.NET.Abstractions;
 
 /// <summary>

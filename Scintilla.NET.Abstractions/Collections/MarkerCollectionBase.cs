@@ -23,6 +23,9 @@ public abstract class MarkerCollectionBase<TMarkers, TStyles, TIndicators, TLine
     where TBitmap: class
     where TColor: struct
 {
+    /// <summary>
+    /// A reference to the Scintilla control interface.
+    /// </summary>
     protected readonly IScintillaApi<TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs, TMarker, TStyle, TIndicator, TLine, TMargin, TSelection, TBitmap, TColor> scintilla;
 
     /// <summary>
