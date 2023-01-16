@@ -1,48 +1,20 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing;
 using Scintilla.NET.Abstractions;
-using static Scintilla.NET.Abstractions.ScintillaConstants;
+using Scintilla.NET.Abstractions.Collections;
 
 namespace ScintillaNET;
 
 /// <summary>
 /// An immutable collection of indicators in a <see cref="Scintilla" /> control.
 /// </summary>
-public class IndicatorCollection : IEnumerable<Indicator>
+public class IndicatorCollection: IndicatorCollectionBase<MarkerCollection, StyleCollection, IndicatorCollection, LineCollection, MarginCollection, SelectionCollection, SCNotificationEventArgs, Marker, Style, Indicator, Line, Margin, Selection, Bitmap, Color>, IEnumerable<Indicator>
 {
-    private readonly IScintillaApi<MarkerCollection, StyleCollection, IndicatorCollection, LineCollection, MarginCollection, SelectionCollection, SCNotificationEventArgs> scintilla;
-
-    /// <summary>
-    /// Provides an enumerator that iterates through the collection.
-    /// </summary>
-    /// <returns>An object that contains all <see cref="Indicator" /> objects within the <see cref="IndicatorCollection" />.</returns>
-    public IEnumerator<Indicator> GetEnumerator()
-    {
-        int count = Count;
-        for (int i = 0; i < count; i++)
-            yield return this[i];
-
-        yield break;
-    }
-
     IEnumerator IEnumerable.GetEnumerator()
     {
         return this.GetEnumerator();
-    }
-
-    /// <summary>
-    /// Gets the number of indicators.
-    /// </summary>
-    /// <returns>The number of indicators in the <see cref="IndicatorCollection" />.</returns>
-    [Browsable(false)]
-    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-    public int Count
-    {
-        get
-        {
-            return (INDIC_MAX + 1);
-        }
     }
 
     /// <summary>
@@ -56,7 +28,7 @@ public class IndicatorCollection : IEnumerable<Indicator>
     /// </remarks>
     [Browsable(false)]
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-    public Indicator this[int index]
+    public override Indicator this[int index]
     {
         get
         {
@@ -69,8 +41,7 @@ public class IndicatorCollection : IEnumerable<Indicator>
     /// Initializes a new instance of the <see cref="IndicatorCollection" /> class.
     /// </summary>
     /// <param name="scintilla">The <see cref="Scintilla" /> control that created this collection.</param>
-    public IndicatorCollection(IScintillaApi<MarkerCollection, StyleCollection, IndicatorCollection, LineCollection, MarginCollection, SelectionCollection, SCNotificationEventArgs> scintilla)
+    public IndicatorCollection(IScintillaApi<MarkerCollection, StyleCollection, IndicatorCollection, LineCollection, MarginCollection, SelectionCollection, SCNotificationEventArgs, Marker, Style, Indicator, Line, Margin, Selection, Bitmap, Color> scintilla) : base(scintilla)
     {
-        this.scintilla = scintilla;
     }
 }

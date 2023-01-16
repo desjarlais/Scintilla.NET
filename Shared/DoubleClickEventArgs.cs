@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.Windows.Forms;
 using Scintilla.NET.Abstractions;
 
@@ -9,7 +10,7 @@ namespace ScintillaNET;
 /// </summary>
 public class DoubleClickEventArgs : EventArgs
 {
-    private readonly IScintillaApi<MarkerCollection, StyleCollection, IndicatorCollection, LineCollection, MarginCollection, SelectionCollection, SCNotificationEventArgs> scintilla;
+    private readonly IScintillaApi<MarkerCollection, StyleCollection, IndicatorCollection, LineCollection, MarginCollection, SelectionCollection, SCNotificationEventArgs, Marker, Style, Indicator, Line, Margin, Selection, Bitmap, Color> scintilla;
     private readonly int bytePosition;
     private int? position;
 
@@ -50,7 +51,7 @@ public class DoubleClickEventArgs : EventArgs
     /// <param name="modifiers">The modifier keys that where held down at the time of the double click.</param>
     /// <param name="bytePosition">The zero-based byte position of the double clicked text.</param>
     /// <param name="line">The zero-based line index of the double clicked text.</param>
-    public DoubleClickEventArgs(IScintillaApi<MarkerCollection, StyleCollection, IndicatorCollection, LineCollection, MarginCollection, SelectionCollection, SCNotificationEventArgs> scintilla, Keys modifiers, int bytePosition, int line)
+    public DoubleClickEventArgs(IScintillaApi<MarkerCollection, StyleCollection, IndicatorCollection, LineCollection, MarginCollection, SelectionCollection, SCNotificationEventArgs, Marker, Style, Indicator, Line, Margin, Selection, Bitmap, Color> scintilla, Keys modifiers, int bytePosition, int line)
     {
         this.scintilla = scintilla;
         this.bytePosition = bytePosition;

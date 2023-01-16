@@ -25,7 +25,9 @@ SOFTWARE.
 #endregion
 
 using System.Collections;
+using System.Drawing;
 using System.Text;
+using Scintilla.NET.Abstractions.Collections;
 using Scintilla.NET.Abstractions.Enumerations;
 
 namespace Scintilla.NET.Abstractions;
@@ -113,6 +115,20 @@ public interface IScintillaApi
 }
 
 /// <summary>
+/// An interface for the Scintilla native event notifications.
+/// </summary>
+/// <typeparam name="TEventArgs">The type of the event arguments.</typeparam>
+public interface IScintillaNotificationEvent<TEventArgs>
+    where TEventArgs : EventArgs
+{
+    /// <summary>
+    /// The Scintilla native notification.
+    /// </summary>
+    // ReSharper disable once InconsistentNaming
+    event EventHandler<TEventArgs> SCNotification;
+}
+
+/// <summary>
 /// An interface for messaging with the Scintilla native control.
 /// </summary>
 /// <typeparam name="TMarkers">The type of the markers collection of the Scintilla control implementation.</typeparam>
@@ -122,14 +138,37 @@ public interface IScintillaApi
 /// <typeparam name="TMargins">The type of the margins collection of the Scintilla control implementation.</typeparam>
 /// <typeparam name="TSelections">The type of the selections collection of the Scintilla control implementation.</typeparam>
 /// <typeparam name="TEventArgs">The type of the Scintilla notification event handler <see cref="EventArgs"/> descendant implementation.</typeparam>
-public interface IScintillaApi<out TMarkers, out TStyles, out TIndicators, out TLines, out TMargins, out TSelections, TEventArgs> : IScintillaApi
-    where TMarkers : IEnumerable
-    where TStyles : IEnumerable
-    where TIndicators : IEnumerable
-    where TLines : IEnumerable
-    where TMargins : IEnumerable
-    where TSelections : IEnumerable
+public interface IScintillaApi<
+    out TMarkers, 
+    out TStyles,
+    out TIndicators, 
+    out TLines, 
+    out TMargins, 
+    out TSelections, 
+    TEventArgs, 
+    TMarker,
+    TStyle, 
+    TIndicator,
+    TLine,
+    TMargin,
+    TSelection,
+    TBitmap,
+    TColor> : IScintillaApi, IScintillaNotificationEvent<TEventArgs>
+    where TMarkers : MarkerCollectionBase<TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs, TMarker, TStyle, TIndicator, TLine, TMargin, TSelection, TBitmap, TColor>, IEnumerable
+    where TStyles : StyleCollectionBase<TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs, TMarker, TStyle, TIndicator, TLine, TMargin, TSelection, TBitmap, TColor>, IEnumerable
+    where TIndicators :IndicatorCollectionBase<TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs, TMarker, TStyle, TIndicator, TLine, TMargin, TSelection, TBitmap, TColor>, IEnumerable
+    where TLines : LineCollectionBase<TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs, TMarker, TStyle, TIndicator, TLine, TMargin, TSelection, TBitmap, TColor>, IEnumerable
+    where TMargins : MarginCollectionBase<TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs, TMarker, TStyle, TIndicator, TLine, TMargin, TSelection, TBitmap, TColor>, IEnumerable
+    where TSelections : SelectionCollectionBase<TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs, TMarker, TStyle, TIndicator, TLine, TMargin, TSelection, TBitmap, TColor>, IEnumerable
     where TEventArgs : EventArgs
+    where TMarker: MarkerBase<TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs, TMarker, TStyle, TIndicator, TLine, TMargin, TSelection, TBitmap, TColor>
+    where TStyle : StyleBase<TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs, TMarker, TStyle, TIndicator, TLine, TMargin, TSelection, TBitmap, TColor>
+    where TIndicator : IndicatorBase<TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs, TMarker, TStyle, TIndicator, TLine, TMargin, TSelection, TBitmap, TColor>
+    where TLine : LineBase<TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs, TMarker, TStyle, TIndicator, TLine, TMargin, TSelection, TBitmap, TColor>
+    where TMargin : MarginBase<TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs, TMarker, TStyle, TIndicator, TLine, TMargin, TSelection, TBitmap, TColor>
+    where TSelection : SelectionBase<TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs, TMarker, TStyle, TIndicator, TLine, TMargin, TSelection, TBitmap, TColor>
+    where TBitmap: class
+    where TColor: struct
 {
     /// <summary>
     /// Gets a collection representing markers in a <see cref="IScintillaApi{TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs}" /> control.
@@ -166,10 +205,4 @@ public interface IScintillaApi<out TMarkers, out TStyles, out TIndicators, out T
     /// </summary>
     /// <returns>A collection of selections.</returns>
     TSelections Selections { get; }
-
-    /// <summary>
-    /// The Scintilla native notification.
-    /// </summary>
-    // ReSharper disable once InconsistentNaming
-    event EventHandler<TEventArgs> SCNotification;
 }

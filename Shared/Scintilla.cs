@@ -14,6 +14,7 @@ using System.Threading;
 using System.Windows.Forms;
 using Scintilla.NET.Abstractions;
 using Scintilla.NET.Abstractions.Enumerations;
+using Scintilla.NET.Abstractions.Structs;
 using static Scintilla.NET.Abstractions.ScintillaConstants;
 using static Scintilla.NET.Abstractions.ScintillaApiStructs;
 using Bitmap = System.Drawing.Bitmap;
@@ -25,7 +26,7 @@ namespace ScintillaNET;
 /// Represents a Scintilla editor control.
 /// </summary>
 [Docking(DockingBehavior.Ask)]
-public class Scintilla : Control, IScintillaApi<MarkerCollection, StyleCollection, IndicatorCollection, LineCollection, MarginCollection, SelectionCollection, SCNotificationEventArgs>
+public class Scintilla : Control, IScintillaApi<MarkerCollection, StyleCollection, IndicatorCollection, LineCollection, MarginCollection, SelectionCollection, SCNotificationEventArgs, Marker, Style, Indicator, Line, Margin, Selection, Bitmap, Color>
 {
     #region Fields
 

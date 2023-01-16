@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.ComponentModel;
+using System.Drawing;
 using Scintilla.NET.Abstractions;
-using Scintilla.NET.Abstractions.Enumerations;
+using Scintilla.NET.Abstractions.Collections;
 using static Scintilla.NET.Abstractions.ScintillaConstants;
 
 namespace ScintillaNET;
@@ -11,69 +9,19 @@ namespace ScintillaNET;
 /// <summary>
 /// An immutable collection of margins in a <see cref="Scintilla" /> control.
 /// </summary>
-public class MarginCollection : IEnumerable<Margin>
+public class MarginCollection : MarginCollectionBase<MarkerCollection, StyleCollection, IndicatorCollection, LineCollection, MarginCollection, SelectionCollection, SCNotificationEventArgs, Marker, Style, Indicator, Line, Margin, Selection, Bitmap, Color>
 {
-    private readonly IScintillaApi<MarkerCollection, StyleCollection, IndicatorCollection, LineCollection, MarginCollection, SelectionCollection, SCNotificationEventArgs> scintilla;
-
-    /// <summary>
-    /// Removes all text displayed in every <see cref="MarginType.Text" /> and <see cref="MarginType.RightText" /> margins.
-    /// </summary>
-    public void ClearAllText()
-    {
-        scintilla.DirectMessage(SCI_MARGINTEXTCLEARALL);
-    }
-
-    /// <summary>
-    /// Provides an enumerator that iterates through the collection.
-    /// </summary>
-    /// <returns>An object that contains all <see cref="Margin" /> objects within the <see cref="MarginCollection" />.</returns>
-    public IEnumerator<Margin> GetEnumerator()
-    {
-        int count = Count;
-        for (int i = 0; i < count; i++)
-            yield return this[i];
-
-        yield break;
-    }
-
-    IEnumerator IEnumerable.GetEnumerator()
-    {
-        return this.GetEnumerator();
-    }
-
     /// <summary>
     /// Gets or sets the number of margins in the <see cref="MarginCollection" />.
     /// </summary>
     /// <returns>The number of margins in the collection. The default is 5.</returns>
     [DefaultValue(SC_MAX_MARGIN + 1)]
     [Description("The maximum number of margins.")]
-    public int Capacity
+    public override int Capacity
     {
-        get
-        {
-            return scintilla.DirectMessage(SCI_GETMARGINS).ToInt32();
-        }
-        set
-        {
-            value = Helpers.ClampMin(value, 0);
-            scintilla.DirectMessage(SCI_SETMARGINS, new IntPtr(value));
-        }
-    }
+        get => base.Capacity;
 
-    /// <summary>
-    /// Gets the number of margins in the <see cref="MarginCollection" />.
-    /// </summary>
-    /// <returns>The number of margins in the collection.</returns>
-    /// <remarks>This property is kept for convenience. The return value will always be equal to <see cref="Capacity" />.</remarks>
-    /// <seealso cref="Capacity" />
-    [Browsable(false)]
-    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-    public int Count
-    {
-        get
-        {
-            return Capacity;
-        }
+        set => base.Capacity = value;
     }
 
     /// <summary>
@@ -82,17 +30,11 @@ public class MarginCollection : IEnumerable<Margin>
     /// <returns>The left margin padding measured in pixels. The default is 1.</returns>
     [DefaultValue(1)]
     [Description("The left margin padding in pixels.")]
-    public int Left
+    public override int Left
     {
-        get
-        {
-            return scintilla.DirectMessage(SCI_GETMARGINLEFT).ToInt32();
-        }
-        set
-        {
-            value = Helpers.ClampMin(value, 0);
-            scintilla.DirectMessage(SCI_SETMARGINLEFT, IntPtr.Zero, new IntPtr(value));
-        }
+        get => base.Left;
+
+        set => base.Left = value;
     }
 
     // TODO Why is this commented out?
@@ -127,17 +69,11 @@ public class MarginCollection : IEnumerable<Margin>
     /// <returns>The right margin padding measured in pixels. The default is 1.</returns>
     [DefaultValue(1)]
     [Description("The right margin padding in pixels.")]
-    public int Right
+    public override int Right
     {
-        get
-        {
-            return scintilla.DirectMessage(SCI_GETMARGINRIGHT).ToInt32();
-        }
-        set
-        {
-            value = Helpers.ClampMin(value, 0);
-            scintilla.DirectMessage(SCI_SETMARGINRIGHT, IntPtr.Zero, new IntPtr(value));
-        }
+        get => base.Right;
+
+        set => base.Right = value;
     }
 
     /// <summary>
@@ -148,7 +84,7 @@ public class MarginCollection : IEnumerable<Margin>
     /// <remarks>By convention margin 0 is used for line numbers and the two following for symbols.</remarks>
     [Browsable(false)]
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-    public Margin this[int index]
+    public override Margin this[int index]
     {
         get
         {
@@ -161,8 +97,7 @@ public class MarginCollection : IEnumerable<Margin>
     /// Initializes a new instance of the <see cref="MarginCollection" /> class.
     /// </summary>
     /// <param name="scintilla">The <see cref="Scintilla" /> control that created this collection.</param>
-    public MarginCollection(IScintillaApi<MarkerCollection, StyleCollection, IndicatorCollection, LineCollection, MarginCollection, SelectionCollection, SCNotificationEventArgs> scintilla)
+    public MarginCollection(IScintillaApi<MarkerCollection, StyleCollection, IndicatorCollection, LineCollection, MarginCollection, SelectionCollection, SCNotificationEventArgs, Marker, Style, Indicator, Line, Margin, Selection, Bitmap, Color> scintilla) : base(scintilla)
     {
-        this.scintilla = scintilla;
     }
 }

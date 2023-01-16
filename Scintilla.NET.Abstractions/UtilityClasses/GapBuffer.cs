@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections;
 using System.Diagnostics;
 
-namespace ScintillaNET;
+namespace Scintilla.NET.Abstractions.UtilityClasses;
 
 // Do error checking higher up
 // http://www.codeproject.com/Articles/20910/Generic-Gap-Buffer
 [DebuggerDisplay("Count = {Count}")]
-internal sealed class GapBuffer<T> : IEnumerable<T>
+public sealed class GapBuffer<T> : IEnumerable<T>
 {
     private T[] buffer;
     private int gapStart;

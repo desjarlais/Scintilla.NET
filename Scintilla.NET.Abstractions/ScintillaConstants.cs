@@ -1164,7 +1164,7 @@ public class ScintillaConstants
 
     #region Lexer Constants
 
-#if NET40 || NET45
+#if NET40 || NET45 || NET462
         private static readonly Dictionary<int, string> nameConstantMap = new Dictionary<int, string>();
         public static Dictionary<int, string> NameConstantMap
         {

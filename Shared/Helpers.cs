@@ -66,47 +66,12 @@ internal static class Helpers
 
     public static unsafe byte[] ByteToCharStyles(byte* styles, byte* text, int length, Encoding encoding)
     {
-        // This is used by annotations and margins to get all the styles in one call.
-        // It converts an array of styles where each element corresponds to a BYTE
-        // to an array of styles where each element corresponds to a CHARACTER.
-
-        var bytePos = 0; // Position within text BYTES and style BYTES (should be the same)
-        var charPos = 0; // Position within style CHARACTERS
-        var decoder = encoding.GetDecoder();
-        var result = new byte[encoding.GetCharCount(text, length)];
-
-        while (bytePos < length)
-        {
-            if (decoder.GetCharCount(text + bytePos, 1, false) > 0)
-                result[charPos++] = *(styles + bytePos); // New char
-
-            bytePos++;
-        }
-
-        return result;
+        return HelpersGeneral.ByteToCharStyles(styles, text, length, encoding);
     }
 
     public static unsafe byte[] CharToByteStyles(byte[] styles, byte* text, int length, Encoding encoding)
     {
-        // This is used by annotations and margins to style all the text in one call.
-        // It converts an array of styles where each element corresponds to a CHARACTER
-        // to an array of styles where each element corresponds to a BYTE.
-
-        var bytePos = 0; // Position within text BYTES and style BYTES (should be the same)
-        var charPos = 0; // Position within style CHARACTERS
-        var decoder = encoding.GetDecoder();
-        var result = new byte[length];
-
-        while (bytePos < length && charPos < styles.Length)
-        {
-            result[bytePos] = styles[charPos];
-            if (decoder.GetCharCount(text + bytePos, 1, false) > 0)
-                charPos++; // Move a char
-
-            bytePos++;
-        }
-
-        return result;
+        return HelpersGeneral.CharToByteStyles(styles, text, length, encoding);
     }
 
     public static int Clamp(int value, int min, int max)
@@ -371,7 +336,7 @@ internal static class Helpers
         return HelpersGeneral.GetBytes(text, length, encoding, zeroTerminated);
     }
 
-    public static string GetHtml(IScintillaApi<MarkerCollection, StyleCollection, IndicatorCollection, LineCollection, MarginCollection, SelectionCollection, SCNotificationEventArgs> scintilla, int startBytePos, int endBytePos)
+    public static string GetHtml(IScintillaApi<MarkerCollection, StyleCollection, IndicatorCollection, LineCollection, MarginCollection, SelectionCollection, SCNotificationEventArgs, Marker, Style, Indicator, Line, Margin, Selection, Bitmap, Color> scintilla, int startBytePos, int endBytePos)
     {
         // If we ever allow more than UTF-8, this will have to be revisited
         Debug.Assert(scintilla.DirectMessage(SCI_GETCODEPAGE).ToInt32() == SC_CP_UTF8);
@@ -538,15 +503,12 @@ internal static class Helpers
         }
     }
 
-    public static unsafe string GetString(IntPtr bytes, int length, Encoding encoding)
+    public static string GetString(IntPtr bytes, int length, Encoding encoding)
     {
-        var ptr = (sbyte*)bytes;
-        var str = new string(ptr, 0, length, encoding);
-
-        return str;
+        return HelpersGeneral.GetString(bytes, length, encoding);
     }
 
-    internal static unsafe List<ArraySegment<byte>> GetStyledSegments(IScintillaApi<MarkerCollection, StyleCollection, IndicatorCollection, LineCollection, MarginCollection, SelectionCollection, SCNotificationEventArgs> scintilla, bool currentSelection, bool currentLine, int startBytePos, int endBytePos, out StyleData[] styles)
+    internal static unsafe List<ArraySegment<byte>> GetStyledSegments(IScintillaApi<MarkerCollection, StyleCollection, IndicatorCollection, LineCollection, MarginCollection, SelectionCollection, SCNotificationEventArgs, Marker, Style, Indicator, Line, Margin, Selection, Bitmap, Color> scintilla, bool currentSelection, bool currentLine, int startBytePos, int endBytePos, out StyleData[] styles)
     {
         var segments = new List<ArraySegment<byte>>();
         if (currentSelection)

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using Scintilla.NET.Abstractions;
 
 namespace ScintillaNET;
@@ -8,7 +9,7 @@ namespace ScintillaNET;
 /// </summary>
 public class NeedShownEventArgs : EventArgs
 {
-    private readonly IScintillaApi<MarkerCollection, StyleCollection, IndicatorCollection, LineCollection, MarginCollection, SelectionCollection, SCNotificationEventArgs> scintilla;
+    private readonly IScintillaApi<MarkerCollection, StyleCollection, IndicatorCollection, LineCollection, MarginCollection, SelectionCollection, SCNotificationEventArgs, Marker, Style, Indicator, Line, Margin, Selection, Bitmap, Color> scintilla;
     private readonly int bytePosition;
     private readonly int byteLength;
     private int? position;
@@ -54,7 +55,7 @@ public class NeedShownEventArgs : EventArgs
     /// <param name="scintilla">The <see cref="Scintilla" /> control that generated this event.</param>
     /// <param name="bytePosition">The zero-based byte position within the document where text needs to be shown.</param>
     /// <param name="byteLength">The length in bytes of the text that needs to be shown.</param>
-    public NeedShownEventArgs(IScintillaApi<MarkerCollection, StyleCollection, IndicatorCollection, LineCollection, MarginCollection, SelectionCollection, SCNotificationEventArgs> scintilla, int bytePosition, int byteLength)
+    public NeedShownEventArgs(IScintillaApi<MarkerCollection, StyleCollection, IndicatorCollection, LineCollection, MarginCollection, SelectionCollection, SCNotificationEventArgs, Marker, Style, Indicator, Line, Margin, Selection, Bitmap, Color> scintilla, int bytePosition, int byteLength)
     {
         this.scintilla = scintilla;
         this.bytePosition = bytePosition;

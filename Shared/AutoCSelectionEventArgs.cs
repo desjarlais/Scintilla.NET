@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using Scintilla.NET.Abstractions;
 using Scintilla.NET.Abstractions.Enumerations;
 
@@ -9,7 +10,7 @@ namespace ScintillaNET;
 /// </summary>
 public class AutoCSelectionEventArgs : EventArgs
 {
-    private readonly IScintillaApi<MarkerCollection, StyleCollection, IndicatorCollection, LineCollection, MarginCollection, SelectionCollection, SCNotificationEventArgs> scintilla;
+    private readonly IScintillaApi<MarkerCollection, StyleCollection, IndicatorCollection, LineCollection, MarginCollection, SelectionCollection, SCNotificationEventArgs, Marker, Style, Indicator, Line, Margin, Selection, Bitmap, Color> scintilla;
     private readonly IntPtr textPtr;
     private readonly int bytePosition;
     private int? position;
@@ -73,7 +74,7 @@ public class AutoCSelectionEventArgs : EventArgs
     /// <param name="text">A pointer to the selected autocompletion text.</param>
     /// <param name="ch">The character that caused the completion.</param>
     /// <param name="listCompletionMethod">A value indicating the way in which the completion occurred.</param>
-    public AutoCSelectionEventArgs(IScintillaApi<MarkerCollection, StyleCollection, IndicatorCollection, LineCollection, MarginCollection, SelectionCollection, SCNotificationEventArgs> scintilla, int bytePosition, IntPtr text, int ch, ListCompletionMethod listCompletionMethod)
+    public AutoCSelectionEventArgs(IScintillaApi<MarkerCollection, StyleCollection, IndicatorCollection, LineCollection, MarginCollection, SelectionCollection, SCNotificationEventArgs, Marker, Style, Indicator, Line, Margin, Selection, Bitmap, Color> scintilla, int bytePosition, IntPtr text, int ch, ListCompletionMethod listCompletionMethod)
     {
         this.scintilla = scintilla;
         this.bytePosition = bytePosition;

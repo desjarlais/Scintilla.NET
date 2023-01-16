@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Drawing;
 using Scintilla.NET.Abstractions;
 using Scintilla.NET.Abstractions.Collections;
 
@@ -8,14 +7,8 @@ namespace ScintillaNET;
 /// <summary>
 /// An immutable collection of markers in a <see cref="Scintilla" /> control.
 /// </summary>
-public class MarkerCollection : MarkerCollectionBase<MarkerCollection, StyleCollection, IndicatorCollection, LineCollection, MarginCollection, SelectionCollection, SCNotificationEventArgs, Marker>, IEnumerable<Marker>
-
+public class MarkerCollection : MarkerCollectionBase<MarkerCollection, StyleCollection, IndicatorCollection, LineCollection, MarginCollection, SelectionCollection, SCNotificationEventArgs, Marker, Style, Indicator, Line, Margin, Selection, Bitmap, Color>
 {
-    IEnumerator IEnumerable.GetEnumerator()
-    {
-        return this.GetEnumerator();
-    }
-
     /// <summary>
     /// Gets a <see cref="Marker" /> object at the specified index.
     /// </summary>
@@ -35,7 +28,7 @@ public class MarkerCollection : MarkerCollectionBase<MarkerCollection, StyleColl
     /// Initializes a new instance of the <see cref="MarkerCollection" /> class.
     /// </summary>
     /// <param name="scintilla">The <see cref="Scintilla" /> control that created this collection.</param>
-    public MarkerCollection(IScintillaApi<MarkerCollection, StyleCollection, IndicatorCollection, LineCollection, MarginCollection, SelectionCollection, SCNotificationEventArgs> scintilla) : base(scintilla)
+    public MarkerCollection(IScintillaApi<MarkerCollection, StyleCollection, IndicatorCollection, LineCollection, MarginCollection, SelectionCollection, SCNotificationEventArgs, Marker, Style, Indicator, Line, Margin, Selection, Bitmap, Color> scintilla) : base(scintilla)
     {
 
     }

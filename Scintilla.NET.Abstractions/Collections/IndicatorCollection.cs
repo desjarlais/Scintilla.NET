@@ -1,12 +1,13 @@
 ﻿using System.Collections;
+using System.ComponentModel;
 using static Scintilla.NET.Abstractions.ScintillaConstants;
 
 namespace Scintilla.NET.Abstractions.Collections;
 
 /// <summary>
-/// An immutable collection of markers in a <see cref="Scintilla" /> control.
+/// An immutable collection of indicators in a <see cref="Scintilla" /> control.
 /// </summary>
-public abstract class MarkerCollectionBase<TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs, TMarker, TStyle, TIndicator, TLine, TMargin, TSelection, TBitmap, TColor> : IEnumerable<TMarker>
+public abstract class IndicatorCollectionBase<TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs, TMarker, TStyle, TIndicator, TLine, TMargin, TSelection, TBitmap, TColor> : IEnumerable<TIndicator>
     where TMarkers : MarkerCollectionBase<TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs, TMarker, TStyle, TIndicator, TLine, TMargin, TSelection, TBitmap, TColor>, IEnumerable
     where TStyles : StyleCollectionBase<TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs, TMarker, TStyle, TIndicator, TLine, TMargin, TSelection, TBitmap, TColor>, IEnumerable
     where TIndicators :IndicatorCollectionBase<TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs, TMarker, TStyle, TIndicator, TLine, TMargin, TSelection, TBitmap, TColor>, IEnumerable
@@ -28,8 +29,8 @@ public abstract class MarkerCollectionBase<TMarkers, TStyles, TIndicators, TLine
     /// <summary>
     /// Provides an enumerator that iterates through the collection.
     /// </summary>
-    /// <returns>An object for enumerating all <see cref="MarkerBase{TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs, TMarker, TStyle, TIndicator, TLine, TMargin, TSelection, TBitmap, TColor}" />.</returns>
-    public IEnumerator<TMarker> GetEnumerator()
+    /// <returns>An object that contains all <see cref="IndicatorBase{TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs, TMarker, TStyle, TIndicator, TLine, TMargin, TSelection, TBitmap, TColor}" /> objects within the <see cref="IndicatorCollectionBase{TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs, TMarker, TStyle, TIndicator, TLine, TMargin, TSelection, TBitmap, TColor}" />.</returns>
+    public virtual IEnumerator<TIndicator> GetEnumerator()
     {
         int count = Count;
         for (int i = 0; i < count; i++)
@@ -38,28 +39,41 @@ public abstract class MarkerCollectionBase<TMarkers, TStyles, TIndicators, TLine
 
     IEnumerator IEnumerable.GetEnumerator()
     {
-        return this.GetEnumerator();
+        return GetEnumerator();
     }
 
     /// <summary>
-    /// Gets the number of markers in the <see cref="MarkerCollectionBase{TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs, TMarker, TStyle, TIndicator, TLine, TMargin, TSelection, TBitmap, TColor}" />.
+    /// Gets the number of indicators.
     /// </summary>
-    /// <returns>This property always returns 32.</returns>
-    public int Count => (MARKER_MAX + 1);
+    /// <returns>The number of indicators in the <see cref="IndicatorCollectionBase{TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs, TMarker, TStyle, TIndicator, TLine, TMargin, TSelection, TBitmap, TColor}" />.</returns>
+    [Browsable(false)]
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+    public virtual int Count
+    {
+        get
+        {
+            return (INDIC_MAX + 1);
+        }
+    }
 
     /// <summary>
-    /// Gets a <typeparamref name="TMarker"/> object at the specified index.
+    /// Gets an <see cref="IndicatorBase{TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs, TMarker, TStyle, TIndicator, TLine, TMargin, TSelection, TBitmap, TColor}" /> object at the specified index.
     /// </summary>
-    /// <param name="index">The marker index.</param>
-    /// <returns>An object representing the marker at the specified <paramref name="index" />.</returns>
-    /// <remarks>Markers 25 through 31 are used by Scintilla for folding.</remarks>
-    protected abstract TMarker this[int index] { get; }
+    /// <param name="index">The indicator index.</param>
+    /// <returns>An object representing the indicator at the specified <paramref name="index" />.</returns>
+    /// <remarks>
+    /// Indicators 0 through 7 are used by lexers.
+    /// Indicators 32 through 35 are used for IME.
+    /// </remarks>
+    [Browsable(false)]
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+    public abstract TIndicator this[int index] { get; }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="MarkerCollectionBase{TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs, TMarker, TStyle, TIndicator, TLine, TMargin, TSelection, TBitmap, TColor}" /> class.
+    /// Initializes a new instance of the <see cref="IndicatorCollectionBase{TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs, TMarker, TStyle, TIndicator, TLine, TMargin, TSelection, TBitmap, TColor}" /> class.
     /// </summary>
     /// <param name="scintilla">The <see cref="Scintilla" /> control that created this collection.</param>
-    protected MarkerCollectionBase(IScintillaApi<TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs, TMarker, TStyle, TIndicator, TLine, TMargin, TSelection, TBitmap, TColor> scintilla)
+    protected IndicatorCollectionBase(IScintillaApi<TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs, TMarker, TStyle, TIndicator, TLine, TMargin, TSelection, TBitmap, TColor> scintilla)
     {
         this.scintilla = scintilla;
     }
