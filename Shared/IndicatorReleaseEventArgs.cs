@@ -1,41 +1,23 @@
-﻿using System;
-using System.Drawing;
+﻿using System.Drawing;
 using Scintilla.NET.Abstractions;
+using Scintilla.NET.Abstractions.EventArguments;
 
 namespace ScintillaNET;
 
 /// <summary>
 /// Provides data for the <see cref="Scintilla.IndicatorRelease" /> event.
 /// </summary>
-public class IndicatorReleaseEventArgs : EventArgs
+public class IndicatorReleaseEventArgs : IndicatorReleaseEventArgsBase<MarkerCollection, StyleCollection, IndicatorCollection, LineCollection, MarginCollection, SelectionCollection, SCNotificationEventArgs, Marker, Style, Indicator, Line, Margin, Selection, Bitmap, Color>
 {
-    private readonly IScintillaApi<MarkerCollection, StyleCollection, IndicatorCollection, LineCollection, MarginCollection, SelectionCollection, SCNotificationEventArgs, Marker, Style, Indicator, Line, Margin, Selection, Bitmap, Color> scintilla;
-    private readonly int bytePosition;
-    private int? position;
-
-    /// <summary>
-    /// Gets the zero-based document position of the text clicked.
-    /// </summary>
-    /// <returns>The zero-based character position within the document of the clicked text.</returns>
-    public int Position
-    {
-        get
-        {
-            if (position == null)
-                position = scintilla.Lines.ByteToCharPosition(bytePosition);
-
-            return (int)position;
-        }
-    }
-
     /// <summary>
     /// Initializes a new instance of the <see cref="IndicatorReleaseEventArgs" /> class.
     /// </summary>
     /// <param name="scintilla">The <see cref="Scintilla" /> control that generated this event.</param>
     /// <param name="bytePosition">The zero-based byte position of the clicked text.</param>
-    public IndicatorReleaseEventArgs(IScintillaApi<MarkerCollection, StyleCollection, IndicatorCollection, LineCollection, MarginCollection, SelectionCollection, SCNotificationEventArgs, Marker, Style, Indicator, Line, Margin, Selection, Bitmap, Color> scintilla, int bytePosition)
+    public IndicatorReleaseEventArgs(
+        IScintillaApi<MarkerCollection, StyleCollection, IndicatorCollection, LineCollection, MarginCollection,
+            SelectionCollection, SCNotificationEventArgs, Marker, Style, Indicator, Line, Margin, Selection, Bitmap,
+            Color> scintilla, int bytePosition) : base(scintilla, bytePosition)
     {
-        this.scintilla = scintilla;
-        this.bytePosition = bytePosition;
     }
 }

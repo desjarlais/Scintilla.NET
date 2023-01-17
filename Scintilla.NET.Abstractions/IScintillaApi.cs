@@ -31,6 +31,9 @@ using Scintilla.NET.Abstractions.Enumerations;
 
 namespace Scintilla.NET.Abstractions;
 
+/// <summary>
+/// An interface for interacting with the Scintilla API
+/// </summary>
 public interface IScintillaApi
 {
     /// <summary>
@@ -118,7 +121,7 @@ public interface IScintillaApi
 /// </summary>
 /// <typeparam name="TEventArgs">The type of the event arguments.</typeparam>
 public interface IScintillaNotificationEvent<TEventArgs>
-    where TEventArgs : EventArgs
+    where TEventArgs : System.EventArgs
 {
     /// <summary>
     /// The Scintilla native notification.
@@ -171,7 +174,7 @@ public interface IScintillaApi<
     where TLines : LineCollectionBase<TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs, TMarker, TStyle, TIndicator, TLine, TMargin, TSelection, TBitmap, TColor>, IEnumerable
     where TMargins : MarginCollectionBase<TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs, TMarker, TStyle, TIndicator, TLine, TMargin, TSelection, TBitmap, TColor>, IEnumerable
     where TSelections : SelectionCollectionBase<TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs, TMarker, TStyle, TIndicator, TLine, TMargin, TSelection, TBitmap, TColor>, IEnumerable
-    where TEventArgs : EventArgs
+    where TEventArgs : System.EventArgs
     where TMarker: MarkerBase<TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs, TMarker, TStyle, TIndicator, TLine, TMargin, TSelection, TBitmap, TColor>
     where TStyle : StyleBase<TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs, TMarker, TStyle, TIndicator, TLine, TMargin, TSelection, TBitmap, TColor>
     where TIndicator : IndicatorBase<TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs, TMarker, TStyle, TIndicator, TLine, TMargin, TSelection, TBitmap, TColor>
