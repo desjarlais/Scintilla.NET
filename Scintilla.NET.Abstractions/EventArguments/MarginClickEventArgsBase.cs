@@ -1,19 +1,20 @@
 ﻿using System.Collections;
-using static Scintilla.NET.Abstractions.ScintillaConstants;
+using Scintilla.NET.Abstractions.Collections;
 
-namespace Scintilla.NET.Abstractions.Collections;
+namespace Scintilla.NET.Abstractions.EventArguments;
 
 /// <summary>
-/// An immutable collection of markers in a <see cref="Scintilla" /> control.
+/// Provides data for the <see cref="Scintilla.MarginClick" /> event.
 /// </summary>
-public abstract class MarkerCollectionBase<TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs, TMarker, TStyle, TIndicator, TLine, TMargin, TSelection, TBitmap, TColor> : IEnumerable<TMarker>
+public abstract class MarginClickEventArgsBase<TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs, TMarker, TStyle, TIndicator, TLine, TMargin, TSelection, TBitmap, TColor, TKeys> 
+    : ScintillaEventArgs<TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs, TMarker, TStyle, TIndicator, TLine, TMargin, TSelection, TBitmap, TColor>
     where TMarkers : MarkerCollectionBase<TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs, TMarker, TStyle, TIndicator, TLine, TMargin, TSelection, TBitmap, TColor>, IEnumerable
     where TStyles : StyleCollectionBase<TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs, TMarker, TStyle, TIndicator, TLine, TMargin, TSelection, TBitmap, TColor>, IEnumerable
     where TIndicators :IndicatorCollectionBase<TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs, TMarker, TStyle, TIndicator, TLine, TMargin, TSelection, TBitmap, TColor>, IEnumerable
     where TLines : LineCollectionBase<TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs, TMarker, TStyle, TIndicator, TLine, TMargin, TSelection, TBitmap, TColor>, IEnumerable
     where TMargins : MarginCollectionBase<TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs, TMarker, TStyle, TIndicator, TLine, TMargin, TSelection, TBitmap, TColor>, IEnumerable
     where TSelections : SelectionCollectionBase<TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs, TMarker, TStyle, TIndicator, TLine, TMargin, TSelection, TBitmap, TColor>, IEnumerable
-    where TEventArgs : System.EventArgs
+    where TEventArgs : EventArgs
     where TMarker: MarkerBase<TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs, TMarker, TStyle, TIndicator, TLine, TMargin, TSelection, TBitmap, TColor>
     where TStyle : StyleBase<TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs, TMarker, TStyle, TIndicator, TLine, TMargin, TSelection, TBitmap, TColor>
     where TIndicator : IndicatorBase<TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs, TMarker, TStyle, TIndicator, TLine, TMargin, TSelection, TBitmap, TColor>
@@ -22,48 +23,51 @@ public abstract class MarkerCollectionBase<TMarkers, TStyles, TIndicators, TLine
     where TSelection : SelectionBase<TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs, TMarker, TStyle, TIndicator, TLine, TMargin, TSelection, TBitmap, TColor>
     where TBitmap: class
     where TColor: struct
+    where TKeys: Enum
 {
-    /// <summary>
-    /// A reference to the Scintilla control interface.
-    /// </summary>
-    protected readonly IScintillaApi<TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs, TMarker, TStyle, TIndicator, TLine, TMargin, TSelection, TBitmap, TColor> scintilla;
+    private readonly int bytePosition;
+    private int? position;
 
     /// <summary>
-    /// Provides an enumerator that iterates through the collection.
+    /// Gets the margin clicked.
     /// </summary>
-    /// <returns>An object for enumerating all <see cref="MarkerBase{TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs, TMarker, TStyle, TIndicator, TLine, TMargin, TSelection, TBitmap, TColor}" />.</returns>
-    public IEnumerator<TMarker> GetEnumerator()
+    /// <returns>The zero-based index of the clicked margin.</returns>
+    public virtual int Margin { get; }
+
+    /// <summary>
+    /// Gets the modifier keys (SHIFT, CTRL, ALT) held down when the margin was clicked.
+    /// </summary>
+    /// <returns>A bitwise combination of the Keys enumeration indicating the modifier keys.</returns>
+    public virtual TKeys Modifiers { get; }
+
+    /// <summary>
+    /// Gets the zero-based document position where the line ajacent to the clicked margin starts.
+    /// </summary>
+    /// <returns>The zero-based character position within the document of the start of the line adjacent to the margin clicked.</returns>
+    public virtual int Position
     {
-        int count = Count;
-        for (int i = 0; i < count; i++)
-            yield return this[i];
+        get
+        {
+            position ??= scintilla.Lines.ByteToCharPosition(bytePosition);
+
+            return (int)position;
+        }
     }
 
-    IEnumerator IEnumerable.GetEnumerator()
+    /// <summary>
+    /// Initializes a new instance of the <see cref="MarginClickEventArgsBase{TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs, TMarker, TStyle, TIndicator, TLine, TMargin, TSelection, TBitmap, TColor, TKeys}" /> class.
+    /// </summary>
+    /// <param name="scintilla">The <see cref="Scintilla" /> control that generated this event.</param>
+    /// <param name="modifiers">The modifier keys that where held down at the time of the margin click.</param>
+    /// <param name="bytePosition">The zero-based byte position within the document where the line adjacent to the clicked margin starts.</param>
+    /// <param name="margin">The zero-based index of the clicked margin.</param>
+    protected MarginClickEventArgsBase(
+        IScintillaApi<TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs, TMarker, TStyle,
+            TIndicator, TLine, TMargin, TSelection, TBitmap, TColor> scintilla, TKeys modifiers, int bytePosition,
+        int margin) : base(scintilla)
     {
-        return this.GetEnumerator();
-    }
-
-    /// <summary>
-    /// Gets the number of markers in the <see cref="MarkerCollectionBase{TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs, TMarker, TStyle, TIndicator, TLine, TMargin, TSelection, TBitmap, TColor}" />.
-    /// </summary>
-    /// <returns>This property always returns 32.</returns>
-    public int Count => (MARKER_MAX + 1);
-
-    /// <summary>
-    /// Gets a <typeparamref name="TMarker"/> object at the specified index.
-    /// </summary>
-    /// <param name="index">The marker index.</param>
-    /// <returns>An object representing the marker at the specified <paramref name="index" />.</returns>
-    /// <remarks>Markers 25 through 31 are used by Scintilla for folding.</remarks>
-    protected abstract TMarker this[int index] { get; }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="MarkerCollectionBase{TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs, TMarker, TStyle, TIndicator, TLine, TMargin, TSelection, TBitmap, TColor}" /> class.
-    /// </summary>
-    /// <param name="scintilla">The <see cref="Scintilla" /> control that created this collection.</param>
-    protected MarkerCollectionBase(IScintillaApi<TMarkers, TStyles, TIndicators, TLines, TMargins, TSelections, TEventArgs, TMarker, TStyle, TIndicator, TLine, TMargin, TSelection, TBitmap, TColor> scintilla)
-    {
-        this.scintilla = scintilla;
+        this.bytePosition = bytePosition;
+        Modifiers = modifiers;
+        Margin = margin;
     }
 }

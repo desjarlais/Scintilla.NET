@@ -1,42 +1,23 @@
-﻿using System;
-using System.Drawing;
+﻿using System.Drawing;
 using Scintilla.NET.Abstractions;
+using Scintilla.NET.Abstractions.EventArguments;
 
 namespace ScintillaNET;
 
 /// <summary>
 /// Provides data for the <see cref="Scintilla.StyleNeeded" /> event.
 /// </summary>
-public class StyleNeededEventArgs : EventArgs
+public class StyleNeededEventArgs : StyleNeededEventArgsBase<MarkerCollection, StyleCollection, IndicatorCollection, LineCollection, MarginCollection, SelectionCollection, SCNotificationEventArgs, Marker, Style, Indicator, Line, Margin, Selection, Bitmap, Color>
 {
-    private readonly IScintillaApi<MarkerCollection, StyleCollection, IndicatorCollection, LineCollection, MarginCollection, SelectionCollection, SCNotificationEventArgs, Marker, Style, Indicator, Line, Margin, Selection, Bitmap, Color> scintilla;
-    private readonly int bytePosition;
-    private int? position;
-
-    /// <summary>
-    /// Gets the document position where styling should end. The <see cref="Scintilla.GetEndStyled" /> method
-    /// indicates the last position styled correctly and the starting place for where styling should begin.
-    /// </summary>
-    /// <returns>The zero-based position within the document to perform styling up to.</returns>
-    public int Position
-    {
-        get
-        {
-            if (position == null)
-                position = scintilla.Lines.ByteToCharPosition(bytePosition);
-
-            return (int)position;
-        }
-    }
-
     /// <summary>
     /// Initializes a new instance of the <see cref="StyleNeededEventArgs" /> class.
     /// </summary>
     /// <param name="scintilla">The <see cref="Scintilla" /> control that generated this event.</param>
     /// <param name="bytePosition">The zero-based byte position within the document to stop styling.</param>
-    public StyleNeededEventArgs(IScintillaApi<MarkerCollection, StyleCollection, IndicatorCollection, LineCollection, MarginCollection, SelectionCollection, SCNotificationEventArgs, Marker, Style, Indicator, Line, Margin, Selection, Bitmap, Color> scintilla, int bytePosition)
+    public StyleNeededEventArgs(
+        IScintillaApi<MarkerCollection, StyleCollection, IndicatorCollection, LineCollection, MarginCollection,
+            SelectionCollection, SCNotificationEventArgs, Marker, Style, Indicator, Line, Margin, Selection, Bitmap,
+            Color> scintilla, int bytePosition) : base(scintilla, bytePosition)
     {
-        this.scintilla = scintilla;
-        this.bytePosition = bytePosition;
     }
 }

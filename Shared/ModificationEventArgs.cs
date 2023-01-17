@@ -2,40 +2,21 @@
 using System.Drawing;
 using Scintilla.NET.Abstractions;
 using Scintilla.NET.Abstractions.Enumerations;
+using Scintilla.NET.Abstractions.EventArguments;
 
 namespace ScintillaNET;
 
 /// <summary>
 /// Provides data for the <see cref="Scintilla.Insert" /> and <see cref="Scintilla.Delete" /> events.
 /// </summary>
-public class ModificationEventArgs : BeforeModificationEventArgs
+public class ModificationEventArgs : BeforeModificationEventArgsBase<MarkerCollection, StyleCollection, IndicatorCollection, LineCollection, MarginCollection, SelectionCollection, SCNotificationEventArgs, Marker, Style, Indicator, Line, Margin, Selection, Bitmap, Color>
 {
-    private readonly IScintillaApi<MarkerCollection, StyleCollection, IndicatorCollection, LineCollection, MarginCollection, SelectionCollection, SCNotificationEventArgs, Marker, Style, Indicator, Line, Margin, Selection, Bitmap, Color> scintilla;
-    private readonly int bytePosition;
-    private readonly int byteLength;
-    private readonly IntPtr textPtr;
-
     /// <summary>
     /// Gets the number of lines added or removed.
     /// </summary>
     /// <returns>The number of lines added to the document when text is inserted, or the number of lines removed from the document when text is deleted.</returns>
     /// <remarks>When lines are deleted the return value will be negative.</remarks>
-    public int LinesAdded { get; private set; }
-
-    /// <summary>
-    /// Gets the text that was inserted or deleted.
-    /// </summary>
-    /// <returns>The text inserted or deleted from the document.</returns>
-    public override unsafe string Text
-    {
-        get
-        {
-            if (CachedText == null)
-                CachedText = Helpers.GetString(textPtr, byteLength, scintilla.Encoding);
-
-            return CachedText;
-        }
-    }
+    public int LinesAdded { get; }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ModificationEventArgs" /> class.
@@ -48,11 +29,6 @@ public class ModificationEventArgs : BeforeModificationEventArgs
     /// <param name="linesAdded">The number of lines added or removed (delta).</param>
     public ModificationEventArgs(IScintillaApi<MarkerCollection, StyleCollection, IndicatorCollection, LineCollection, MarginCollection, SelectionCollection, SCNotificationEventArgs, Marker, Style, Indicator, Line, Margin, Selection, Bitmap, Color> scintilla, ModificationSource source, int bytePosition, int byteLength, IntPtr text, int linesAdded) : base(scintilla, source, bytePosition, byteLength, text)
     {
-        this.scintilla = scintilla;
-        this.bytePosition = bytePosition;
-        this.byteLength = byteLength;
-        this.textPtr = text;
-
         LinesAdded = linesAdded;
     }
 }

@@ -1,46 +1,15 @@
-﻿using System;
-using System.Drawing;
+﻿using System.Drawing;
 using System.Windows.Forms;
 using Scintilla.NET.Abstractions;
+using Scintilla.NET.Abstractions.EventArguments;
 
 namespace ScintillaNET;
 
 /// <summary>
 /// Provides data for the <see cref="Scintilla.MarginClick" /> event.
 /// </summary>
-public class MarginClickEventArgs : EventArgs
+public class MarginClickEventArgs : MarginClickEventArgsBase<MarkerCollection, StyleCollection, IndicatorCollection, LineCollection, MarginCollection, SelectionCollection, SCNotificationEventArgs, Marker, Style, Indicator, Line, Margin, Selection, Bitmap, Color, Keys>
 {
-    private readonly IScintillaApi<MarkerCollection, StyleCollection, IndicatorCollection, LineCollection, MarginCollection, SelectionCollection, SCNotificationEventArgs, Marker, Style, Indicator, Line, Margin, Selection, Bitmap, Color> scintilla;
-    private readonly int bytePosition;
-    private int? position;
-
-    /// <summary>
-    /// Gets the margin clicked.
-    /// </summary>
-    /// <returns>The zero-based index of the clicked margin.</returns>
-    public int Margin { get; private set; }
-
-    /// <summary>
-    /// Gets the modifier keys (SHIFT, CTRL, ALT) held down when the margin was clicked.
-    /// </summary>
-    /// <returns>A bitwise combination of the Keys enumeration indicating the modifier keys.</returns>
-    public Keys Modifiers { get; private set; }
-
-    /// <summary>
-    /// Gets the zero-based document position where the line ajacent to the clicked margin starts.
-    /// </summary>
-    /// <returns>The zero-based character position within the document of the start of the line adjacent to the margin clicked.</returns>
-    public int Position
-    {
-        get
-        {
-            if (position == null)
-                position = scintilla.Lines.ByteToCharPosition(bytePosition);
-
-            return (int)position;
-        }
-    }
-
     /// <summary>
     /// Initializes a new instance of the <see cref="MarginClickEventArgs" /> class.
     /// </summary>
@@ -48,11 +17,7 @@ public class MarginClickEventArgs : EventArgs
     /// <param name="modifiers">The modifier keys that where held down at the time of the margin click.</param>
     /// <param name="bytePosition">The zero-based byte position within the document where the line adjacent to the clicked margin starts.</param>
     /// <param name="margin">The zero-based index of the clicked margin.</param>
-    public MarginClickEventArgs(IScintillaApi<MarkerCollection, StyleCollection, IndicatorCollection, LineCollection, MarginCollection, SelectionCollection, SCNotificationEventArgs, Marker, Style, Indicator, Line, Margin, Selection, Bitmap, Color> scintilla, Keys modifiers, int bytePosition, int margin)
+    public MarginClickEventArgs(IScintillaApi<MarkerCollection, StyleCollection, IndicatorCollection, LineCollection, MarginCollection, SelectionCollection, SCNotificationEventArgs, Marker, Style, Indicator, Line, Margin, Selection, Bitmap, Color> scintilla, Keys modifiers, int bytePosition, int margin) : base(scintilla, modifiers, bytePosition, margin)
     {
-        this.scintilla = scintilla;
-        this.bytePosition = bytePosition;
-        Modifiers = modifiers;
-        Margin = margin;
     }
 }

@@ -1,7 +1,7 @@
-﻿using System;
-using System.Drawing;
+﻿using System.Drawing;
 using System.Windows.Forms;
 using Scintilla.NET.Abstractions;
+using Scintilla.NET.Abstractions.EventArguments;
 
 namespace ScintillaNET;
 
@@ -9,44 +9,15 @@ namespace ScintillaNET;
 /// Provides data for the <see cref="Scintilla.HotspotClick" />, <see cref="Scintilla.HotspotDoubleClick" />,
 /// and <see cref="Scintilla.HotspotReleaseClick" /> events.
 /// </summary>
-public class HotspotClickEventArgs : EventArgs
+public class HotspotClickEventArgs : HotspotClickEventArgsBase<MarkerCollection, StyleCollection, IndicatorCollection, LineCollection, MarginCollection, SelectionCollection, SCNotificationEventArgs, Marker, Style, Indicator, Line, Margin, Selection, Bitmap, Color, Keys>
 {
-    private readonly IScintillaApi<MarkerCollection, StyleCollection, IndicatorCollection, LineCollection, MarginCollection, SelectionCollection, SCNotificationEventArgs, Marker, Style, Indicator, Line, Margin, Selection, Bitmap, Color> scintilla;
-    private readonly int bytePosition;
-    private int? position;
-
-    /// <summary>
-    /// Gets the modifier keys (SHIFT, CTRL, ALT) held down when clicked.
-    /// </summary>
-    /// <returns>A bitwise combination of the Keys enumeration indicating the modifier keys.</returns>
-    /// <remarks>Only the state of the CTRL key is reported in the <see cref="Scintilla.HotspotReleaseClick" /> event.</remarks>
-    public Keys Modifiers { get; private set; }
-
-    /// <summary>
-    /// Gets the zero-based document position of the text clicked.
-    /// </summary>
-    /// <returns>The zero-based character position within the document of the clicked text.</returns>
-    public int Position
-    {
-        get
-        {
-            if (position == null)
-                position = scintilla.Lines.ByteToCharPosition(bytePosition);
-
-            return (int)position;
-        }
-    }
-
     /// <summary>
     /// Initializes a new instance of the <see cref="HotspotClickEventArgs" /> class.
     /// </summary>
     /// <param name="scintilla">The <see cref="Scintilla" /> control that generated this event.</param>
     /// <param name="modifiers">The modifier keys that where held down at the time of the click.</param>
     /// <param name="bytePosition">The zero-based byte position of the clicked text.</param>
-    public HotspotClickEventArgs(IScintillaApi<MarkerCollection, StyleCollection, IndicatorCollection, LineCollection, MarginCollection, SelectionCollection, SCNotificationEventArgs, Marker, Style, Indicator, Line, Margin, Selection, Bitmap, Color> scintilla, Keys modifiers, int bytePosition)
+    public HotspotClickEventArgs(IScintillaApi<MarkerCollection, StyleCollection, IndicatorCollection, LineCollection, MarginCollection, SelectionCollection, SCNotificationEventArgs, Marker, Style, Indicator, Line, Margin, Selection, Bitmap, Color> scintilla, Keys modifiers, int bytePosition) : base(scintilla, modifiers, bytePosition)
     {
-        this.scintilla = scintilla;
-        this.bytePosition = bytePosition;
-        Modifiers = modifiers;
     }
 }
