@@ -78,18 +78,6 @@ public class Lexilla
         
     #endregion
 
-    #region PrivateMethods
-
-    private static void VerifyInitialized()
-    {
-        if (!initialized)
-        {
-            _ = Scintilla.GetModulePath();
-        }
-    }
-
-    #endregion
-
     #region DllCalls
     private static NativeMethods.GetLexerCount getLexerCount;
 
@@ -108,7 +96,6 @@ public class Lexilla
     /// <returns>Amount of lexers defined in the Lexilla library.</returns>
     public static int GetLexerCount()
     {
-        VerifyInitialized();
         return (int) getLexerCount();
     }
 
@@ -119,7 +106,6 @@ public class Lexilla
     /// <returns>A <see cref="IntPtr"/> containing the lexer interface pointer.</returns>
     public static IntPtr CreateLexer(string lexerName)
     {
-        VerifyInitialized();
         return createLexer(lexerName);
     }
 
@@ -130,7 +116,6 @@ public class Lexilla
     /// <returns>The name of the lexer if one was found with the specified index; <c>null</c> otherwise.</returns>
     public static string GetLexerName(int index)
     {
-        VerifyInitialized();
         var pointer = Marshal.AllocHGlobal(1024);
         try
         {
@@ -150,7 +135,6 @@ public class Lexilla
     /// <returns>The name of the lexer if one was found with the specified identifier; <c>null</c> otherwise.</returns>
     public static string LexerNameFromId(int identifier)
     {
-        VerifyInitialized();
         return lexerNameFromId(new IntPtr(identifier));
     }
 
