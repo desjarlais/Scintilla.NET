@@ -10,7 +10,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{BE874649-2B00-415E-8C80-82A42D949696}"
 	ProjectSection(SolutionItems) = preProject
 		.github\workflows\dotnet-desktop.yml = .github\workflows\dotnet-desktop.yml
-		README.md = README.md
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Scintilla.NET.Abstractions", "Scintilla.NET.Abstractions\Scintilla.NET.Abstractions.csproj", "{25A69515-7D02-4428-A68C-9B366F0C5E7D}"
