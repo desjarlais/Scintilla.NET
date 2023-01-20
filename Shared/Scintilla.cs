@@ -28,29 +28,6 @@ namespace ScintillaNET;
 [Docking(DockingBehavior.Ask)]
 public class Scintilla : Control, IScintillaApi<MarkerCollection, StyleCollection, IndicatorCollection, LineCollection, MarginCollection, SelectionCollection, SCNotificationEventArgs, Marker, Style, Indicator, Line, Margin, Selection, Bitmap, Color>
 {
-    static Scintilla()
-    {
-        string platform = (IntPtr.Size == 4 ? "x86" : "x64");
-        var basePath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), platform);
-        modulePathScintilla = Path.Combine(basePath, "Scintilla.dll");
-#if SCINTILLA5
-        modulePathLexilla = Path.Combine(basePath, "Lexilla.dll");
-
-        try
-        {
-            var info = FileVersionInfo.GetVersionInfo(modulePathScintilla);
-            scintillaVersion = info.ProductVersion ?? info.FileVersion;
-            info = FileVersionInfo.GetVersionInfo(modulePathLexilla);
-            lexillaVersion = info.ProductVersion ?? info.FileVersion;
-        }
-        catch
-        {
-            scintillaVersion = "ERROR";
-            lexillaVersion = "ERROR";
-        }
-#endif
-    }
-
     #region Fields
 
     // WM_DESTROY workaround
@@ -58,10 +35,10 @@ public class Scintilla : Control, IScintillaApi<MarkerCollection, StyleCollectio
     private bool reparent;
 
     // Static module data
-    private static readonly string modulePathScintilla;
+    private static string modulePathScintilla;
 
 #if SCINTILLA5
-    private static readonly string modulePathLexilla;
+    private static string modulePathLexilla;
 #endif
 
     private static IntPtr moduleHandle;
@@ -1036,11 +1013,158 @@ public class Scintilla : Control, IScintillaApi<MarkerCollection, StyleCollectio
         return Lines.ByteToCharPosition(pos);
     }
 
-
+    internal static string GetModulePath()
+    {
+        // UI thread...
+        if (modulePathScintilla == null)
+        {
+            // Extract the embedded SciLexer DLL
+            // http://stackoverflow.com/a/768429/2073621
+            var version = typeof(Scintilla).Assembly.GetName().Version.ToString(3);
 
 #if SCINTILLA5
-    private static readonly string scintillaVersion;
-    private static readonly string lexillaVersion;
+            var scintillaName = "Scintilla.NET";
+            var scintillaBaseName = "Scintilla.NET";
+
+            modulePathScintilla =
+                Path.Combine(
+                    Path.Combine(Path.Combine(Path.Combine(Path.GetTempPath(), scintillaName), version),
+                        (IntPtr.Size == 4 ? "x86" : "x64")), "Scintilla.dll");
+            modulePathLexilla =
+                Path.Combine(
+                    Path.Combine(Path.Combine(Path.Combine(Path.GetTempPath(), scintillaName), version),
+                        (IntPtr.Size == 4 ? "x86" : "x64")), "Lexilla.dll");
+#elif SCINTILLA4
+                var scintillaName = "ScintillaNET";
+
+                modulePathScintilla =
+                    Path.Combine(Path.Combine(Path.Combine(Path.Combine(Path.GetTempPath(), scintillaName), version), (IntPtr.Size == 4 ? "x86" : "x64")), "Scintilla.dll");
+#endif
+
+
+
+            if (!File.Exists(modulePathScintilla))
+            {
+                // http://stackoverflow.com/a/229567/2073621
+                // Synchronize access to the file across processes
+
+                var assembly = Assembly.GetAssembly(typeof(Scintilla));
+
+                var guid = assembly?.FullName;
+
+#if !NETCOREAPP
+                        guid =
+ ((GuidAttribute)assembly.GetCustomAttributes(typeof(GuidAttribute), false).GetValue(0)).Value.ToString();
+#endif
+
+                var name = string.Format(CultureInfo.InvariantCulture, "Global\\{{{0}}}", guid);
+                using (var mutex = new Mutex(false, name))
+                {
+// Blocked because the library version conflicted in the designer using .NET 7 and DevExpress WinForms,
+// See: https://github.com/VPKSoft/ScintillaNET/issues/28
+// See: https://supportcenter.devexpress.com/ticket/details/t1133409/scintilla-net-5-3-1-3-don-t-work-when-devexpress-libraries-added-to-project
+#if USE_MUTEX_ACCESS
+                        var access = new MutexAccessRule(new SecurityIdentifier(WellKnownSidType.WorldSid, null),
+                            MutexRights.FullControl, AccessControlType.Allow);
+                        var security = new MutexSecurity();
+                        security.AddAccessRule(access);
+                        mutex.SetAccessControl(security);
+#endif
+
+                    var ownsHandle = false;
+                    try
+                    {
+                        try
+                        {
+                            ownsHandle = mutex.WaitOne(5000, false); // 5 sec
+                            if (ownsHandle == false)
+                            {
+                                var timeoutMessage = string.Format(CultureInfo.InvariantCulture,
+                                    "Timeout waiting for exclusive access to '{0}'.", modulePathScintilla);
+                                throw new TimeoutException(timeoutMessage);
+                            }
+                        }
+                        catch (AbandonedMutexException)
+                        {
+                            // Previous process terminated abnormally
+                            ownsHandle = true;
+                        }
+
+                        // Double-checked (process) lock
+                        if (!File.Exists(modulePathScintilla))
+                        {
+                            // Write the embedded file to disk
+                            var directory = Path.GetDirectoryName(modulePathScintilla);
+                            if (directory != null && !Directory.Exists(directory))
+                                Directory.CreateDirectory(directory);
+
+#if SCINTILLA5
+                            var resource = string.Format(CultureInfo.InvariantCulture,
+                                $"{scintillaBaseName}.{(IntPtr.Size == 4 ? "x86" : "x64")}.Scintilla.zip");
+
+                            using var resourceStream =
+                                typeof(Scintilla).Assembly.GetManifestResourceStream(resource);
+
+                            using var zipArchive = new ZipArchive(resourceStream, ZipArchiveMode.Read);
+
+                            foreach (var entry in zipArchive.Entries)
+                            {
+                                if (entry.FullName == "Scintilla.dll")
+                                {
+                                    entry.ExtractToFile(modulePathScintilla);
+                                }
+
+                                if (entry.FullName == "Lexilla.dll")
+                                {
+                                    entry.ExtractToFile(modulePathLexilla);
+                                }
+                            }
+
+#elif SCINTILLA4
+                                if (!Directory.Exists(directory))
+                                    Directory.CreateDirectory(directory);
+
+                                var resource =
+                                    string.Format(CultureInfo.InvariantCulture, $"{scintillaName}.{(IntPtr.Size == 4 ? "x86" : "x64")}.SciLexer.dll.gz");
+                                using (var resourceStream =
+                                    typeof(Scintilla).Assembly.GetManifestResourceStream(resource))
+                                using (var gzipStream = new GZipStream(resourceStream, CompressionMode.Decompress))
+                                using (var fileStream = File.Create(modulePathScintilla))
+                                    gzipStream.CopyTo(fileStream);
+#endif
+                        }
+                    }
+                    finally
+                    {
+                        if (ownsHandle)
+                            mutex.ReleaseMutex();
+                    }
+                }
+            }
+
+#if SCINTILLA5
+            try
+            {
+                var info = FileVersionInfo.GetVersionInfo(modulePathScintilla);
+                scintillaVersion = info.ProductVersion ?? info.FileVersion;
+                info = FileVersionInfo.GetVersionInfo(modulePathLexilla);
+                lexillaVersion = info.ProductVersion ?? info.FileVersion;
+            }
+            catch
+            {
+                scintillaVersion = "ERROR";
+                lexillaVersion = "ERROR";
+            }
+#endif
+        }
+
+        return modulePathScintilla;
+
+    }
+
+#if SCINTILLA5
+    private static string scintillaVersion;
+    private static string lexillaVersion;
 
     /// <summary>
     /// Gets the product version of the Scintilla.dll user by the control.
@@ -1254,7 +1378,8 @@ public class Scintilla : Control, IScintillaApi<MarkerCollection, StyleCollectio
     /// <returns>An object representing the version information of the native Scintilla library.</returns>
     public FileVersionInfo GetVersionInfo()
     {
-        var version = FileVersionInfo.GetVersionInfo(modulePathScintilla);
+        var path = GetModulePath();
+        var version = FileVersionInfo.GetVersionInfo(path);
 
         return version;
     }
@@ -2438,6 +2563,22 @@ public class Scintilla : Control, IScintillaApi<MarkerCollection, StyleCollectio
         if (Scintilla.reparentAll == null)
         {
             Scintilla.reparentAll = reparent;
+        }
+    }
+
+    /// <summary>
+    /// Sets the application-wide default module path of the native Scintilla library.
+    /// </summary>
+    /// <param name="modulePath">The native Scintilla module path.</param>
+    /// <remarks>
+    /// This method must be called prior to the first <see cref="Scintilla" /> control being created.
+    /// The <paramref name="modulePath" /> can be relative or absolute.
+    /// </remarks>
+    public static void SetModulePath(string modulePath)
+    {
+        if (Scintilla.modulePathScintilla == null)
+        {
+            Scintilla.modulePathScintilla = modulePath;
         }
     }
 
@@ -4021,8 +4162,10 @@ public class Scintilla : Control, IScintillaApi<MarkerCollection, StyleCollectio
         {
             if (moduleHandle == IntPtr.Zero)
             {
+                var path = GetModulePath();
+
                 // Load the native Scintilla library
-                moduleHandle = NativeMethods.LoadLibrary(modulePathScintilla);
+                moduleHandle = NativeMethods.LoadLibrary(path);
 
 #if SCINTILLA5
                 lexillaHandle = NativeMethods.LoadLibrary(modulePathLexilla);
@@ -4030,7 +4173,7 @@ public class Scintilla : Control, IScintillaApi<MarkerCollection, StyleCollectio
 
                 if (moduleHandle == IntPtr.Zero)
                 {
-                    var message = string.Format(CultureInfo.InvariantCulture, "Could not load the Scintilla module at the path '{0}'.", modulePathScintilla);
+                    var message = string.Format(CultureInfo.InvariantCulture, "Could not load the Scintilla module at the path '{0}'.", path);
                     throw new Win32Exception(message, new Win32Exception()); // Calls GetLastError
                 }
 
