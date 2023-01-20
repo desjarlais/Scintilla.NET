@@ -8,7 +8,7 @@
 		<NeutralLanguage>en-US</NeutralLanguage>
 		<Description>Source Editing Component based on Scintilla 5 series.</Description>
 		<Copyright>Copyright (c) 2018, Jacob Slusser. All rights reserved. VPKSoft, cyber960 2022.</Copyright>
-		<Version>5.3.2.3</Version>
+		<Version>5.3.2.4</Version>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<DocumentationFile>bin\$(Configuration)\ScintillaNET.xml</DocumentationFile>
 		<UseWindowsForms>true</UseWindowsForms>
@@ -60,8 +60,6 @@
 			<Pack>True</Pack>
 			<PackagePath></PackagePath>
 		</None>
-		<EmbeddedResource Include="..\Shared\x64\Scintilla.zip" Link="x64\Scintilla.zip" />
-		<EmbeddedResource Include="..\Shared\x86\Scintilla.zip" Link="x86\Scintilla.zip" />
 	</ItemGroup>
 	<ItemGroup>
 		<Compile Include="..\Shared\Annotation.cs" Link="Annotation.cs" />
@@ -160,7 +158,11 @@
 		</Compile>
 	</ItemGroup>
 	<ItemGroup>
-		<Folder Include="x64\" />
-		<Folder Include="x86\" />
+		<!-- Native dlls and nuget support -->
+		<None Include="..\native\**\*.*">
+			<Pack>True</Pack>
+			<PackagePath>build</PackagePath>
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
 	</ItemGroup>
 </Project>
