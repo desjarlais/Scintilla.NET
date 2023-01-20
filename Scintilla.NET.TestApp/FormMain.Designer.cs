@@ -1,4 +1,4 @@
-﻿using Scintilla.NET.Abstractions.Enumerations;
+﻿using ScintillaNET;
 
 namespace Scintilla.NET.TestApp
 {
@@ -47,7 +47,6 @@ namespace Scintilla.NET.TestApp
             // scintilla
             // 
             this.scintilla.AutoCMaxHeight = 9;
-            this.scintilla.BiDirectionality = BiDirectionalDisplayType.Disabled;
             this.scintilla.CaretLineBackColor = System.Drawing.Color.White;
             this.scintilla.CaretLineVisible = true;
             this.scintilla.LexerName = null;
