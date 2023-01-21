@@ -121,6 +121,17 @@
 		</None>	
 	</ItemGroup>
 	<ItemGroup>
-	  <ProjectReference Include="..\Scintilla.NET.Abstractions\Scintilla.NET.Abstractions.csproj" />
+	  <ProjectReference Include="..\Scintilla.NET.Abstractions\Scintilla.NET.Abstractions.csproj">
+		  <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+		  <IncludeAssets>Scintilla.NET.Abstractions.dll</IncludeAssets>
+	  </ProjectReference>
 	</ItemGroup>
+	<PropertyGroup>
+		<TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);CopyProjectReferencesToPackage</TargetsForTfmSpecificBuildOutput>
+	</PropertyGroup>
+	<Target DependsOnTargets="BuildOnlySettings;ResolveReferences" Name="CopyProjectReferencesToPackage">
+		<ItemGroup>
+			<BuildOutputInPackage Include="@(ReferenceCopyLocalPaths-&gt;WithMetadataValue('ReferenceSourceTarget', 'ProjectReference'))" />
+		</ItemGroup>
+	</Target>
 </Project>
