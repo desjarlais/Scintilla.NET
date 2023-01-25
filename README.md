@@ -15,6 +15,7 @@ Scintilla.NET can also be used with WPF using the <a href="https://msdn.microsof
 * [ScintillaDiff](https://github.com/VPKSoft/ScintillaDiff) - A class library for comparing two text files with the Scintilla.NET control
 * [ScintillaTabbedTextControl](https://github.com/VPKSoft/ScintillaTabbedTextControl) - A tabbed control for Scintilla.NET to display multiple documents
 * [ScintillaNetPrinting](https://github.com/VPKSoft/ScintillaNetPrinting) - Add print functionallity to Scintilla.NET
+* [AutoCompleteMenu-ScintillaNET](https://github.com/Ahmad45123/AutoCompleteMenu-ScintillaNET) - Adds an autocomplete menu to ScintillaNET that's more flexible.
 
 ### Project Status
 This project is continuing from the abandoned [ScintllaNET](https://github.com/jacobslusser/ScintillaNET) by Jacob Slusser.
