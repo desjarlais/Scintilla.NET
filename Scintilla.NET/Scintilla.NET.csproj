@@ -69,6 +69,7 @@
 		<Compile Include="..\Shared\BiDirectionalDisplayType.cs" Link="BiDirectionalDisplayType.cs" />
 		<Compile Include="..\Shared\CallTipClickEventArgs.cs" Link="CallTipClickEventArgs.cs" />
 		<Compile Include="..\Shared\CallTipClickType.cs" Link="CallTipClickType.cs" />
+		<Compile Include="..\Shared\CaretPolicy.cs" Link="CaretPolicy.cs" />
 		<Compile Include="..\Shared\CaretStyle.cs" Link="CaretStyle.cs" />
 		<Compile Include="..\Shared\ChangeAnnotationEventArgs.cs" Link="ChangeAnnotationEventArgs.cs" />
 		<Compile Include="..\Shared\CharAddedEventArgs.cs" Link="CharAddedEventArgs.cs" />

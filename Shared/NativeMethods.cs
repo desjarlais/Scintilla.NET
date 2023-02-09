@@ -58,6 +58,12 @@ public static class NativeMethods
     public const int SCI_CSHIFT = (SCI_CTRL | SCI_SHIFT);
     public const int SCI_ASHIFT = (SCI_ALT | SCI_SHIFT);
 
+    // Caret policy flags
+    public const int CARET_SLOP = 0x01;
+    public const int CARET_STRICT = 0x04;
+    public const int CARET_JUMPS = 0x10;
+    public const int CARET_EVEN = 0x08;
+
     // Caret styles
     public const int CARETSTYLE_INVISIBLE = 0;
     public const int CARETSTYLE_LINE = 1;

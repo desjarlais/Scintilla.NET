@@ -2655,6 +2655,26 @@ namespace ScintillaNET
             DirectMessage(NativeMethods.SCI_SETWHITESPACEFORE, useWhitespaceForeColour, new IntPtr(colour));
         }
 
+        /// <summary>
+        /// Sets the X caret policy.
+        /// </summary>
+        /// <param name="caretPolicy">a combination of <see cref="CaretPolicy"/>values.</param>
+        /// <param name="caretSlop">the caretSlop value</param>
+        public void SetXCaretPolicy(CaretPolicy caretPolicy, int caretSlop)
+        {
+            DirectMessage(NativeMethods.SCI_SETXCARETPOLICY, new IntPtr((int)caretPolicy), new IntPtr(caretSlop));
+        }
+
+        /// <summary>
+        /// Sets the Y caret policy.
+        /// </summary>
+        /// <param name="caretPolicy">a combination of <see cref="CaretPolicy"/>values.</param>
+        /// <param name="caretSlop">the caretSlop value</param>
+        public void SetYCaretPolicy(CaretPolicy caretPolicy, int caretSlop)
+        {
+            DirectMessage(NativeMethods.SCI_SETYCARETPOLICY, new IntPtr((int)caretPolicy), new IntPtr(caretSlop));
+        }
+
         private bool ShouldSerializeAdditionalCaretForeColor()
         {
             return AdditionalCaretForeColor != Color.FromArgb(127, 127, 127);
