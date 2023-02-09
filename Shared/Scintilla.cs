@@ -5836,6 +5836,41 @@ namespace ScintillaNET
         }
 
         /// <summary>
+        /// Gets or sets the characters considered 'whitespace' characters when using any word-based logic.
+        /// </summary>
+        /// <returns>A string of whitespace characters.</returns>
+        [Browsable(false)]
+        [Category("Whitespace")]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public unsafe string WhitespaceChars
+        {
+            get
+            {
+                var length = DirectMessage(NativeMethods.SCI_GETWHITESPACECHARS, IntPtr.Zero, IntPtr.Zero).ToInt32();
+                var bytes = new byte[length + 1];
+                fixed (byte* bp = bytes)
+                {
+                    DirectMessage(NativeMethods.SCI_GETWHITESPACECHARS, IntPtr.Zero, new IntPtr(bp));
+                    return Helpers.GetString(new IntPtr(bp), length, Encoding.ASCII);
+                }
+            }
+            set
+            {
+                if (value == null)
+                {
+                    DirectMessage(NativeMethods.SCI_GETWHITESPACECHARS, IntPtr.Zero, IntPtr.Zero);
+                    return;
+                }
+
+                // Scintilla stores each of the characters specified in a char array which it then
+                // uses as a lookup for word matching logic. Thus, any multibyte chars wouldn't work.
+                var bytes = Helpers.GetBytes(value, Encoding.ASCII, zeroTerminated: true);
+                fixed (byte* bp = bytes)
+                    DirectMessage(NativeMethods.SCI_GETWHITESPACECHARS, IntPtr.Zero, new IntPtr(bp));
+            }
+        }
+
+        /// <summary>
         /// Gets or sets the size of the dots used to mark whitespace.
         /// </summary>
         /// <returns>The size of the dots used to mark whitespace. The default is 1.</returns>
