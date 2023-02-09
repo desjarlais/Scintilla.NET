@@ -592,6 +592,18 @@ public class Line
     }
 
     /// <summary>
+    /// This returns the position at the end of indentation of a line.
+    /// </summary>
+    public int IndentPosition
+    {
+        get
+        {
+            var pos = scintilla.DirectMessage(NativeMethods.SCI_GETLINEINDENTPOSITION, new IntPtr(Index));
+            return scintilla.Lines.ByteToCharPosition(pos.ToInt32());
+        }
+    }
+
+    /// <summary>
     /// Gets a value indicating whether the line is visible.
     /// </summary>
     /// <returns>true if the line is visible; otherwise, false.</returns>
