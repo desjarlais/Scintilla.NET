@@ -40,7 +40,7 @@ public class BeforeModificationEventArgs : EventArgs
     /// Gets the text being inserted or deleted.
     /// </summary>
     /// <returns>
-    /// The text about to be inserted or deleted, or null when the the source of the modification is an undo/redo operation.
+    /// The text about to be inserted or deleted.
     /// </returns>
     /// <remarks>
     /// This property will return null when <see cref="Source" /> is <see cref="ModificationSource.Undo" /> or <see cref="ModificationSource.Redo" />.
@@ -49,9 +49,6 @@ public class BeforeModificationEventArgs : EventArgs
     {
         get
         {
-            if (Source != ModificationSource.User)
-                return null;
-
             if (CachedText == null)
             {
                 // For some reason the Scintilla overlords don't provide text in
