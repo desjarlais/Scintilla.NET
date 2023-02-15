@@ -2658,7 +2658,7 @@ namespace ScintillaNET
         /// <summary>
         /// Sets the X caret policy.
         /// </summary>
-        /// <param name="caretPolicy">a combination of <see cref="CaretPolicy"/>values.</param>
+        /// <param name="caretPolicy">a combination of <see cref="CaretPolicy"/> values.</param>
         /// <param name="caretSlop">the caretSlop value</param>
         public void SetXCaretPolicy(CaretPolicy caretPolicy, int caretSlop)
         {
@@ -2668,7 +2668,7 @@ namespace ScintillaNET
         /// <summary>
         /// Sets the Y caret policy.
         /// </summary>
-        /// <param name="caretPolicy">a combination of <see cref="CaretPolicy"/>values.</param>
+        /// <param name="caretPolicy">a combination of <see cref="CaretPolicy"/> values.</param>
         /// <param name="caretSlop">the caretSlop value</param>
         public void SetYCaretPolicy(CaretPolicy caretPolicy, int caretSlop)
         {
