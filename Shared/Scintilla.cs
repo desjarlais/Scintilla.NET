@@ -2082,8 +2082,12 @@ namespace ScintillaNET
                 text = string.Empty;
 
             var bytes = Helpers.GetBytes(text, Encoding, false);
+            // Scintilla asserts that lParam is not null, so make sure it isn't
+            var length = bytes.Length;
+            if (length == 0)
+                bytes = new byte[] { 0 };
             fixed (byte* bp = bytes)
-                DirectMessage(NativeMethods.SCI_REPLACETARGET, new IntPtr(bytes.Length), new IntPtr(bp));
+                DirectMessage(NativeMethods.SCI_REPLACETARGET, new IntPtr(length), new IntPtr(bp));
 
             return text.Length;
         }
@@ -2102,8 +2106,12 @@ namespace ScintillaNET
         public unsafe int ReplaceTargetRe(string text)
         {
             var bytes = Helpers.GetBytes(text ?? string.Empty, Encoding, false);
+            // Scintilla asserts that lParam is not null, so make sure it isn't
+            var length = bytes.Length;
+            if (length == 0)
+                bytes = new byte[] { 0 };
             fixed (byte* bp = bytes)
-                DirectMessage(NativeMethods.SCI_REPLACETARGETRE, new IntPtr(bytes.Length), new IntPtr(bp));
+                DirectMessage(NativeMethods.SCI_REPLACETARGETRE, new IntPtr(length), new IntPtr(bp));
 
             return Math.Abs(TargetEnd - TargetStart);
         }
@@ -2290,8 +2298,12 @@ namespace ScintillaNET
         {
             int bytePos = 0;
             var bytes = Helpers.GetBytes(text ?? string.Empty, Encoding, zeroTerminated: false);
+            // Scintilla asserts that lParam is not null, so make sure it isn't
+            var length = bytes.Length;
+            if (length == 0)
+                bytes = new byte[] { 0 };
             fixed (byte* bp = bytes)
-                bytePos = DirectMessage(NativeMethods.SCI_SEARCHINTARGET, new IntPtr(bytes.Length), new IntPtr(bp)).ToInt32();
+                bytePos = DirectMessage(NativeMethods.SCI_SEARCHINTARGET, new IntPtr(length), new IntPtr(bp)).ToInt32();
 
             if (bytePos == -1)
                 return bytePos;
