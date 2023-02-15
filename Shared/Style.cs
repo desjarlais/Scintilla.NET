@@ -149,6 +149,26 @@ public class Style
     }
 
     /// <summary>
+    /// This is an experimental and incompletely implemented style attribute. The default setting is changeable set true
+    /// but when set false it makes text read-only. The user can not move the caret within not-changeable text and
+    /// not-changeable text may not be deleted by the user. The application may delete not-changeable text by calling
+    /// <see cref="Scintilla.DeleteRange(int, int)"/>.
+    /// </summary>
+    /// <returns>false to make the text read-only, true otherwise. The default is true.</returns>
+    public bool Changeable
+    {
+        get
+        {
+            return scintilla.DirectMessage(NativeMethods.SCI_STYLEGETCHANGEABLE, new IntPtr(Index), IntPtr.Zero) != IntPtr.Zero;
+        }
+        set
+        {
+            var changeable = (value ? new IntPtr(1) : IntPtr.Zero);
+            scintilla.DirectMessage(NativeMethods.SCI_STYLESETCHANGEABLE, new IntPtr(Index), changeable);
+        }
+    }
+
+    /// <summary>
     /// Gets or sets whether the remainder of the line is filled with the <see cref="BackColor" />
     /// when this style is used on the last character of a line.
     /// </summary>
