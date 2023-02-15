@@ -1054,6 +1054,7 @@ public static class NativeMethods
     public const int SCN_FOCUSOUT = 2029;
     public const int SCN_AUTOCCOMPLETED = 2030;
     public const int SCN_MARGINRIGHTCLICK = 2031;
+    public const int SCN_AUTOCSELECTIONCHANGE = 2032;
 
     // Popup
     public const int SC_POPUP_NEVER = 0;

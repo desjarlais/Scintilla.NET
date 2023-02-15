@@ -63,6 +63,7 @@
 	</ItemGroup>
 	<ItemGroup>
 		<Compile Include="..\Shared\Annotation.cs" Link="Annotation.cs" />
+		<Compile Include="..\Shared\AutoCSelectionChangeEventArgs.cs" Link="AutoCSelectionChangeEventArgs.cs" />
 		<Compile Include="..\Shared\AutoCSelectionEventArgs.cs" Link="AutoCSelectionEventArgs.cs" />
 		<Compile Include="..\Shared\AutomaticFold.cs" Link="AutomaticFold.cs" />
 		<Compile Include="..\Shared\BeforeModificationEventArgs.cs" Link="BeforeModificationEventArgs.cs" />

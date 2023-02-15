@@ -94,6 +94,7 @@ namespace ScintillaNET
         private static readonly object marginRightClickEventKey = new object();
         private static readonly object charAddedEventKey = new object();
         private static readonly object autoCSelectionEventKey = new object();
+        private static readonly object autoCSelectionChangeEventKey = new object();
         private static readonly object autoCCompletedEventKey = new object();
         private static readonly object autoCCancelledEventKey = new object();
         private static readonly object autoCCharDeletedEventKey = new object();
@@ -1585,6 +1586,17 @@ namespace ScintillaNET
         }
 
         /// <summary>
+        /// Raises the <see cref="AutoCSelectionChange" /> event.
+        /// </summary>
+        /// <param name="e">An <see cref="AutoCSelectionChangeEventArgs" /> that contains the event data.</param>
+        protected virtual void OnAutoCSelectionChange(AutoCSelectionChangeEventArgs e)
+        {
+            var handler = Events[autoCSelectionChangeEventKey] as EventHandler<AutoCSelectionChangeEventArgs>;
+            if (handler != null)
+                handler(this, e);
+        }
+
+        /// <summary>
         /// Raises the <see cref="BeforeDelete" /> event.
         /// </summary>
         /// <param name="e">A <see cref="BeforeModificationEventArgs" /> that contains the event data.</param>
@@ -2825,7 +2837,7 @@ namespace ScintillaNET
         {
             // A standard Windows notification and a Scintilla notification header are compatible
             NativeMethods.SCNotification scn = (NativeMethods.SCNotification)Marshal.PtrToStructure(m.LParam, typeof(NativeMethods.SCNotification));
-            if (scn.nmhdr.code >= NativeMethods.SCN_STYLENEEDED && scn.nmhdr.code <= NativeMethods.SCN_AUTOCCOMPLETED)
+            if (scn.nmhdr.code >= NativeMethods.SCN_STYLENEEDED && scn.nmhdr.code <= NativeMethods.SCN_AUTOCSELECTIONCHANGE)
             {
                 var handler = Events[scNotificationEventKey] as EventHandler<SCNotificationEventArgs>;
                 if (handler != null)
@@ -2884,6 +2896,10 @@ namespace ScintillaNET
 
                     case NativeMethods.SCN_AUTOCCHARDELETED:
                         OnAutoCCharDeleted(EventArgs.Empty);
+                        break;
+
+                    case NativeMethods.SCN_AUTOCSELECTIONCHANGE:
+                        OnAutoCSelectionChange(new AutoCSelectionChangeEventArgs(this, scn.text, scn.position.ToInt32(), scn.listType));
                         break;
 
                     case NativeMethods.SCN_DWELLSTART:
@@ -6129,6 +6145,23 @@ namespace ScintillaNET
             remove
             {
                 Events.RemoveHandler(autoCSelectionEventKey, value);
+            }
+        }
+
+        /// <summary>
+        /// Occurs when a user has highlighted an item in an autocompletion list.
+        /// </summary>
+        [Category("Notifications")]
+        [Description("Occurs when a user has highlighted an item in an autocompletion list.")]
+        public event EventHandler<AutoCSelectionChangeEventArgs> AutoCSelectionChange
+        {
+            add
+            {
+                Events.AddHandler(autoCSelectionChangeEventKey, value);
+            }
+            remove
+            {
+                Events.RemoveHandler(autoCSelectionChangeEventKey, value);
             }
         }
 
