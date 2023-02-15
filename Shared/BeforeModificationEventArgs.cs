@@ -42,9 +42,6 @@ public class BeforeModificationEventArgs : EventArgs
     /// <returns>
     /// The text about to be inserted or deleted.
     /// </returns>
-    /// <remarks>
-    /// This property will return null when <see cref="Source" /> is <see cref="ModificationSource.Undo" /> or <see cref="ModificationSource.Redo" />.
-    /// </remarks>
     public unsafe virtual string Text
     {
         get
