@@ -5858,7 +5858,7 @@ namespace ScintillaNET
             {
                 if (value == null)
                 {
-                    DirectMessage(NativeMethods.SCI_GETWHITESPACECHARS, IntPtr.Zero, IntPtr.Zero);
+                    DirectMessage(NativeMethods.SCI_SETWHITESPACECHARS, IntPtr.Zero, IntPtr.Zero);
                     return;
                 }
 
@@ -5866,7 +5866,7 @@ namespace ScintillaNET
                 // uses as a lookup for word matching logic. Thus, any multibyte chars wouldn't work.
                 var bytes = Helpers.GetBytes(value, Encoding.ASCII, zeroTerminated: true);
                 fixed (byte* bp = bytes)
-                    DirectMessage(NativeMethods.SCI_GETWHITESPACECHARS, IntPtr.Zero, new IntPtr(bp));
+                    DirectMessage(NativeMethods.SCI_SETWHITESPACECHARS, IntPtr.Zero, new IntPtr(bp));
             }
         }
 
