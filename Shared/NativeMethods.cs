@@ -8,6 +8,7 @@ public static class NativeMethods
 {
     #region Constants
 
+    private const string DLL_NAME_GDI32 = "gdi32.dll";
     private const string DLL_NAME_KERNEL32 = "kernel32.dll";
     private const string DLL_NAME_OLE32 = "ole32.dll";
     private const string DLL_NAME_USER32 = "user32.dll";
@@ -1134,6 +1135,7 @@ public static class NativeMethods
     public const int WM_DESTROY = 0x0002;
     public const int WM_SETCURSOR = 0x0020;
     public const int WM_NOTIFY = 0x004E;
+    public const int WM_NCPAINT = 0x0085;
     public const int WM_LBUTTONDBLCLK = 0x0203;
     public const int WM_RBUTTONDBLCLK = 0x0206;
     public const int WM_MBUTTONDBLCLK = 0x0209;
@@ -1144,6 +1146,8 @@ public static class NativeMethods
     // Window styles
     public const int WS_BORDER = 0x00800000;
     public const int WS_EX_CLIENTEDGE = 0x00000200;
+
+    public const int RGN_AND = 1;
 
     #endregion Constants
 
@@ -2114,12 +2118,25 @@ public static class NativeMethods
     [return: MarshalAs(UnmanagedType.Bool)]
     public static extern bool CloseClipboard();
 
+    [DllImport(DLL_NAME_GDI32, ExactSpelling = true)]
+    public static extern int CombineRgn(IntPtr hrgnDest, IntPtr hrgnSrc1, IntPtr hrgnSrc2, int fnCombineMode);
+
+    [DllImport(DLL_NAME_GDI32, ExactSpelling = true)]
+    public static extern IntPtr CreateRectRgn(int x1, int y1, int x2, int y2);
+
     [DllImport(DLL_NAME_KERNEL32, CharSet = CharSet.Ansi, ExactSpelling = true, SetLastError = true)]
     public static extern IntPtr GetProcAddress(HandleRef hModule, string lpProcName);
 
     [DllImport(DLL_NAME_USER32, SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
     public static extern bool EmptyClipboard();
+
+    [DllImport(DLL_NAME_USER32, ExactSpelling = true)]
+    public static extern IntPtr GetWindowDC(IntPtr hWnd);
+
+    [DllImport(DLL_NAME_USER32, ExactSpelling = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    public static extern bool GetWindowRect(IntPtr hWnd, out RECT lpRect);
 
     [DllImport(DLL_NAME_KERNEL32, EntryPoint = "LoadLibraryW", CharSet = CharSet.Unicode, SetLastError = true)]
     public static extern IntPtr LoadLibrary(string lpFileName);
@@ -2133,6 +2150,9 @@ public static class NativeMethods
 
     [DllImport(DLL_NAME_USER32, SetLastError = true)]
     public static extern uint RegisterClipboardFormat(string lpszFormat);
+
+    [DllImport(DLL_NAME_USER32, ExactSpelling = true)]
+    public static extern int ReleaseDC(IntPtr hWnd, IntPtr hDC);
 
     [DllImport(DLL_NAME_OLE32, ExactSpelling = true)]
     public static extern int RevokeDragDrop(IntPtr hwnd);
@@ -2186,6 +2206,15 @@ public static class NativeMethods
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate IntPtr ConvertToDocumentDelegate(IntPtr self);
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct RECT
+    {
+        public int left;
+        public int top;
+        public int right;
+        public int bottom;
     }
 
     [StructLayout(LayoutKind.Sequential)]

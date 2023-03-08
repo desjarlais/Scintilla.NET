@@ -10,6 +10,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
+using System.Windows.Forms.VisualStyles;
 
 namespace ScintillaNET
 {
@@ -133,6 +134,9 @@ namespace ScintillaNET
         // For highlight calculations
         private string lastCallTip = string.Empty;
 
+        // For custom rendering of the 3D border
+        private VisualStyleRenderer renderer;
+
         /// <summary>
         /// A constant used to specify an infinite mouse dwell wait time.
         /// </summary>
@@ -146,7 +150,7 @@ namespace ScintillaNET
         #endregion Fields
 
         #region Methods
-        
+
         #if SCINTILLA5
         /// <summary>
         /// Sets the name of the lexer by its name.
@@ -2482,6 +2486,23 @@ namespace ScintillaNET
             }
         }
 
+        private bool SetRenderer(VisualStyleElement element)
+        {
+            if (!Application.RenderWithVisualStyles)
+                return false;
+
+            if (!VisualStyleRenderer.IsElementDefined(element))
+                return false;
+
+            if (renderer == null)
+                renderer = new VisualStyleRenderer(element);
+            else
+                renderer.SetParameters(element);
+
+            return true;
+        }
+
+
         /// <summary>
         /// Marks the document as unmodified.
         /// </summary>
@@ -2853,6 +2874,70 @@ namespace ScintillaNET
             base.WndProc(ref m);
         }
 
+        private void WmNcPaint(ref Message m)
+        {
+            // We only paint when border is 3D
+            if (BorderStyle != BorderStyle.Fixed3D)
+            {
+                base.WndProc(ref m);
+                return;
+            }
+
+            // Configure the renderer
+            VisualStyleElement element = VisualStyleElement.TextBox.TextEdit.Normal;
+            /*if (!Enabled)
+                element = VisualStyleElement.TextBox.TextEdit.Disabled;
+            else*/
+            if (ReadOnly)
+                element = VisualStyleElement.TextBox.TextEdit.ReadOnly;
+            else if (Focused)
+                element = VisualStyleElement.TextBox.TextEdit.Focused;
+
+            if (!SetRenderer(element))
+            {
+                base.WndProc(ref m);
+                return;
+            }
+
+            NativeMethods.RECT windowRect;
+            NativeMethods.GetWindowRect(m.HWnd, out windowRect);
+            Size borderSize = SystemInformation.Border3DSize;
+            IntPtr hDC = NativeMethods.GetWindowDC(m.HWnd);
+            try
+            {
+                using (Graphics graphics = Graphics.FromHdc(hDC))
+                {
+                    // Clip everything except the border
+                    Rectangle bounds = new Rectangle(0, 0, windowRect.right - windowRect.left, windowRect.bottom - windowRect.top);
+                    graphics.ExcludeClip(Rectangle.Inflate(bounds, -borderSize.Width, -borderSize.Height));
+
+                    // Paint the theme border
+                    if (renderer.IsBackgroundPartiallyTransparent())
+                        renderer.DrawParentBackground(graphics, bounds, this);
+                    renderer.DrawBackground(graphics, bounds);
+                }
+            }
+            finally
+            {
+                NativeMethods.ReleaseDC(m.HWnd, hDC);
+            }
+
+            // Create a new region to pass to the default proc that excludes our border
+            IntPtr clipRegion = NativeMethods.CreateRectRgn(
+                windowRect.left + borderSize.Width,
+                windowRect.top + borderSize.Height,
+                windowRect.right - borderSize.Width,
+                windowRect.bottom - borderSize.Height);
+
+            if (m.WParam != (IntPtr)1)
+                NativeMethods.CombineRgn(clipRegion, clipRegion, m.WParam, NativeMethods.RGN_AND);
+
+            // Call default proc to get the scrollbars, etc... painted
+            m.WParam = clipRegion;
+            DefWndProc(ref m);
+            m.Result = IntPtr.Zero;
+        }
+
         private void WmReflectNotify(ref Message m)
         {
             // A standard Windows notification and a Scintilla notification header are compatible
@@ -2980,6 +3065,10 @@ namespace ScintillaNET
 
                 case NativeMethods.WM_SETCURSOR:
                     DefWndProc(ref m);
+                    break;
+
+                case NativeMethods.WM_NCPAINT:
+                    WmNcPaint(ref m);
                     break;
 
                 case NativeMethods.WM_LBUTTONDBLCLK:
