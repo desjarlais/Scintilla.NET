@@ -2876,8 +2876,8 @@ namespace ScintillaNET
 
         private void WmNcPaint(ref Message m)
         {
-            // We only paint when border is 3D
-            if (BorderStyle != BorderStyle.Fixed3D)
+            // We only paint when border is 3D with visual styles
+            if (BorderStyle != BorderStyle.Fixed3DVisualStyles)
             {
                 base.WndProc(ref m);
                 return;
@@ -4202,6 +4202,7 @@ namespace ScintillaNET
                 switch (borderStyle)
                 {
                     case BorderStyle.Fixed3D:
+                    case BorderStyle.Fixed3DVisualStyles:
                         cp.ExStyle |= NativeMethods.WS_EX_CLIENTEDGE;
                         break;
                     case BorderStyle.FixedSingle:

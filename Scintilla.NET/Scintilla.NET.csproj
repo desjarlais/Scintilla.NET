@@ -68,6 +68,7 @@
 		<Compile Include="..\Shared\AutomaticFold.cs" Link="AutomaticFold.cs" />
 		<Compile Include="..\Shared\BeforeModificationEventArgs.cs" Link="BeforeModificationEventArgs.cs" />
 		<Compile Include="..\Shared\BiDirectionalDisplayType.cs" Link="BiDirectionalDisplayType.cs" />
+		<Compile Include="..\Shared\BorderStyle.cs" Link="BorderStyle.cs" />
 		<Compile Include="..\Shared\CallTipClickEventArgs.cs" Link="CallTipClickEventArgs.cs" />
 		<Compile Include="..\Shared\CallTipClickType.cs" Link="CallTipClickType.cs" />
 		<Compile Include="..\Shared\CaretPolicy.cs" Link="CaretPolicy.cs" />
