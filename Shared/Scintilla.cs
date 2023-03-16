@@ -45,7 +45,7 @@ namespace ScintillaNET
         private static string LocateNativeDllDirectory()
         {
             string platform = (IntPtr.Size == 4 ? "x86" : "x64");
-            string managedLocation = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            string managedLocation = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? AppDomain.CurrentDomain.BaseDirectory;
             var basePath = Path.Combine(managedLocation, platform);
             
             // Directory exists when application is built, but not if Scintilla is dragged on in the Winforms designer
