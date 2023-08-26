@@ -9,6 +9,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
 
@@ -38,16 +39,39 @@ namespace ScintillaNET
             {
                 scintillaVersion = "ERROR";
                 lexillaVersion = "ERROR";
+                throw new InvalidOperationException(@$"satellite scintilla DLLs not found in {basePath}");
             }
 #endif
         }
 
-        private static string LocateNativeDllDirectory()
+        private static string LoadNativeLibraryNET()
         {
-            string platform = (IntPtr.Size == 4 ? "x86" : "x64");
-            string managedLocation = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? AppDomain.CurrentDomain.BaseDirectory;
+            var platform = (IntPtr.Size == 4 ? "x86" : "x64");
+            var managedLocation = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             var basePath = Path.Combine(managedLocation, platform);
-            
+
+            // Directory exists when application is built, but not if Scintilla is dragged on in the WinForms designer
+            if (Directory.Exists(basePath))
+            {
+                return basePath;
+            }
+
+            // In the Designer, look for the native DLLs in the nuget package
+            var designerPathNet = Path.Combine(managedLocation, "..", "..", "build", platform);
+            if (Directory.Exists(basePath))
+            {
+                return designerPathNet;
+            }
+            throw new InvalidOperationException(@$"Unable to get the satellite Scintilla DLL ({basePath})");
+        }
+
+        private static string LoadNativeLibraryNETFramework()
+        {
+            var platform = (IntPtr.Size == 4 ? "x86" : "x64");
+            var assembly = Assembly.GetExecutingAssembly();
+            var managedLocation = Path.GetDirectoryName(assembly.Location) ?? AppDomain.CurrentDomain.BaseDirectory;
+
+            var basePath = Path.Combine(managedLocation, platform);
             // Directory exists when application is built, but not if Scintilla is dragged on in the Winforms designer
             if (Directory.Exists(basePath))
             {
@@ -55,7 +79,49 @@ namespace ScintillaNET
             }
 
             // In the Designer, look for the native dlls in the nuget package
-            return Path.Combine(managedLocation, "..", "..", "build", platform);
+            var pathSolution = Environment.CurrentDirectory;
+            // get the package name
+            var thisAssembly = Assembly.GetExecutingAssembly();
+            // get the product name and the version
+            var thisVersion = thisAssembly.GetName().Version.ToString();
+            var thisProduct = "";
+            var attributes = assembly.GetCustomAttributes(typeof(AssemblyProductAttribute), true);
+            AssemblyProductAttribute productAttr = null;
+            // If we didn't get anything, return null.
+            if (attributes != null)
+            {
+                productAttr = (AssemblyProductAttribute)attributes[0] as AssemblyProductAttribute;
+            }
+
+            if (productAttr != null)
+            {
+                thisProduct = productAttr.Product;
+            }
+
+            // The last zero in the version string will not be in the DLL path.
+            if (Regex.IsMatch(thisVersion, @"\d*?\.\d*?\.\d*?\.0"))
+            {
+                thisVersion = thisVersion.Substring(0, thisVersion.Length - 2);
+            }
+
+            var packageName = thisProduct + "." + thisVersion;
+
+            basePath = Path.Combine(pathSolution, "packages", packageName, "build", platform);
+            if (Directory.Exists(basePath))
+            {
+                return basePath;
+            }
+            throw new InvalidOperationException(@$"Unable to get the satellite scintilla Dll ({basePath})");
+        }
+
+        private static string LocateNativeDllDirectory()
+        {
+            
+#if NETFRAMEWORK
+return LoadNativeLibraryNETFramework();
+#else
+            return LoadNativeLibraryNET();
+#endif
         }
 
         #region Fields
