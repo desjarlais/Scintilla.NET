@@ -8,7 +8,9 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Runtime.Versioning;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
 
@@ -22,7 +24,7 @@ namespace ScintillaNET
     {
         static Scintilla()
         {
-            string basePath = LocateNativeDllDirectory();
+            var basePath = LocateNativeDllDirectory();
             modulePathScintilla = Path.Combine(basePath, "Scintilla.dll");
 #if SCINTILLA5
             modulePathLexilla = Path.Combine(basePath, "Lexilla.dll");
@@ -38,24 +40,54 @@ namespace ScintillaNET
             {
                 scintillaVersion = "ERROR";
                 lexillaVersion = "ERROR";
+                // the path to the following .NET or .NET Framework satellite assemblies exists but the assemblies are not found in the directory.
+                // (surely a problem in the package itself or in its installation of the project).
+                throw new InvalidOperationException(@$"Scintilla.NET satellite assemblies not found in {basePath}");
             }
 #endif
         }
 
         private static string LocateNativeDllDirectory()
         {
-            string platform = (IntPtr.Size == 4 ? "x86" : "x64");
-            string managedLocation = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? AppDomain.CurrentDomain.BaseDirectory;
+            var platform = (IntPtr.Size == 4 ? "x86" : "x64");
+            var assembly = Assembly.GetExecutingAssembly();
+            var managedLocation = Path.GetDirectoryName(assembly.Location) ?? AppDomain.CurrentDomain.BaseDirectory;
             var basePath = Path.Combine(managedLocation, platform);
-            
-            // Directory exists when application is built, but not if Scintilla is dragged on in the Winforms designer
+            // Directory exists when application is built with .NET or .NETFramework at runtime
             if (Directory.Exists(basePath))
             {
                 return basePath;
             }
 
-            // In the Designer, look for the native dlls in the nuget package
-            return Path.Combine(managedLocation, "..", "..", "build", platform);
+            // Here we are in design mode for .NET and .NET Framework
+            // We must distinguish the calculation of the path of the satellite assemblies according to .NET or .NET Framework
+            var framework = assembly?.GetCustomAttribute<TargetFrameworkAttribute>()?.FrameworkName;
+            if (framework.Contains("NETFramework"))
+            {
+                    // if .NETFramework, find the true package directory from the solution directory containing projects
+                    var pathSolution = Environment.CurrentDirectory;     // = solution path only valid for .NETFramework, else Environment.CurrentDirectory give the designer   
+                    var productVersion = assembly?.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
+                    var productName = assembly?.GetCustomAttribute<AssemblyProductAttribute>()?.Product;
+                    var packageName = productName + "." + productVersion;
+                    basePath = Path.Combine(pathSolution, "packages", packageName, "build", platform);
+                    if (Directory.Exists(basePath))
+                    {
+                        return basePath;
+                    }
+
+                    throw new InvalidOperationException(@$"Unable to locate the Scintilla.NET satellite assemblies : directory '{basePath}' not found");
+            }
+            else 
+            {
+                // if .NET in design mode
+                basePath = Path.GetFullPath(Path.Combine(managedLocation, "..", "..", "build", platform));
+                if (Directory.Exists(basePath))
+                {
+                    return basePath;
+                }
+
+                throw new InvalidOperationException(@$"Unable to locate the Scintilla.NET satellite assemblies : directory '{basePath}' not found");
+            }
         }
 
         #region Fields
