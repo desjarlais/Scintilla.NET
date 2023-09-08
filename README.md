@@ -4,6 +4,8 @@ Scintilla.NET is a Windows Forms control, wrapper, and bindings for the versatil
 
 [![.Build validate](https://github.com/VPKSoft/Scintilla.NET/actions/workflows/dotnet-desktop-build.yml/badge.svg)](https://github.com/VPKSoft/Scintilla.NET/actions/workflows/dotnet-desktop-build.yml) [![.NET NuGet Release](https://github.com/VPKSoft/Scintilla.NET/actions/workflows/dotnet-nuget-release.yml/badge.svg)](https://github.com/VPKSoft/Scintilla.NET/actions/workflows/dotnet-nuget-release.yml) [![Nuget](https://img.shields.io/nuget/v/Scintilla.NET)](https://www.nuget.org/packages/Scintilla.NET)
 
+**NOTE: See discussion about the "Looking for a new maintainer": [#76](https://github.com/VPKSoft/Scintilla.NET/discussions/78)**
+
 > "As well as features found in standard text editing components, Scintilla includes features especially useful when editing and debugging source code. These include support for syntax styling, error indicators, code completion and call tips. The selection margin can contain markers like those used in debuggers to indicate breakpoints and the current line. Styling choices are more open than with many editors, allowing the use of proportional fonts, bold and italics, multiple foreground and background colours and multiple fonts." -- [scintilla.org](http://www.scintilla.org/)
 
 Scintilla.NET can also be used with WPF using the <a href="https://msdn.microsoft.com/en-us/library/system.windows.forms.integration.windowsformshost(v=vs.110).aspx">WindowsFormsHost</a>.
