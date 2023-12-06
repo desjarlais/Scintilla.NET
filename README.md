@@ -27,7 +27,7 @@ Scintilla.NET is in active development. If you find any issues or just have a qu
 
 Compiled versions which are production ready can be downloaded from [NuGet](https://www.nuget.org/packages/Scintilla5.NET/) or the [Releases](https://github.com/desjarlais/Scintilla.NET/releases) page.
 
-For the latest and greatest you can build the [Master](https://github.com/desjarlais/ScintillaNET/archive/master.zip) branch from source using Visual Studio 2022.
+For the latest and greatest you can build the [Master](https://github.com/desjarlais/Scintilla.NET/archive/master.zip) branch from source using Visual Studio 2022.
 
 ### Technical notes
 **Versions before v.5.3.1.1:**
