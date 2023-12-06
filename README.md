@@ -2,9 +2,7 @@
 
 Scintilla.NET is a Windows Forms control, wrapper, and bindings for the versatile [Scintilla](http://www.scintilla.org/) source code editing component.
 
-[![.Build validate](https://github.com/VPKSoft/Scintilla.NET/actions/workflows/dotnet-desktop-build.yml/badge.svg)](https://github.com/VPKSoft/Scintilla.NET/actions/workflows/dotnet-desktop-build.yml) [![.NET NuGet Release](https://github.com/VPKSoft/Scintilla.NET/actions/workflows/dotnet-nuget-release.yml/badge.svg)](https://github.com/VPKSoft/Scintilla.NET/actions/workflows/dotnet-nuget-release.yml) [![Nuget](https://img.shields.io/nuget/v/Scintilla.NET)](https://www.nuget.org/packages/Scintilla.NET)
-
-**NOTE: See discussion about the "Looking for a new maintainer": [#76](https://github.com/VPKSoft/Scintilla.NET/discussions/78)**
+[![.Build validate](https://github.com/desjarlais/Scintilla.NET/actions/workflows/dotnet-desktop-build.yml/badge.svg)](https://github.com/desjarlais/Scintilla.NET/actions/workflows/dotnet-desktop-build.yml) [![.NET NuGet Release](https://github.com/desjarlais/Scintilla.NET/actions/workflows/dotnet-nuget-release.yml/badge.svg)](https://github.com/desjarlais/Scintilla.NET/actions/workflows/dotnet-nuget-release.yml) [![Nuget](https://img.shields.io/nuget/v/Scintilla.NET)](https://www.nuget.org/packages/Scintilla.NET)
 
 > "As well as features found in standard text editing components, Scintilla includes features especially useful when editing and debugging source code. These include support for syntax styling, error indicators, code completion and call tips. The selection margin can contain markers like those used in debuggers to indicate breakpoints and the current line. Styling choices are more open than with many editors, allowing the use of proportional fonts, bold and italics, multiple foreground and background colours and multiple fonts." -- [scintilla.org](http://www.scintilla.org/)
 
@@ -12,29 +10,29 @@ Scintilla.NET can also be used with WPF using the <a href="https://msdn.microsof
 For Linux, see the [Scintilla.NET.Gtk](https://github.com/VPKSoft/Scintilla.NET.Gtk).
 
 ## Utility assemblies
-* [ScintillaLexers](https://github.com/VPKSoft/ScintillaLexers) - A class library containing lexer definitions for the Scintilla.NET
-* [VPKSoft.ScintillaUrlDetect](https://github.com/VPKSoft/VPKSoft.ScintillaUrlDetect) - A library to detect URLs with the ScintillaNET control
-* [VPKSoft.ScintillaSpellCheck](https://github.com/VPKSoft/VPKSoft.ScintillaSpellCheck) - A spell checking library for the Scintilla.NET
-* [ScintillaDiff](https://github.com/VPKSoft/ScintillaDiff) - A class library for comparing two text files with the Scintilla.NET control
+* [ScintillaLexers](https://github.com/desjarlais/ScintillaLexers) - A class library containing lexer definitions for the Scintilla.NET
+* [VPKSoft.ScintillaUrlDetect](https://github.com/desjarlais/VPKSoft.ScintillaUrlDetect) - A library to detect URLs with the ScintillaNET control
+* [VPKSoft.ScintillaSpellCheck](https://github.com/desjarlais/VPKSoft.ScintillaSpellCheck) - A spell checking library for the Scintilla.NET
+* [ScintillaDiff](https://github.com/desjarlais/ScintillaDiff) - A class library for comparing two text files with the Scintilla.NET control
 * [ScintillaTabbedTextControl](https://github.com/VPKSoft/ScintillaTabbedTextControl) - A tabbed control for Scintilla.NET to display multiple documents
-* [ScintillaNetPrinting](https://github.com/VPKSoft/ScintillaNetPrinting) - Add print functionallity to Scintilla.NET
+* [ScintillaNetPrinting](https://github.com/desjarlais/ScintillaNetPrinting) - Add print functionallity to Scintilla.NET
 * [AutoCompleteMenu-ScintillaNET](https://github.com/Ahmad45123/AutoCompleteMenu-ScintillaNET) - Adds an autocomplete menu to ScintillaNET that's more flexible.
 
 ### Project Status
-This project is continuing from the abandoned [ScintllaNET](https://github.com/jacobslusser/ScintillaNET) by Jacob Slusser.
+This project is continuing from the abandoned [ScintllaNET](https://github.com/jacobslusser/ScintillaNET) by Jacob Slusser and transferred from [VPKSoft](https://github.com/VPKSoft) who has done an incredible job of updating and extending the original project.
 
-Scintilla.NET is in active development. If you find any issues or just have a question feel free to use the [Issues](https://github.com/VPKSoft/ScintillaNET/issues) feature at our GitHub page. **NOTE:** I don't read the issues posted to the main fork - so if your issue is about this project, post it here.
+Scintilla.NET is in active development. If you find any issues or just have a question feel free to use the [Issues](https://github.com/desjarlais/ScintillaNET/issues) feature at our GitHub page. **NOTE:** I don't read the issues posted to the main fork - so if your issue is about this project, post it here.
 
-Compiled versions which are production ready can be downloaded from [NuGet](https://www.nuget.org/packages/Scintilla.NET/) or the [Releases](https://github.com/VPKSoft/ScintillaNET/releases) page.
+Compiled versions which are production ready can be downloaded from [NuGet](https://www.nuget.org/packages/Scintilla.NET/) or the [Releases](https://github.com/desjarlais/ScintillaNET/releases) page.
 
-For the latest and greatest you can build the [Master](https://github.com/VPKSoft/ScintillaNET/archive/master.zip) branch from source using Visual Studio 2022.
+For the latest and greatest you can build the [Master](https://github.com/desjarlais/ScintillaNET/archive/master.zip) branch from source using Visual Studio 2022.
 
 ### Technical notes
 **Versions before v.5.3.1.1:**
-[Microsoft Visual C++ Redistributable for Visual Studio 2015, 2017, 2019, and 2022](https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist?view=msvc-170) is required for the component to work, see [#16](https://github.com/VPKSoft/ScintillaNET/issues/16).
+[Microsoft Visual C++ Redistributable for Visual Studio 2015, 2017, 2019, and 2022](https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist?view=msvc-170) is required for the component to work, see [#16](https://github.com/desjarlais/ScintillaNET/issues/16).
 
 ### Related Projects
-- The [ScintillaNET-FindReplaceDialog](https://github.com/VPKSoft/ScintillaNET-FindReplaceDialog) project for adding a Find/Replace dialog to ScintillaNET (thanks to @Stumpii)
+- The [ScintillaNET-FindReplaceDialog](https://github.com/desjarlais/ScintillaNET-FindReplaceDialog) project for adding a Find/Replace dialog to ScintillaNET (thanks to @Stumpii)
 
 ## Background
 > This project is a rewrite of the [ScintillaNET project hosted at CodePlex](http://scintillanet.codeplex.com/) and maintained by myself and others. After many years of contributing to that project I decided to think differently about the API we had created and felt I could make better one if I was willing to go back to a blank canvas. Thus, this project is the spiritual successor to the original ScintillaNET but has been written from scratch.

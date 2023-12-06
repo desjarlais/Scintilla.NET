@@ -2,18 +2,18 @@
   <PropertyGroup>
     <ProjectGuid>{F25685EC-098A-4080-95A9-445268609806}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net7-windows</TargetFramework>
+    <TargetFramework>net8.0-windows7.0</TargetFramework>
 <!--    <TargetFramework>net47</TargetFramework> -->
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <AssemblyTitle>ScintillaNET.TestApp</AssemblyTitle>
     <Product>ScintillaNET.TestApp</Product>
-    <Copyright>Copyright © VPKSoft 2020</Copyright>
+    <Copyright>Copyright © desjarlais 2023</Copyright>
     <OutputPath>bin\$(Configuration)\</OutputPath>
-    <Company>VPKSoft</Company>
-    <Authors>VPKSoft</Authors>
+    <Company>desjarlais</Company>
+    <Authors>desjarlais</Authors>
     <Description>A test application to validate that the ScintillaNET control is working.</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <RepositoryUrl>https://github.com/VPKSoft/ScintillaNET</RepositoryUrl>
+    <RepositoryUrl>https://github.com/desjarlais/ScintillaNET</RepositoryUrl>
     <UseWindowsForms>true</UseWindowsForms>  
     <RepositoryType />  
     <Platforms>AnyCPU;x64;x86</Platforms>  

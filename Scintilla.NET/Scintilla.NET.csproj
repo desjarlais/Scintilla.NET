@@ -1,14 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<ProjectGuid>{22AE2386-60F1-476E-9303-61CDB0AAC4CF}</ProjectGuid>
-		<TargetFrameworks>netcoreapp3.1;net45;net6-windows;net7-windows</TargetFrameworks>
+		<TargetFrameworks>net45;net6-windows;net7-windows;net8-windows</TargetFrameworks>
 		<AssemblyTitle>ScintillaNET</AssemblyTitle>
-		<Company>Jacob Slusser, VPKSoft, cyber960</Company>
+		<Company>Jacob Slusser, VPKSoft, cyber960, desjarlais</Company>
 		<Product>Scintilla.NET</Product>
 		<NeutralLanguage>en-US</NeutralLanguage>
 		<Description>Source Editing Component based on Scintilla 5 series.</Description>
-		<Copyright>Copyright (c) 2018, Jacob Slusser. All rights reserved. VPKSoft, cyber960 2022.</Copyright>
-		<Version>5.3.2.9</Version>
+		<Copyright>Copyright (c) 2018, Jacob Slusser. All rights reserved. VPKSoft, cyber960 2022, desjarlais 2023.</Copyright>
+		<Version>5.3.3.0</Version>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<DocumentationFile>bin\$(Configuration)\ScintillaNET.xml</DocumentationFile>
 		<UseWindowsForms>true</UseWindowsForms>
@@ -25,21 +25,21 @@
 		<PlatformTarget>AnyCPU</PlatformTarget>
 	</PropertyGroup>
 	<PropertyGroup>
-		<PackageId>Scintilla.NET</PackageId>
+		<PackageId>Scintilla5.NET</PackageId>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
-		<PackageProjectUrl>https://github.com/VPKSoft/ScintillaNET</PackageProjectUrl>
-		<RepositoryUrl>https://github.com/VPKSoft/ScintillaNET</RepositoryUrl>
+		<PackageProjectUrl>https://github.com/desjarlais/ScintillaNET</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/desjarlais/ScintillaNET</RepositoryUrl>
 		<PackageIcon>vpksoft_logo.png</PackageIcon>
 		<RepositoryType>git</RepositoryType>
 		<PackageTags>ScintillaNET Scintilla Editor</PackageTags>
-		<PackageReleaseNotes>Please visit https://github.com/VPKSoft/ScintillaNET/releases to view the release notes.</PackageReleaseNotes>
+		<PackageReleaseNotes>Please visit https://github.com/desjarlais/ScintillaNET/releases to view the release notes.</PackageReleaseNotes>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
 		<SignAssembly Condition="'$(SignAssembly)' == 'true'">true</SignAssembly>
 		<AssemblyOriginatorKeyFile>scintilla.net.pfx</AssemblyOriginatorKeyFile>
 		<AssemblyName>Scintilla.NET</AssemblyName>
 		<RootNamespace>Scintilla.NET</RootNamespace>
-		<Authors>Jacob Slusser, VPKSoft, cyber960</Authors>
+		<Authors>Jacob Slusser, VPKSoft, cyber960, desjarlais</Authors>
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netcoreapp3.1|AnyCPU'">
 		<PlatformTarget>AnyCPU</PlatformTarget>
@@ -48,6 +48,12 @@
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net45|AnyCPU'">
 		<PlatformTarget>AnyCPU</PlatformTarget>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8-windows|AnyCPU'">
+	  <WarningLevel>7</WarningLevel>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8-windows|AnyCPU'">
+	  <WarningLevel>7</WarningLevel>
 	</PropertyGroup>
 	<ItemGroup Condition=" '$(TargetFramework)' == 'net45' ">
 		<Reference Include="System.Windows.Forms" />

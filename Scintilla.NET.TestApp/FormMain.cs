@@ -12,7 +12,7 @@ public partial class FormMain : Form
     {
         InitializeComponent();
         // ReSharper disable once VirtualMemberCallInConstructor
-        Text += @"  © VPKSoft " + DateTime.Now.Year;
+        Text += @"  © desjarlais " + DateTime.Now.Year;
 //            scintilla.Technology = Technology.DirectWrite;
     }
 
@@ -22,7 +22,6 @@ public partial class FormMain : Form
         {
             scintilla.Text = File.ReadAllText(odFile.FileName);
             scintilla.EmptyUndoBuffer();
-            //scintilla.Lexer = Lexer.Xml;
             SetLexerCs();
         }
     }
@@ -50,7 +49,6 @@ public partial class FormMain : Form
         scintilla.Styles[Style.Cpp.StringEol].BackColor = Color.Pink;
         scintilla.Styles[Style.Cpp.Operator].ForeColor = Color.Purple;
         scintilla.Styles[Style.Cpp.Preprocessor].ForeColor = Color.Maroon;
-//            scintilla.Lexer = Lexer.Cpp;
         scintilla.LexerName = "cpp";
 
         // Set the keywords
