@@ -1,8 +1,10 @@
 # Scintilla.NET
 
-Scintilla.NET is a Windows Forms control, wrapper, and bindings for the versatile [Scintilla](http://www.scintilla.org/) source code editing component.
+Scintilla.NET is a Windows Forms control, wrapper, and bindings for the versatile [Scintilla](http://www.scintilla.org/) source code editing component.  
 
-[![.Build validate](https://github.com/desjarlais/Scintilla.NET/actions/workflows/dotnet-desktop-build.yml/badge.svg)](https://github.com/desjarlais/Scintilla.NET/actions/workflows/dotnet-desktop-build.yml) [![.NET NuGet Release](https://github.com/desjarlais/Scintilla.NET/actions/workflows/dotnet-nuget-release.yml/badge.svg)](https://github.com/desjarlais/Scintilla.NET/actions/workflows/dotnet-nuget-release.yml) [![Nuget](https://img.shields.io/nuget/v/Scintilla5.NET)](https://www.nuget.org/packages/Scintilla5.NET))
+* NOTE: I updated the Nuget package name to Scintilla5.NET for those searching the gallery.
+
+[![.Build validate](https://github.com/desjarlais/Scintilla.NET/actions/workflows/dotnet-desktop-build.yml/badge.svg)](https://github.com/desjarlais/Scintilla.NET/actions/workflows/dotnet-desktop-build.yml) [![.NET NuGet Release](https://github.com/desjarlais/Scintilla.NET/actions/workflows/dotnet-nuget-release.yml/badge.svg)](https://github.com/desjarlais/Scintilla.NET/actions/workflows/dotnet-nuget-release.yml) [![Nuget](https://img.shields.io/nuget/v/Scintilla5.NET)](https://www.nuget.org/packages/Scintilla5.NET)
 
 > "As well as features found in standard text editing components, Scintilla includes features especially useful when editing and debugging source code. These include support for syntax styling, error indicators, code completion and call tips. The selection margin can contain markers like those used in debuggers to indicate breakpoints and the current line. Styling choices are more open than with many editors, allowing the use of proportional fonts, bold and italics, multiple foreground and background colours and multiple fonts." -- [scintilla.org](http://www.scintilla.org/)
 
