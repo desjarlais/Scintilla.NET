@@ -19,6 +19,7 @@ For Linux, see the [Scintilla.NET.Gtk](https://github.com/VPKSoft/Scintilla.NET.
 * [ScintillaTabbedTextControl](https://github.com/VPKSoft/ScintillaTabbedTextControl) - A tabbed control for Scintilla.NET to display multiple documents
 * [ScintillaNetPrinting](https://github.com/desjarlais/ScintillaNetPrinting) - Add print functionallity to Scintilla.NET
 * [AutoCompleteMenu-ScintillaNET](https://github.com/Ahmad45123/AutoCompleteMenu-ScintillaNET) - Adds an autocomplete menu to ScintillaNET that's more flexible.
+* [ScintillaNET-FindReplaceDialog](https://github.com/desjarlais/ScintillaNET-FindReplaceDialog) project for adding a Find/Replace dialog to ScintillaNET (thanks to @Stumpii)
 
 ### Project Status
 This project is continuing from the abandoned [ScintllaNET](https://github.com/jacobslusser/ScintillaNET) by Jacob Slusser and transferred from [VPKSoft](https://github.com/VPKSoft) who has done an incredible job of updating and extending the original project.
@@ -32,9 +33,6 @@ For the latest and greatest you can build the [Master](https://github.com/desjar
 ### Technical notes
 **Versions before v.5.3.1.1:**
 [Microsoft Visual C++ Redistributable for Visual Studio 2015, 2017, 2019, and 2022](https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist?view=msvc-170) is required for the component to work, see [#16](https://github.com/desjarlais/Scintilla.NET/issues/16).
-
-### Related Projects
-- The [ScintillaNET-FindReplaceDialog](https://github.com/desjarlais/ScintillaNET-FindReplaceDialog) project for adding a Find/Replace dialog to ScintillaNET (thanks to @Stumpii)
 
 ## Background
 For more information about the history and background information, look at the wiki [here](https://github.com/desjarlais/Scintilla.NET/wiki/Scintilla.NET-History).
