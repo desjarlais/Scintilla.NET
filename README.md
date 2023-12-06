@@ -22,7 +22,7 @@ For Linux, see the [Scintilla.NET.Gtk](https://github.com/VPKSoft/Scintilla.NET.
 * [ScintillaNET-FindReplaceDialog](https://github.com/desjarlais/ScintillaNET-FindReplaceDialog) project for adding a Find/Replace dialog to ScintillaNET (thanks to @Stumpii)
 
 ### Project Status
-This project is continuing from the abandoned [ScintllaNET](https://github.com/jacobslusser/ScintillaNET) by Jacob Slusser and transferred from [VPKSoft](https://github.com/VPKSoft) who has done an incredible job of updating and extending the original project.
+This project is continuing from the abandoned [ScintillaNET](https://github.com/jacobslusser/ScintillaNET) by Jacob Slusser and transferred from [VPKSoft](https://github.com/VPKSoft) who has done an incredible job of updating and extending the original project.
 
 Scintilla.NET is in active development. If you find any issues or just have a question feel free to use the [Issues](https://github.com/desjarlais/Scintilla.NET/issues) feature at our GitHub page. **NOTE:** I don't read the issues posted to the main fork - so if your issue is about this project, post it here.
 
