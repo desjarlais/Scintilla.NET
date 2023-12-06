@@ -2,7 +2,7 @@
 
 Scintilla.NET is a Windows Forms control, wrapper, and bindings for the versatile [Scintilla](http://www.scintilla.org/) source code editing component.
 
-[![.Build validate](https://github.com/desjarlais/Scintilla.NET/actions/workflows/dotnet-desktop-build.yml/badge.svg)](https://github.com/desjarlais/Scintilla.NET/actions/workflows/dotnet-desktop-build.yml) [![.NET NuGet Release](https://github.com/desjarlais/Scintilla.NET/actions/workflows/dotnet-nuget-release.yml/badge.svg)](https://github.com/desjarlais/Scintilla.NET/actions/workflows/dotnet-nuget-release.yml) [![Nuget](https://img.shields.io/nuget/v/Scintilla.NET)](https://www.nuget.org/packages/Scintilla.NET)
+[![.Build validate](https://github.com/desjarlais/Scintilla.NET/actions/workflows/dotnet-desktop-build.yml/badge.svg)](https://github.com/desjarlais/Scintilla.NET/actions/workflows/dotnet-desktop-build.yml) [![.NET NuGet Release](https://github.com/desjarlais/Scintilla.NET/actions/workflows/dotnet-nuget-release.yml/badge.svg)](https://github.com/desjarlais/Scintilla.NET/actions/workflows/dotnet-nuget-release.yml) [![Nuget](https://img.shields.io/nuget/v/Scintilla5.NET)](https://www.nuget.org/packages/Scintilla5.NET))
 
 > "As well as features found in standard text editing components, Scintilla includes features especially useful when editing and debugging source code. These include support for syntax styling, error indicators, code completion and call tips. The selection margin can contain markers like those used in debuggers to indicate breakpoints and the current line. Styling choices are more open than with many editors, allowing the use of proportional fonts, bold and italics, multiple foreground and background colours and multiple fonts." -- [scintilla.org](http://www.scintilla.org/)
 
@@ -35,9 +35,11 @@ For the latest and greatest you can build the [Master](https://github.com/desjar
 - The [ScintillaNET-FindReplaceDialog](https://github.com/desjarlais/ScintillaNET-FindReplaceDialog) project for adding a Find/Replace dialog to ScintillaNET (thanks to @Stumpii)
 
 ## Background
-> This project is a rewrite of the [ScintillaNET project hosted at CodePlex](http://scintillanet.codeplex.com/) and maintained by myself and others. After many years of contributing to that project I decided to think differently about the API we had created and felt I could make better one if I was willing to go back to a blank canvas. Thus, this project is the spiritual successor to the original ScintillaNET but has been written from scratch.
+> This project is a rewrite of the [ScintillaNET project hosted at CodePlex](http://scintillanet.codeplex.com/) and maintained by VPKSoft and others. After many years of contributing to that project I decided to think differently about the API we had created and felt I could make better one if I was willing to go back to a blank canvas. Thus, this project is the spiritual successor to the original ScintillaNET but has been written from scratch.
 
 This project with one letter difference continues keeping the code base alive.
+
+As of 12/6/2023, this project has been transferred from VPKSoft who along with a few others in the Scintilla.NET community have created a very useful library that I will attempt to continue maintaining and updating as time permits.
 
 ### First Class Characters
 
