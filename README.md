@@ -23,15 +23,15 @@ For Linux, see the [Scintilla.NET.Gtk](https://github.com/VPKSoft/Scintilla.NET.
 ### Project Status
 This project is continuing from the abandoned [ScintllaNET](https://github.com/jacobslusser/ScintillaNET) by Jacob Slusser and transferred from [VPKSoft](https://github.com/VPKSoft) who has done an incredible job of updating and extending the original project.
 
-Scintilla.NET is in active development. If you find any issues or just have a question feel free to use the [Issues](https://github.com/desjarlais/ScintillaNET/issues) feature at our GitHub page. **NOTE:** I don't read the issues posted to the main fork - so if your issue is about this project, post it here.
+Scintilla.NET is in active development. If you find any issues or just have a question feel free to use the [Issues](https://github.com/desjarlais/Scintilla.NET/issues) feature at our GitHub page. **NOTE:** I don't read the issues posted to the main fork - so if your issue is about this project, post it here.
 
-Compiled versions which are production ready can be downloaded from [NuGet](https://www.nuget.org/packages/Scintilla.NET/) or the [Releases](https://github.com/desjarlais/ScintillaNET/releases) page.
+Compiled versions which are production ready can be downloaded from [NuGet](https://www.nuget.org/packages/Scintilla5.NET/) or the [Releases](https://github.com/desjarlais/Scintilla.NET/releases) page.
 
 For the latest and greatest you can build the [Master](https://github.com/desjarlais/ScintillaNET/archive/master.zip) branch from source using Visual Studio 2022.
 
 ### Technical notes
 **Versions before v.5.3.1.1:**
-[Microsoft Visual C++ Redistributable for Visual Studio 2015, 2017, 2019, and 2022](https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist?view=msvc-170) is required for the component to work, see [#16](https://github.com/desjarlais/ScintillaNET/issues/16).
+[Microsoft Visual C++ Redistributable for Visual Studio 2015, 2017, 2019, and 2022](https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist?view=msvc-170) is required for the component to work, see [#16](https://github.com/desjarlais/Scintilla.NET/issues/16).
 
 ### Related Projects
 - The [ScintillaNET-FindReplaceDialog](https://github.com/desjarlais/ScintillaNET-FindReplaceDialog) project for adding a Find/Replace dialog to ScintillaNET (thanks to @Stumpii)
