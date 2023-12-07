@@ -80,7 +80,7 @@ namespace ScintillaNET
             else 
             {
                 // if .NET in design mode
-                // basePath = Path.GetFullPath(Path.Combine(managedLocation, "..", "..", "build", platform));
+                basePath = Path.GetFullPath(Path.Combine(managedLocation, "..", "..", "build", platform));
                 if (Directory.Exists(basePath))
                 {
                     return basePath;
