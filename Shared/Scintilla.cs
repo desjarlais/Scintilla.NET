@@ -62,7 +62,7 @@ namespace ScintillaNET
 
             // check design-mode paths
             string frameworkName = assembly?.GetCustomAttribute<TargetFrameworkAttribute>()?.FrameworkName;
-            if (frameworkName.Contains("NETFramework") && Process.GetCurrentProcess().ProcessName == "devenv")
+            if (frameworkName.Contains("NETFramework"))
             {
                 // In.NET Framework, look for the assemblies in the nuget global packages folder
                 string nugetScintillaPackageFolder = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + @"\.nuget\packages\scintilla5.net\";
@@ -85,9 +85,20 @@ namespace ScintillaNET
                 {
                     return hostProjectFolder;
                 }
-            }
 
-            throw new InvalidOperationException(@$"Unable to locate the Scintilla.NET satellite assemblies : directory '{basePath}' not found");
+                throw new InvalidOperationException(@$"Unable to locate the Scintilla.NET satellite assemblies : directory '{basePath}' not found");
+            }
+            else
+            {
+                // if .NET in design mode
+                basePath = Path.GetFullPath(Path.Combine(managedLocation, "..", "..", "build", platform));
+                if (Directory.Exists(basePath))
+                {
+                    return basePath;
+                }
+
+                throw new InvalidOperationException(@$"Unable to locate the Scintilla.NET satellite assemblies : directory '{basePath}' not found");
+            }
         }
 
         #region Fields
