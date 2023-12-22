@@ -51,7 +51,7 @@ Another goal of the rewrite was to accept the original Scintilla API for what it
 
 ## Documentation
 
-Complete API documentation is included with all of our packages. In addition there is extensive documentation at the project [Wiki](https://github.com/jacobslusser/ScintillaNET/wiki) which has recipes for common tasks and questions. If you're new to ScintillaNET, the Wiki is a good place to get started.
+Complete API documentation is included with all of our packages. In addition there is extensive documentation at the project [Wiki](https://github.com/desjarlais/Scintilla.NET/wiki) which has recipes for common tasks and questions. If you're new to ScintillaNET, the Wiki is a good place to get started.
 
 As previously noted in the project charter, great effort has been made to keep the ScintillaNET API consist with the native Scintilla API. As such, the [native Scintilla documentation](http://www.scintilla.org/ScintillaDoc.html) continues to be a valuable resource for learning some of the deeper features.
 
