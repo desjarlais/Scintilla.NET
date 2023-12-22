@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing.Printing;
 using System.IO;
 using System.Text;
 
@@ -105,11 +106,23 @@ public class LineCollection : IEnumerable<Line>
         if (!LineContainsMultibyteChar(line))
             return (bytePos + pos);
 
+        int prevBytePos;
         while (pos > 0)
         {
-            // Move char-by-char
+            // hang onto the prev byte position so we can determine if we are single or multi byte
+            prevBytePos = bytePos;
             bytePos = scintilla.DirectMessage(NativeMethods.SCI_POSITIONRELATIVE, new IntPtr(bytePos), new IntPtr(1)).ToInt32();
-            pos--;
+            
+            if ((bytePos - prevBytePos) == 1)
+            {
+                // if the byte position is 1, we are single byte
+                pos--;
+            }
+            else
+            {
+                // if the byte position > 1, we are multi byte
+                pos -= 2;
+            }
         }
 
         return bytePos;
