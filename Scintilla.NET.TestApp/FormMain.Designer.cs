@@ -133,7 +133,7 @@
             // 
             this.scintilla1.AutoCMaxHeight = 9;
             this.scintilla1.BiDirectionality = ScintillaNET.BiDirectionalDisplayType.Disabled;
-            this.scintilla1.CaretLineBackColor = System.Drawing.Color.Black;
+            this.scintilla1.CaretLineBackColor = System.Drawing.Color.White;
             this.scintilla1.CaretLineVisible = true;
             this.scintilla1.LexerName = null;
             this.scintilla1.Location = new System.Drawing.Point(364, 96);

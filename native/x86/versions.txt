@@ -1,2 +1,2 @@
-Scintilla: 5.4.0
-Lexilla: 5.2.9
+Scintilla 5.4.1
+Lexilla 5.3.0

@@ -13,7 +13,7 @@ public partial class FormMain : Form
         InitializeComponent();
         // ReSharper disable once VirtualMemberCallInConstructor
         Text += @"  © desjarlais " + DateTime.Now.Year;
-//            scintilla.Technology = Technology.DirectWrite;
+        //            scintilla.Technology = Technology.DirectWrite;
     }
 
     private void mnuOpen_Click(object sender, EventArgs e)

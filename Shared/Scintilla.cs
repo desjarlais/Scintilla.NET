@@ -10,7 +10,6 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
 
@@ -51,8 +50,8 @@ namespace ScintillaNET
         {
             // check run-time paths
             string platform = Environment.Is64BitProcess ? "x64" : "x86";
-            Assembly assembly = Assembly.GetExecutingAssembly();
-            string  managedLocation = Path.GetDirectoryName(assembly.Location) ?? AppDomain.CurrentDomain.BaseDirectory;
+            Assembly runtimeAssembly = Assembly.GetExecutingAssembly();
+            string  managedLocation = Path.GetDirectoryName(runtimeAssembly.Location) ?? AppDomain.CurrentDomain.BaseDirectory;
             string basePath = Path.Combine(managedLocation, platform);
             
             if (Directory.Exists(basePath))
@@ -61,12 +60,13 @@ namespace ScintillaNET
             }
 
             // check design-mode paths
-            string frameworkName = assembly?.GetCustomAttribute<TargetFrameworkAttribute>()?.FrameworkName;
+            string frameworkName = runtimeAssembly?.GetCustomAttribute<TargetFrameworkAttribute>()?.FrameworkName;
             if (frameworkName.Contains("NETFramework"))
             {
                 // In.NET Framework, look for the assemblies in the nuget global packages folder
+                Assembly designtimeAssembly = Assembly.GetAssembly(typeof(Scintilla));
                 string nugetScintillaPackageFolder = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + @"\.nuget\packages\scintilla5.net\";
-                string nugetScintillaPackageVersion = Assembly.GetAssembly(typeof(Scintilla)).GetName().Version.ToString();
+                string nugetScintillaPackageVersion = designtimeAssembly.GetName().Version.ToString();
                 basePath = Path.Combine(nugetScintillaPackageFolder + nugetScintillaPackageVersion + @"\build\" + platform);
 
                 if (Directory.Exists(basePath))
@@ -76,8 +76,8 @@ namespace ScintillaNET
 
                 // then check the project folder using the Scintilla.NET assembly location
                 // move up a few levels to the host project folder and append the location nuget used at install
-                string nugetScintillaNETLocation = Assembly.GetAssembly(typeof(Scintilla)).Location;
-                string nugetScintillaPackageName = Assembly.GetAssembly(typeof(Scintilla)).GetName().Name;
+                string nugetScintillaNETLocation = designtimeAssembly.Location;
+                string nugetScintillaPackageName = designtimeAssembly.GetName().Name;
                 string rootProjectFolder = Path.GetFullPath(Path.Combine(nugetScintillaNETLocation, @"..\..\..\..\"));
                 string hostProjectFolder = Path.Combine(rootProjectFolder, @"packages\" + nugetScintillaPackageName + "." + nugetScintillaPackageVersion + @"\build\" + platform);
 
@@ -3313,7 +3313,7 @@ namespace ScintillaNET
                     exStyle &= ~WinApiHelpers.WS_EX_LAYOUTRTL;
                 }
                 Handle.SetWindowLongPtr(WinApiHelpers.GWL_EXSTYLE, new IntPtr(exStyle));
-                DirectMessage(NativeMethods.SCI_SETFOCUS, new IntPtr(1)); // needs focus to update
+                DirectMessage(NativeMethods.SCI_GRABFOCUS, new IntPtr(1)); // needs focus to update
             }
         }
 
