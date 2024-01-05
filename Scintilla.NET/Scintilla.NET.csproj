@@ -8,7 +8,7 @@
 		<NeutralLanguage>en-US</NeutralLanguage>
 		<Description>Source Editing Component based on Scintilla 5 series.</Description>
 		<Copyright>Copyright (c) 2018, Jacob Slusser. All rights reserved. VPKSoft, cyber960 2022, desjarlais 2023.</Copyright>
-		<Version>5.3.3.12</Version>
+		<Version>5.3.3.14</Version>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<DocumentationFile>bin\$(Configuration)\ScintillaNET.xml</DocumentationFile>
 		<UseWindowsForms>true</UseWindowsForms>
@@ -27,12 +27,12 @@
 	<PropertyGroup>
 		<PackageId>Scintilla5.NET</PackageId>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
-		<PackageProjectUrl>https://github.com/desjarlais/ScintillaNET</PackageProjectUrl>
-		<RepositoryUrl>https://github.com/desjarlais/ScintillaNET</RepositoryUrl>
+		<PackageProjectUrl>https://github.com/desjarlais/Scintilla.NET</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/desjarlais/Scintilla.NET</RepositoryUrl>
 		<PackageIcon>vpksoft_logo.png</PackageIcon>
 		<RepositoryType>git</RepositoryType>
 		<PackageTags>ScintillaNET Scintilla Editor</PackageTags>
-		<PackageReleaseNotes>Please visit https://github.com/desjarlais/ScintillaNET/releases to view the release notes.</PackageReleaseNotes>
+		<PackageReleaseNotes>Please visit https://github.com/desjarlais/Scintilla.NET/releases to view the release notes.</PackageReleaseNotes>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
 		<SignAssembly Condition="'$(SignAssembly)' == 'true'">true</SignAssembly>

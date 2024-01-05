@@ -1405,6 +1405,17 @@ namespace ScintillaNET
         }
 
         /// <summary>
+        /// Default Attributes values do not always get applied to the control.
+        /// https://learn.microsoft.com/en-us/dotnet/api/system.componentmodel.defaultvalueattribute?view=net-8.0&redirectedfrom=MSDN
+        /// "A DefaultValueAttribute will not cause a member to be automatically initialized with the attribute's value. You must set the initial value in your code."
+        /// This function is created to be called in the OnHandleCreated event so that we can force the default values to be applied.
+        /// </summary>
+        private void InitControlProps()
+        {
+            CaretLineBackColor = Color.Yellow;
+        }
+
+        /// <summary>
         /// Inserts text at the specified position.
         /// </summary>
         /// <param name="position">The zero-based character position to insert the text. Specify -1 to use the current caret position.</param>
@@ -1761,6 +1772,7 @@ namespace ScintillaNET
         {
             // Set more intelligent defaults...
             InitDocument();
+            InitControlProps();
 
             // I would like to see all of my text please
             DirectMessage(NativeMethods.SCI_SETSCROLLWIDTH, new IntPtr(1));
