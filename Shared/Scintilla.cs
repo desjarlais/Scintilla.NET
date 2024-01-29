@@ -5,7 +5,6 @@ using System.Drawing;
 using System.Drawing.Design;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
@@ -25,7 +24,6 @@ namespace ScintillaNET
         {
             var basePath = LocateNativeDllDirectory();
             modulePathScintilla = Path.Combine(basePath, "Scintilla.dll");
-#if SCINTILLA5
             modulePathLexilla = Path.Combine(basePath, "Lexilla.dll");
 
             try
@@ -43,7 +41,6 @@ namespace ScintillaNET
                 // (surely a problem in the package itself or in its installation of the project).
                 throw new InvalidOperationException(@$"Scintilla.NET satellite assemblies not found in {basePath}");
             }
-#endif
         }
 
         private static string LocateNativeDllDirectory()
@@ -79,11 +76,11 @@ namespace ScintillaNET
                 string nugetScintillaNETLocation = designtimeAssembly.Location;
                 string nugetScintillaPackageName = designtimeAssembly.GetName().Name;
                 string rootProjectFolder = Path.GetFullPath(Path.Combine(nugetScintillaNETLocation, @"..\..\..\..\"));
-                string hostProjectFolder = Path.Combine(rootProjectFolder, @"packages\" + nugetScintillaPackageName + "." + nugetScintillaPackageVersion + @"\build\" + platform);
+                basePath = Path.Combine(rootProjectFolder, @"packages\" + nugetScintillaPackageName + "." + nugetScintillaPackageVersion + @"\build\" + platform);
 
-                if (Directory.Exists(hostProjectFolder))
+                if (Directory.Exists(basePath))
                 {
-                    return hostProjectFolder;
+                    return basePath;
                 }
 
                 throw new InvalidOperationException(@$"Unable to locate the Scintilla.NET satellite assemblies : directory '{basePath}' not found");
@@ -109,17 +106,12 @@ namespace ScintillaNET
 
         // Static module data
         private static readonly string modulePathScintilla;
-
-        #if SCINTILLA5
         private static readonly string modulePathLexilla;
-        #endif
 
         private static IntPtr moduleHandle;
         private static NativeMethods.Scintilla_DirectFunction directFunction;
-        #if SCINTILLA5
         private static IntPtr lexillaHandle;
         private static Lexilla lexilla;
-        #endif
 
         // Events
         private static readonly object scNotificationEventKey = new object();
@@ -194,7 +186,6 @@ namespace ScintillaNET
 
         #region Methods
 
-        #if SCINTILLA5
         /// <summary>
         /// Sets the name of the lexer by its name.
         /// </summary>
@@ -202,6 +193,16 @@ namespace ScintillaNET
         /// <returns><c>true</c> if the lexer was successfully set, <c>false</c> otherwise.</returns>
         private bool SetLexerByName(string lexerName)
         {
+            // this is a special case reserved for the container to do the styling, allowing the StyleNeeded notification to be sent
+            // each time text needs styling for display, note from scintilla docs:
+            // "If you choose to use the container to do the styling you can use the SCI_SETILEXER command to select NULL,
+            // in which case the container is sent a SCN_STYLENEEDED notification each time text needs styling for display."
+            if (lexerName == string.Empty)
+            {
+                DirectMessage(NativeMethods.SCI_SETILEXER, IntPtr.Zero, IntPtr.Zero);
+                return true;
+            }
+
             var ptr = Lexilla.CreateLexer(lexerName);
 
             if (ptr == IntPtr.Zero)
@@ -213,7 +214,6 @@ namespace ScintillaNET
 
             return true;
         }
-        #endif
 
         /// <summary>
         /// Increases the reference count of the specified document by 1.
@@ -841,7 +841,7 @@ namespace ScintillaNET
         }
 
         /// <summary>
-        /// Retrieves a description of keyword sets supported by the current <see cref="Lexer" />.
+        /// Retrieves a description of keyword sets supported by the current lexer />.
         /// </summary>
         /// <returns>A String describing each keyword set separated by line breaks for the current lexer.</returns>
         public unsafe string DescribeKeywordSets()
@@ -1078,7 +1078,6 @@ namespace ScintillaNET
             return Lines.ByteToCharPosition(pos);
         }
 
-        #if SCINTILLA5
         private static readonly string scintillaVersion;
         private static readonly string lexillaVersion;
 
@@ -1091,7 +1090,6 @@ namespace ScintillaNET
         /// Gets the product version of the Lexilla.dll user by the control.
         /// </summary>
         public string LexillaVersion => lexillaVersion;
-        #endif
 
         /// <summary>
         /// Gets the Primary style associated with the given Secondary style.
@@ -1405,7 +1403,7 @@ namespace ScintillaNET
         }
 
         /// <summary>
-        /// Default Attributes values do not always get applied to the control.
+        /// Default Attribute values do not always get applied to the control.
         /// https://learn.microsoft.com/en-us/dotnet/api/system.componentmodel.defaultvalueattribute?view=net-8.0&redirectedfrom=MSDN
         /// "A DefaultValueAttribute will not cause a member to be automatically initialized with the attribute's value. You must set the initial value in your code."
         /// This function is created to be called in the OnHandleCreated event so that we can force the default values to be applied.
@@ -2556,7 +2554,6 @@ namespace ScintillaNET
 
             return true;
         }
-
 
         /// <summary>
         /// Marks the document as unmodified.
@@ -4207,10 +4204,7 @@ namespace ScintillaNET
                 {
                     // Load the native Scintilla library
                     moduleHandle = NativeMethods.LoadLibrary(modulePathScintilla);
-
-                    #if SCINTILLA5
                     lexillaHandle = NativeMethods.LoadLibrary(modulePathLexilla);
-                    #endif
 
                     if (moduleHandle == IntPtr.Zero)
                     {
@@ -4238,9 +4232,7 @@ namespace ScintillaNET
                     }
 
                     // Get the native Lexilla.dll methods
-                    #if SCINTILLA5
                     lexilla = new Lexilla(lexillaHandle);
-                    #endif
 
                     // Create a managed callback
                     directFunction = (NativeMethods.Scintilla_DirectFunction)Marshal.GetDelegateForFunctionPointer(
@@ -4860,101 +4852,14 @@ namespace ScintillaNET
                     return;
                 }
 
-                #if SCINTILLA5
                 if (!SetLexerByName(value))
                 {
                     throw new InvalidOperationException(@$"Lexer with the name of '{value}' was not found.");
                 }
-                #elif SCINTILLA4
-                if (NativeMethods.NameConstantMap.ContainsValue(value))
-                {
-                    Lexer = (ScintillaNET.Lexer) NativeMethods.NameConstantMap.First(f => f.Value == value)
-                        .Key;
-                }
-                #endif
 
                 lexerName = value;
             }
         }
-
-        #if SCINTILLA5
-        /// <summary>
-        /// Gets or sets the current lexer.
-        /// </summary>
-        /// <returns>One of the <see cref="Lexer" /> enumeration values. The default is <see cref="ScintillaNET.Lexer.Container" />.</returns>
-        /// <exception cref="InvalidOperationException">
-        /// No lexer name was found with the specified value.
-        /// </exception>
-        /// <remarks>This property will get more obsolete as time passes as the Scintilla v.5+ now uses strings to define lexers. The Lexer enumeration is not maintained.</remarks>
-        [DefaultValue(Lexer.NotFound)]
-        [Category("Lexing")]
-        [Description("The current lexer.")]
-        [Obsolete("This property will get more obsolete as time passes as the Scintilla v.5+ now uses strings to define lexers. Please use the LexerName property instead.")]
-        public Lexer Lexer
-        {
-            get
-            {
-                if (string.IsNullOrWhiteSpace(lexerName))
-                {
-                    return Lexer.NotFound;
-                }
-
-
-                if (NativeMethods.NameConstantMap.ContainsValue(lexerName))
-                {
-                    return (Lexer) NativeMethods.NameConstantMap.First(f => f.Value == lexerName).Key;
-                }
-
-                return Lexer.NotFound;
-            }
-            set
-            {
-                if (value == Lexer.NotFound)
-                {
-                    return;
-                }
-
-                var lexer = (int)value;
-
-                if (NativeMethods.NameConstantMap.ContainsKey(lexer))
-                {
-                    lexerName = NativeMethods.NameConstantMap.First(f => f.Key == lexer).Value;
-
-                    if (string.IsNullOrEmpty(lexerName))
-                    {
-                        throw new InvalidOperationException(@"No lexer name was found with the specified value.");
-                    }
-                }
-                else
-                {
-                    throw new InvalidOperationException(@"No lexer name was found with the specified value.");
-                }
-
-
-                SetLexerByName(lexerName);
-            }
-        }
-        #elif SCINTILLA4
-        /// <summary>
-        /// Gets or sets the current lexer.
-        /// </summary>
-        /// <returns>One of the <see cref="Lexer" /> enumeration values. The default is <see cref="ScintillaNET.Lexer.Container" />.</returns>
-        [DefaultValue(Lexer.Container)]
-        [Category("Lexing")]
-        [Description("The current lexer.")]
-        public Lexer Lexer
-        {
-            get
-            {
-                return (Lexer)DirectMessage(NativeMethods.SCI_GETLEXER);
-            }
-            set
-            {
-                var lexer = (int)value;
-                DirectMessage(NativeMethods.SCI_SETLEXER, new IntPtr(lexer));
-            }
-        }
-        #endif
 
         /// <summary>
         /// Gets or sets the current lexer by name.
@@ -5522,11 +5427,8 @@ namespace ScintillaNET
             get
             {
                 // NOTE: For some reason the length returned by this API includes the terminating NULL
-                #if SCINTILLA5
                 var length = DirectMessage(NativeMethods.SCI_GETSELTEXT).ToInt32();
-                #else
-                var length = DirectMessage(NativeMethods.SCI_GETSELTEXT).ToInt32() - 1;
-                #endif
+
                 if (length <= 0)
                     return string.Empty;
 
@@ -6922,7 +6824,7 @@ namespace ScintillaNET
         /// Occurs when the control is about to display or print text and requires styling.
         /// </summary>
         /// <remarks>
-        /// This event is only raised when <see cref="Lexer" /> is set to <see cref="ScintillaNET.Lexer.Container" />.
+        /// This event is only raised when LexerName is set to Container />.
         /// The last position styled correctly can be determined by calling <see cref="GetEndStyled" />.
         /// </remarks>
         /// <seealso cref="GetEndStyled" />

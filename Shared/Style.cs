@@ -388,7 +388,7 @@ public class Style
     #region Ada
 
     /// <summary>
-    /// Style constants for use with the <see cref="Lexer.Ada" /> lexer.
+    /// Style constants for use with the Ada lexer.
     /// </summary>
     public static class Ada
     {
@@ -458,7 +458,7 @@ public class Style
     #region Asm
 
     /// <summary>
-    /// Style constants for use with the <see cref="Lexer.Asm" /> lexer.
+    /// Style constants for use with the Asm lexer.
     /// </summary>
     public static class Asm
     {
@@ -548,7 +548,7 @@ public class Style
     #region BlitzBasic
 
     /// <summary>
-    /// Style constants for use with the <see cref="Lexer.BlitzBasic" /> lexer.
+    /// Style constants for use with the BlitzBasic lexer.
     /// </summary>
     public static class BlitzBasic
     {
@@ -673,7 +673,7 @@ public class Style
     #region Batch
 
     /// <summary>
-    /// Style constants for use with the <see cref="Lexer.Batch" /> lexer.
+    /// Style constants for use with the Batch lexer.
     /// </summary>
     public static class Batch
     {
@@ -723,7 +723,7 @@ public class Style
     #region Clw
 
     /// <summary>
-    /// Style constants for use with the <see cref="Lexer.Clw" /> lexer.
+    /// Style constants for use with the Clw lexer.
     /// </summary>
     public static class CLW
     {
@@ -818,7 +818,7 @@ public class Style
     #region Cpp
 
     /// <summary>
-    /// Style constants for use with the <see cref="Lexer.Cpp" /> lexer.
+    /// Style constants for use with the Cpp lexer.
     /// </summary>
     public static class Cpp
     {
@@ -968,7 +968,7 @@ public class Style
     #region Css
 
     /// <summary>
-    /// Style constants for use with the <see cref="Lexer.Css" /> lexer.
+    /// Style constants for use with the Css lexer.
     /// </summary>
     public static class Css
     {
@@ -1098,7 +1098,7 @@ public class Style
     #region Fortran
 
     /// <summary>
-    /// Style constants for use with the <see cref="Lexer.Fortran" /> lexer.
+    /// Style constants for use with the Fortran lexer.
     /// </summary>
     public static class Fortran
     {
@@ -1183,7 +1183,7 @@ public class Style
     #region FreeBasic
 
     /// <summary>
-    /// Style constants for use with the <see cref="Lexer.FreeBasic" /> lexer.
+    /// Style constants for use with the FreeBasic lexer.
     /// </summary>
     public static class FreeBasic
     {
@@ -1308,7 +1308,7 @@ public class Style
     #region Html
 
     /// <summary>
-    /// Style constants for use with the <see cref="Lexer.Html" /> lexer.
+    /// Style constants for use with the Html lexer.
     /// </summary>
     public static class Html
     {
@@ -1423,7 +1423,7 @@ public class Style
     #region JavaScript
 
     /// <summary>
-    /// Embedded JavaScript style constants for use with the <see cref="Lexer.Html" /> lexer.
+    /// Embedded JavaScript style constants for use with the JavaScript lexer.
     /// </summary>
     public static class JavaScript
     {
@@ -1498,7 +1498,7 @@ public class Style
     #region Json
 
     /// <summary>
-    /// Style constants for use with the <see cref="Lexer.Json" /> lexer.
+    /// Style constants for use with the Json lexer.
     /// </summary>
     public static class Json
     {
@@ -1578,7 +1578,7 @@ public class Style
     #region Lisp
 
     /// <summary>
-    /// Style constants for use with the <see cref="Lexer.Lisp" /> lexer.
+    /// Style constants for use with the Lisp lexer.
     /// </summary>
     public static class Lisp
     {
@@ -1648,7 +1648,7 @@ public class Style
     #region Lua
 
     /// <summary>
-    /// Style constants for use with the <see cref="Lexer.Lua" /> lexer.
+    /// Style constants for use with the Lua lexer.
     /// </summary>
     public static class Lua
     {
@@ -1763,7 +1763,7 @@ public class Style
     #region Matlab
 
     /// <summary>
-    /// Style constants for use with the <see cref="Lexer.Matlab" /> lexer.
+    /// Style constants for use with the Matlab lexer.
     /// </summary>
     public static class Matlab
     {
@@ -1818,7 +1818,7 @@ public class Style
     #region Pascal
 
     /// <summary>
-    /// Style constants for use with the <see cref="Lexer.Pascal" /> lexer.
+    /// Style constants for use with the Pascal lexer.
     /// </summary>
     public static class Pascal
     {
@@ -1903,7 +1903,7 @@ public class Style
     #region Perl
 
     /// <summary>
-    /// Style constants for use with the <see cref="Lexer.Perl" /> lexer.
+    /// Style constants for use with the Perl lexer.
     /// </summary>
     public static class Perl
     {
@@ -2135,7 +2135,7 @@ public class Style
     #region PhpScript
 
     /// <summary>
-    /// Style constants for use with the <see cref="Lexer.PhpScript" /> lexer.
+    /// Style constants for use with the PhpScript lexer.
     /// </summary>
     public static class PhpScript
     {
@@ -2200,7 +2200,7 @@ public class Style
     #region PowerShell
 
     /// <summary>
-    /// Style constants for use with the <see cref="Lexer.PowerShell" /> lexer.
+    /// Style constants for use with the PowerShell lexer.
     /// </summary>
     public static class PowerShell
     {
@@ -2295,7 +2295,7 @@ public class Style
     #region Properties
 
     /// <summary>
-    /// Style constants for use with the <see cref="Lexer.Properties" /> lexer.
+    /// Style constants for use with the Properties lexer.
     /// </summary>
     public static class Properties
     {
@@ -2335,7 +2335,7 @@ public class Style
     #region PureBasic
 
     /// <summary>
-    /// Style constants for use with the <see cref="Lexer.PureBasic" /> lexer.
+    /// Style constants for use with the PureBasic lexer.
     /// </summary>
     public static class PureBasic
     {
@@ -2460,7 +2460,7 @@ public class Style
     #region Python
 
     /// <summary>
-    /// Style constants for use with the <see cref="Lexer.Python" /> lexer.
+    /// Style constants for use with the Python lexer.
     /// </summary>
     public static class Python
     {
@@ -2550,7 +2550,7 @@ public class Style
     #region Ruby
 
     /// <summary>
-    /// Style constants for use with the <see cref="Lexer.Ruby" /> lexer.
+    /// Style constants for use with the Ruby lexer.
     /// </summary>
     public static class Ruby
     {
@@ -2727,7 +2727,7 @@ public class Style
     #region Smalltalk
 
     /// <summary>
-    /// Style constants for use with the <see cref="Lexer.Smalltalk" /> lexer.
+    /// Style constants for use with the Smalltalk lexer.
     /// </summary>
     public static class Smalltalk
     {
@@ -2822,7 +2822,7 @@ public class Style
     #region Sql
 
     /// <summary>
-    /// Style constants for use with the <see cref="Lexer.Sql" /> lexer.
+    /// Style constants for use with the Sql lexer.
     /// </summary>
     public static class Sql
     {
@@ -2947,7 +2947,7 @@ public class Style
     #region Markdown
 
     /// <summary>
-    /// Style constants for use with the <see cref="Lexer.Markdown" /> lexer.
+    /// Style constants for use with the Markdown lexer.
     /// </summary>
     public static class Markdown
     {
@@ -3067,7 +3067,7 @@ public class Style
     #region R
 
     /// <summary>
-    /// Style constants for use with the <see cref="Lexer.R" /> lexer.
+    /// Style constants for use with the R lexer.
     /// </summary>
     public static class R
     {
@@ -3137,7 +3137,7 @@ public class Style
     #region Vb
 
     /// <summary>
-    /// Style constants for use with the <see cref="Lexer.Vb" /> lexer.
+    /// Style constants for use with the Vb lexer.
     /// </summary>
     public static class Vb
     {
@@ -3262,7 +3262,7 @@ public class Style
     #region VbScript
 
     /// <summary>
-    /// Style constants for use with the <see cref="Lexer.VbScript" /> lexer.
+    /// Style constants for use with the VbScript lexer.
     /// </summary>
     public static class VbScript
     {
@@ -3387,7 +3387,7 @@ public class Style
     #region Verilog
 
     /// <summary>
-    /// Style constants for use with the <see cref="Lexer.Verilog" /> lexer.
+    /// Style constants for use with the Verilog lexer.
     /// </summary>
     public static class Verilog
     {
@@ -3492,7 +3492,7 @@ public class Style
     #region Xml
 
     /// <summary>
-    /// Style constants for use with the <see cref="Lexer.Xml" /> lexer.
+    /// Style constants for use with the Xml lexer.
     /// </summary>
     public static class Xml
     {
