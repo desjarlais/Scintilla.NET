@@ -4845,7 +4845,7 @@ namespace ScintillaNET
 
             set
             {
-                if (string.IsNullOrWhiteSpace(value))
+                if (string.IsNullOrWhiteSpace(value) && value != string.Empty)
                 {
                     lexerName = value;
 
