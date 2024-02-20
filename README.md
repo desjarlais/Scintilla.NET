@@ -2,7 +2,7 @@
 
 Scintilla.NET is a Windows Forms control, wrapper, and bindings for the versatile [Scintilla](http://www.scintilla.org/) source code editing component.  
 
-* NOTE: I updated the Nuget package name to Scintilla5.NET for those searching the gallery.
+* NOTE: I updated the Nuget package name to [Scintilla5.NET](https://www.nuget.org/packages/Scintilla5.NET) for those searching the gallery.
 
 [![.Build validate](https://github.com/desjarlais/Scintilla.NET/actions/workflows/dotnet-desktop-build.yml/badge.svg)](https://github.com/desjarlais/Scintilla.NET/actions/workflows/dotnet-desktop-build.yml) [![.NET NuGet Release](https://github.com/desjarlais/Scintilla.NET/actions/workflows/dotnet-nuget-release.yml/badge.svg)](https://github.com/desjarlais/Scintilla.NET/actions/workflows/dotnet-nuget-release.yml) [![Nuget](https://img.shields.io/nuget/v/Scintilla5.NET)](https://www.nuget.org/packages/Scintilla5.NET)
 
