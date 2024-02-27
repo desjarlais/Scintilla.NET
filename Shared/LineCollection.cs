@@ -91,7 +91,7 @@ public class LineCollection : IEnumerable<Line>
         return start;
     }
 
-    internal int CharToBytePosition(int pos)
+    internal int CharToWideBytePosition(int pos)
     {
         Debug.Assert(pos >= 0);
         Debug.Assert(pos <= TextLength);
@@ -111,7 +111,7 @@ public class LineCollection : IEnumerable<Line>
             // hang onto the prev byte position so we can determine if we are single or multi byte
             prevBytePos = bytePos;
             bytePos = scintilla.DirectMessage(NativeMethods.SCI_POSITIONRELATIVE, new IntPtr(bytePos), new IntPtr(1)).ToInt32();
-            
+
             if ((bytePos - prevBytePos) == 1)
             {
                 // if the byte position is 1, we are single byte
@@ -122,6 +122,31 @@ public class LineCollection : IEnumerable<Line>
                 // if the byte position > 1, we are multi byte
                 pos -= 2;
             }
+        }
+
+        return bytePos;
+    }
+
+    internal int CharToBytePosition(int pos)
+    {
+        Debug.Assert(pos >= 0);
+        Debug.Assert(pos <= TextLength);
+
+        // Adjust to the nearest line start
+        var line = LineFromCharPosition(pos);
+        var bytePos = scintilla.DirectMessage(NativeMethods.SCI_POSITIONFROMLINE, new IntPtr(line)).ToInt32();
+        pos -= CharPositionFromLine(line);
+
+        // Optimization when the line contains NO multibyte characters
+        if (!LineContainsMultibyteChar(line))
+            return (bytePos + pos);
+
+        while (pos > 0)
+        {
+            // Move char-by-char
+            bytePos = scintilla.DirectMessage(NativeMethods.SCI_POSITIONRELATIVE, new IntPtr(bytePos),
+                new IntPtr(1)).ToInt32();
+            pos--;
         }
 
         return bytePos;

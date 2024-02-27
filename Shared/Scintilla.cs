@@ -1246,6 +1246,29 @@ namespace ScintillaNET
         }
 
         /// <summary>
+        /// Gets a range of text from the document accounting for wide characters.
+        /// </summary>
+        /// <param name="position">The zero-based starting character position of the range to get.</param>
+        /// <param name="length">The number of characters (including wide) to get.</param>
+        /// <returns>A string representing the text range.</returns>
+        public unsafe string GetWideTextRange(int position, int length)
+        {
+            var textLength = TextLength;
+            position = Helpers.Clamp(position, 0, textLength);
+            length = Helpers.Clamp(length, 0, textLength - position);
+
+            // Convert to byte position/length
+            var byteStartPos = Lines.CharToWideBytePosition(position);
+            var byteEndPos = Lines.CharToWideBytePosition(position + length);
+
+            var ptr = DirectMessage(NativeMethods.SCI_GETRANGEPOINTER, new IntPtr(byteStartPos), new IntPtr(byteEndPos - byteStartPos));
+            if (ptr == IntPtr.Zero)
+                return string.Empty;
+
+            return Helpers.GetString(ptr, (byteEndPos - byteStartPos), Encoding);
+        }
+
+        /// <summary>
         /// Gets a range of text from the document.
         /// </summary>
         /// <param name="position">The zero-based starting character position of the range to get.</param>
