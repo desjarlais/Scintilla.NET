@@ -35,6 +35,7 @@ For the latest and greatest you can build the [Master](https://github.com/desjar
 [Microsoft Visual C++ Redistributable for Visual Studio 2015, 2017, 2019, and 2022](https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist?view=msvc-170) is required for the component to work, see [#16](https://github.com/desjarlais/Scintilla.NET/issues/16).
 
 Scintilla library version = 5.4.1
+
 Lexilla library version = 5.3.0
 
 ## Background
