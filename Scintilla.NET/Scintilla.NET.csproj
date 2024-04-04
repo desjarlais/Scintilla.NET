@@ -1,14 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<ProjectGuid>{22AE2386-60F1-476E-9303-61CDB0AAC4CF}</ProjectGuid>
-		<TargetFrameworks>net45;net6-windows;net7-windows;net8-windows</TargetFrameworks>
+		<TargetFrameworks>net45;net6-windows;net8-windows</TargetFrameworks>
 		<AssemblyTitle>ScintillaNET</AssemblyTitle>
 		<Company>Jacob Slusser, VPKSoft, cyber960, desjarlais</Company>
 		<Product>Scintilla.NET</Product>
 		<NeutralLanguage>en-US</NeutralLanguage>
 		<Description>Source Editing Component based on Scintilla 5 series.</Description>
 		<Copyright>Copyright (c) 2018, Jacob Slusser. All rights reserved. VPKSoft, cyber960 2022, desjarlais 2023.</Copyright>
-		<Version>5.3.3.17</Version>
+		<Version>5.3.3.18</Version>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<DocumentationFile>bin\$(Configuration)\ScintillaNET.xml</DocumentationFile>
 		<UseWindowsForms>true</UseWindowsForms>
