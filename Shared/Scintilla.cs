@@ -4092,7 +4092,7 @@ namespace ScintillaNET
         /// Gets or sets whether the caret line is visible (highlighted).
         /// </summary>
         /// <returns>true if the caret line is visible; otherwise, false. The default is false.</returns>
-        [DefaultValue(false)]
+        [DefaultValue(true)]
         [Category("Caret")]
         [Description("Determines whether to highlight the current caret line.")]
         public bool CaretLineVisible
