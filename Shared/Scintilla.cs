@@ -1818,7 +1818,8 @@ namespace ScintillaNET
             // ways to solve this, but my favorite is to revoke drag and drop from the
             // native Scintilla control before base.OnHandleCreated does the standard
             // processing of AllowDrop.
-            NativeMethods.RevokeDragDrop(Handle);
+            if (!this._ScintillaManagedDragDrop)
+                NativeMethods.RevokeDragDrop(this.Handle);
 
             base.OnHandleCreated(e);
         }
@@ -3276,6 +3277,18 @@ namespace ScintillaNET
 
         #region Properties
 
+        /// <summary>
+        /// Gets or sets whether Scintilla's native drag & drop should be used instead of WinForms based one.
+        /// </summary>
+        /// <value><c>true</c> if Scintilla's native drag & drop should be used; otherwise, <c>false</c>. The default is false.</value>
+        [DefaultValue(false)]
+        [Category("Behaviour")]
+        [Description("Indicates whether Scintilla's native drag & drop should be used instead of WinForms based one.")]
+        public bool _ScintillaManagedDragDrop { get; set; }
+        // Underscore is used so that WinForms Designer sets it before any other
+        // property. Otherwise ApplyResources gets called on the control before
+        // the property is set, which then triggers OnHandleCreated before we
+        // have the final value.
 
         /// <summary>
         /// Gets or sets the bi-directionality of the Scintilla control.
