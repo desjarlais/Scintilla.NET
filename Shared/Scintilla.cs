@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
@@ -22,79 +23,71 @@ namespace ScintillaNET
     {
         static Scintilla()
         {
-            var basePath = LocateNativeDllDirectory();
-            modulePathScintilla = Path.Combine(basePath, "Scintilla.dll");
-            modulePathLexilla = Path.Combine(basePath, "Lexilla.dll");
+            List<string> searchedPathList = new List<string>();
+            foreach (string path in EnumerateSatelliteLibrarySearchPaths())
+            {
+                string scintillaDllPath = Path.Combine(path, "Scintilla.dll");
+                string lexillaDllPath = Path.Combine(path, "Lexilla.dll");
+                if (File.Exists(scintillaDllPath) && File.Exists(lexillaDllPath))
+                {
+                    modulePathScintilla = scintillaDllPath;
+                    modulePathLexilla = lexillaDllPath;
+                    try
+                    {
+                        var info = FileVersionInfo.GetVersionInfo(modulePathScintilla);
+                        scintillaVersion = info.ProductVersion ?? info.FileVersion;
+                        info = FileVersionInfo.GetVersionInfo(modulePathLexilla);
+                        lexillaVersion = info.ProductVersion ?? info.FileVersion;
+                        return;
+                    }
+                    catch
+                    {
+                        searchedPathList.Add(path);
+                    }
+                }
+                else
+                    searchedPathList.Add(path);
+            }
 
-            try
-            {
-                var info = FileVersionInfo.GetVersionInfo(modulePathScintilla);
-                scintillaVersion = info.ProductVersion ?? info.FileVersion;
-                info = FileVersionInfo.GetVersionInfo(modulePathLexilla);
-                lexillaVersion = info.ProductVersion ?? info.FileVersion;
-            }
-            catch
-            {
-                scintillaVersion = "ERROR";
-                lexillaVersion = "ERROR";
-                // the path to the following .NET or .NET Framework satellite assemblies exists but the assemblies are not found in the directory.
-                // (surely a problem in the package itself or in its installation of the project).
-                throw new InvalidOperationException(@$"Scintilla.NET satellite assemblies not found in {basePath}");
-            }
+            string searchedPaths = string.Join("\n", searchedPathList);
+
+            scintillaVersion = "ERROR";
+            lexillaVersion = "ERROR";
+            // the path to the following .NET or .NET Framework satellite assemblies exists but the assemblies are not found in the directory.
+            // (surely a problem in the package itself or in its installation of the project).
+            throw new InvalidOperationException($"Scintilla.NET satellite assemblies not found in any of the following paths:\n{searchedPaths}");
         }
 
-        private static string LocateNativeDllDirectory()
+        public static IEnumerable<string> EnumerateSatelliteLibrarySearchPaths()
         {
             // check run-time paths
             string platform = Environment.Is64BitProcess ? "x64" : "x86";
-            Assembly runtimeAssembly = Assembly.GetExecutingAssembly();
-            string  managedLocation = Path.GetDirectoryName(runtimeAssembly.Location) ?? AppDomain.CurrentDomain.BaseDirectory;
-            string basePath = Path.Combine(managedLocation, platform);
-            
-            if (Directory.Exists(basePath))
-            {
-                return basePath;
-            }
+            var runtimeAssembly = Assembly.GetExecutingAssembly();
+            string managedLocation = Path.GetDirectoryName(runtimeAssembly.Location) ?? AppDomain.CurrentDomain.BaseDirectory;
+            yield return Path.Combine(managedLocation, platform);
 
             // check design-mode paths
             string frameworkName = runtimeAssembly?.GetCustomAttribute<TargetFrameworkAttribute>()?.FrameworkName;
+
             if (frameworkName.Contains("NETFramework"))
             {
-                // In.NET Framework, look for the assemblies in the nuget global packages folder
-                Assembly designtimeAssembly = Assembly.GetAssembly(typeof(Scintilla));
-                string nugetScintillaPackageFolder = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + @"\.nuget\packages\scintilla5.net\";
+                // In .NET Framework, look for the assemblies in the nuget global packages folder
+                var designtimeAssembly = Assembly.GetAssembly(typeof(Scintilla));
+                string nugetScintillaPackageFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), @".nuget\packages\scintilla5.net");
                 string nugetScintillaPackageVersion = designtimeAssembly.GetName().Version.ToString();
-                basePath = Path.Combine(nugetScintillaPackageFolder + nugetScintillaPackageVersion + @"\build\" + platform);
-
-                if (Directory.Exists(basePath))
-                {
-                    return basePath;
-                }
+                yield return Path.Combine(nugetScintillaPackageFolder, nugetScintillaPackageVersion, "build", platform);
 
                 // then check the project folder using the Scintilla.NET assembly location
                 // move up a few levels to the host project folder and append the location nuget used at install
                 string nugetScintillaNETLocation = designtimeAssembly.Location;
                 string nugetScintillaPackageName = designtimeAssembly.GetName().Name;
-                string rootProjectFolder = Path.GetFullPath(Path.Combine(nugetScintillaNETLocation, @"..\..\..\..\"));
-                basePath = Path.Combine(rootProjectFolder, @"packages\" + nugetScintillaPackageName + "." + nugetScintillaPackageVersion + @"\build\" + platform);
-
-                if (Directory.Exists(basePath))
-                {
-                    return basePath;
-                }
-
-                throw new InvalidOperationException(@$"Unable to locate the Scintilla.NET satellite assemblies : directory '{basePath}' not found");
+                string rootProjectFolder = Path.GetFullPath(Path.Combine(nugetScintillaNETLocation, @"..\..\..\.."));
+                yield return Path.Combine(rootProjectFolder, "packages", nugetScintillaPackageName + "." + nugetScintillaPackageVersion, "build", platform);
             }
             else
             {
                 // if .NET in design mode
-                basePath = Path.GetFullPath(Path.Combine(managedLocation, "..", "..", "build", platform));
-                if (Directory.Exists(basePath))
-                {
-                    return basePath;
-                }
-
-                throw new InvalidOperationException(@$"Unable to locate the Scintilla.NET satellite assemblies : directory '{basePath}' not found");
+                yield return Path.GetFullPath(Path.Combine(managedLocation, @"..\..\build", platform));
             }
         }
 
