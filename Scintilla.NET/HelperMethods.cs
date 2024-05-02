@@ -28,11 +28,7 @@ public static class HelperMethods
     public static void SetFoldingState(this Scintilla scintilla, string foldingState, string separator = ";")
     {
         scintilla.FoldAll(FoldAction.Expand);
-#if NET45
-            foreach (var index in foldingState.Split(separator[0]).Select(int.Parse))
-#else
-        foreach (var index in foldingState.Split(separator).Select(int.Parse))
-#endif
+        foreach (var index in foldingState.Split(new[] { separator }, System.StringSplitOptions.None).Select(int.Parse))
         {
             if (index < 0 || index >= scintilla.Lines.Count)
             {
