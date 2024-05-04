@@ -1,0 +1,37 @@
+# editorconfig.org
+
+root = true
+
+[*]
+indent_style = space
+indent_size = 4
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+[*.{bat,cmd,ps1}]
+end_of_line = crlf
+
+[*.{html,htm,xhtml,xhtm,xml}]
+indent_size = 2
+
+[*.{css,scss,sass}]
+indent_size = 2
+
+[*.{json}]
+insert_final_newline = false
+
+[*.{yml,yaml}]
+indent_style = space
+indent_size = 2
+
+[*.csproj]
+indent_style = unset
+indent_size = 2
+
+[*.{props,targets}]
+indent_style = space
+indent_size = 2
+
+[[Aa]pp.config,[Aa]pp.manifest]
+indent_style = space
+indent_size = 2
