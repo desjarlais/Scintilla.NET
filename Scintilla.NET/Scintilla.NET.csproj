@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<ProjectGuid>{22AE2386-60F1-476E-9303-61CDB0AAC4CF}</ProjectGuid>
-		<TargetFrameworks>net45;net6.0-windows</TargetFrameworks>
+		<TargetFrameworks>net462;net6.0-windows</TargetFrameworks>
 		<AssemblyTitle>ScintillaNET</AssemblyTitle>
 		<Company>Jacob Slusser, VPKSoft, cyber960, desjarlais</Company>
 		<Product>Scintilla.NET</Product>
@@ -21,9 +21,6 @@
 	<PropertyGroup>
 		<DefineConstants>SCINTILLA5</DefineConstants>
 	</PropertyGroup>
-	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net45|AnyCPU'">
-		<PlatformTarget>AnyCPU</PlatformTarget>
-	</PropertyGroup>
 	<PropertyGroup>
 		<PackageId>Scintilla5.NET</PackageId>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
@@ -41,26 +38,6 @@
 		<RootNamespace>Scintilla.NET</RootNamespace>
 		<Authors>Jacob Slusser, VPKSoft, cyber960, desjarlais</Authors>
 	</PropertyGroup>
-	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netcoreapp3.1|AnyCPU'">
-		<PlatformTarget>AnyCPU</PlatformTarget>
-		<DefineConstants>TRACE;SCINTILLA5</DefineConstants>
-		<GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
-	</PropertyGroup>
-	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net45|AnyCPU'">
-		<PlatformTarget>AnyCPU</PlatformTarget>
-	</PropertyGroup>
-	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8-windows|AnyCPU'">
-	  <WarningLevel>7</WarningLevel>
-	</PropertyGroup>
-	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8-windows|AnyCPU'">
-	  <WarningLevel>7</WarningLevel>
-	</PropertyGroup>
-	<ItemGroup Condition=" '$(TargetFramework)' == 'net45' ">
-		<Reference Include="System.Windows.Forms" />
-		<Reference Include="System.Data.DataSetExtensions" />
-		<Reference Include="Microsoft.CSharp" />
-		<Reference Include="System.IO.Compression" />
-	</ItemGroup>
 	<ItemGroup>
 		<None Include="..\Shared\vpksoft_logo.png">
 			<Pack>True</Pack>
