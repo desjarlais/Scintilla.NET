@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<ProjectGuid>{22AE2386-60F1-476E-9303-61CDB0AAC4CF}</ProjectGuid>
-		<TargetFrameworks>net45;net6-windows;net8-windows</TargetFrameworks>
+		<TargetFrameworks>net45;net6.0-windows</TargetFrameworks>
 		<AssemblyTitle>ScintillaNET</AssemblyTitle>
 		<Company>Jacob Slusser, VPKSoft, cyber960, desjarlais</Company>
 		<Product>Scintilla.NET</Product>
