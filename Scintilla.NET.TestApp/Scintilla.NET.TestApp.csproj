@@ -70,7 +70,7 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-    <ProjectReference Include="..\Scintilla.NET\Scintilla.NET.csproj" />
+    <PackageReference Include="Scintilla5.NET" Version="*-*" />
     <Compile Update="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
