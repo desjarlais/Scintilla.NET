@@ -38,17 +38,18 @@
 		</None>
 	</ItemGroup>
 	<ItemGroup>
-		<Compile Update="Scintilla.cs">
-			<SubType>Component</SubType>
-		</Compile>
+		<None Include="build\**">
+			<PackagePath>build</PackagePath>
+			<Pack>True</Pack>
+		</None>
 	</ItemGroup>
 	<ItemGroup>
-		<!-- Native dlls and nuget support -->
-		<None Include="..\native\**\*.*">
-			<Pack>True</Pack>
-			<PackagePath>build</PackagePath>
+		<None Remove="runtimes\**" />
+		<Content Include="runtimes\**">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</None>
+			<PackagePath>runtimes</PackagePath>
+			<Pack>true</Pack>
+		</Content>
 	</ItemGroup>
 	<Target Name="PostPack" AfterTargets="Pack">
 		<Exec Command="cd &quot;$(ProjectDir)&quot; &amp;&amp; powershell .\nupkg.ps1 -NuGetPackageRoot '$(NuGetPackageRoot)' -NuGetPackageSourceDir '$(SolutionDir)\registry' -PackageOutputPath '$(PackageOutputPath)' -PackageId '$(PackageId)' -PackageVersion '$(PackageVersion)'" />

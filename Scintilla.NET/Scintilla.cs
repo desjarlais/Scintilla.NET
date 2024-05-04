@@ -58,36 +58,39 @@ namespace ScintillaNET
             throw new InvalidOperationException($"Scintilla.NET satellite assemblies not found in any of the following paths:\n{searchedPaths}");
         }
 
+        private static bool InDesignProcess()
+        {
+            using var proc = Process.GetCurrentProcess();
+            string procName = proc.ProcessName;
+            return
+                procName == "devenv" || procName == "DesignToolsServer" || // WinForms app in VS IDE
+                procName == "xdesproc" || // WPF app in VS IDE/Blend
+                procName == "blend";
+        }
+
         public static IEnumerable<string> EnumerateSatelliteLibrarySearchPaths()
         {
             // check run-time paths
-            string platform = Environment.Is64BitProcess ? "x64" : "x86";
+            string folder = Path.Combine("runtimes", Environment.Is64BitProcess ? "win-x64" : "win-x86", "native");
             var runtimeAssembly = Assembly.GetExecutingAssembly();
             string managedLocation = Path.GetDirectoryName(runtimeAssembly.Location) ?? AppDomain.CurrentDomain.BaseDirectory;
-            yield return Path.Combine(managedLocation, platform);
+            yield return Path.Combine(managedLocation, folder);
 
-            // check design-mode paths
-            string frameworkName = runtimeAssembly?.GetCustomAttribute<TargetFrameworkAttribute>()?.FrameworkName;
-
-            if (frameworkName.Contains("NETFramework"))
+            if (InDesignProcess())
             {
-                // In .NET Framework, look for the assemblies in the nuget global packages folder
+                // Look for the assemblies in the nuget global packages folder
                 var designtimeAssembly = Assembly.GetAssembly(typeof(Scintilla));
                 string nugetScintillaPackageFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), @".nuget\packages\scintilla5.net");
-                string nugetScintillaPackageVersion = designtimeAssembly.GetName().Version.ToString();
-                yield return Path.Combine(nugetScintillaPackageFolder, nugetScintillaPackageVersion, "build", platform);
+                Version packageVersion = designtimeAssembly.GetName().Version;
+                string versionString = packageVersion.Revision == 0 ? packageVersion.ToString(3) : packageVersion.ToString();
+                yield return Path.Combine(nugetScintillaPackageFolder, versionString, folder);
 
                 // then check the project folder using the Scintilla.NET assembly location
                 // move up a few levels to the host project folder and append the location nuget used at install
                 string nugetScintillaNETLocation = designtimeAssembly.Location;
                 string nugetScintillaPackageName = designtimeAssembly.GetName().Name;
                 string rootProjectFolder = Path.GetFullPath(Path.Combine(nugetScintillaNETLocation, @"..\..\..\.."));
-                yield return Path.Combine(rootProjectFolder, "packages", nugetScintillaPackageName + "." + nugetScintillaPackageVersion, "build", platform);
-            }
-            else
-            {
-                // if .NET in design mode
-                yield return Path.GetFullPath(Path.Combine(managedLocation, @"..\..\build", platform));
+                yield return Path.Combine(rootProjectFolder, "packages", nugetScintillaPackageName + "." + versionString, folder);
             }
         }
 
