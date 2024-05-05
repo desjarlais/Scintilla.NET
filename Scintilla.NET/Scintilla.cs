@@ -2410,6 +2410,7 @@ namespace ScintillaNET
         /// </summary>
         /// <param name="color">Additional selections background color.</param>
         /// <remarks>Calling <see cref="SetSelectionBackColor" /> will reset the <paramref name="color" /> specified.</remarks>
+        [Obsolete("Superseded by SelectionAdditionalBackColor property.")]
         public void SetAdditionalSelBack(Color color)
         {
             var colour = HelperMethods.ToWin32Color(color);
@@ -2421,6 +2422,7 @@ namespace ScintillaNET
         /// </summary>
         /// <param name="color">Additional selections foreground color.</param>
         /// <remarks>Calling <see cref="SetSelectionForeColor" /> will reset the <paramref name="color" /> specified.</remarks>
+        [Obsolete("Superseded by SelectionAdditionalTextColor property.")]
         public void SetAdditionalSelFore(Color color)
         {
             var colour = HelperMethods.ToWin32Color(color);
@@ -2641,6 +2643,7 @@ namespace ScintillaNET
         /// <param name="use">true to override the selection background color; otherwise, false.</param>
         /// <param name="color">The global selection background color.</param>
         /// <seealso cref="SetSelectionForeColor" />
+        [Obsolete("Superseded by SelectionBackColor property.")]
         public void SetSelectionBackColor(bool use, Color color)
         {
             var colour = HelperMethods.ToWin32Color(color);
@@ -2655,6 +2658,7 @@ namespace ScintillaNET
         /// <param name="use">true to override the selection foreground color; otherwise, false.</param>
         /// <param name="color">The global selection foreground color.</param>
         /// <seealso cref="SetSelectionBackColor" />
+        [Obsolete("Superseded by SelectionTextColor property.")]
         public void SetSelectionForeColor(bool use, Color color)
         {
             var colour = HelperMethods.ToWin32Color(color);
@@ -2744,6 +2748,7 @@ namespace ScintillaNET
         /// <remarks>When not overridden globally, the whitespace background color is determined by the current lexer.</remarks>
         /// <seealso cref="ViewWhitespace" />
         /// <seealso cref="SetWhitespaceForeColor" />
+        [Obsolete("Superseded by WhitespaceBackColor property.")]
         public void SetWhitespaceBackColor(bool use, Color color)
         {
             var colour = HelperMethods.ToWin32Color(color);
@@ -2760,6 +2765,7 @@ namespace ScintillaNET
         /// <remarks>When not overridden globally, the whitespace foreground color is determined by the current lexer.</remarks>
         /// <seealso cref="ViewWhitespace" />
         /// <seealso cref="SetWhitespaceBackColor" />
+        [Obsolete("Superseded by WhitespaceTextColor property.")]
         public void SetWhitespaceForeColor(bool use, Color color)
         {
             var colour = HelperMethods.ToWin32Color(color);
@@ -3366,13 +3372,13 @@ namespace ScintillaNET
         {
             get
             {
-                var color = DirectMessage(NativeMethods.SCI_GETADDITIONALCARETFORE).ToInt32();
+                int color = DirectMessage(NativeMethods.SCI_GETELEMENTCOLOUR, new IntPtr(NativeMethods.SC_ELEMENT_CARET_ADDITIONAL)).ToInt32();
                 return HelperMethods.FromWin32Color(color);
             }
             set
             {
                 int color = HelperMethods.ToWin32Color(value);
-                DirectMessage(NativeMethods.SCI_SETADDITIONALCARETFORE, new IntPtr(color));
+                DirectMessage(NativeMethods.SCI_SETELEMENTCOLOUR, new IntPtr(NativeMethods.SC_ELEMENT_CARET_ADDITIONAL), new IntPtr(color));
             }
         }
 
@@ -3426,6 +3432,9 @@ namespace ScintillaNET
         [DefaultValue(256)]
         [Category("Multiple Selection")]
         [Description("The transparency of additional selections.")]
+        [Obsolete("Use SelectionAdditionalTextColor with alpha channel instead.")]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [Browsable(false)]
         public int AdditionalSelAlpha
         {
             get
@@ -3502,6 +3511,86 @@ namespace ScintillaNET
             {
                 var visible = (int)value;
                 DirectMessage(NativeMethods.SCI_ANNOTATIONSETVISIBLE, new IntPtr(visible));
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the text color in autocompletion lists.
+        /// </summary>
+        [Description("The text color in autocompletion lists.")]
+        [Category("Autocompletion")]
+        [DefaultValue(typeof(Color), "Black")]
+        public Color AutocompleteListTextColor
+        {
+            get
+            {
+                int color = DirectMessage(NativeMethods.SCI_GETELEMENTCOLOUR, new IntPtr(NativeMethods.SC_ELEMENT_LIST)).ToInt32();
+                return HelperMethods.FromWin32Color(color);
+            }
+            set
+            {
+                int color = HelperMethods.ToWin32Color(value);
+                DirectMessage(NativeMethods.SCI_SETELEMENTCOLOUR, new IntPtr(NativeMethods.SC_ELEMENT_LIST), new IntPtr(color));
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the background color in autocompletion lists.
+        /// </summary>
+        [Description("The background color in autocompletion lists.")]
+        [Category("Autocompletion")]
+        [DefaultValue(typeof(Color), "White")]
+        public Color AutocompleteListBackColor
+        {
+            get
+            {
+                int color = DirectMessage(NativeMethods.SCI_GETELEMENTCOLOUR, new IntPtr(NativeMethods.SC_ELEMENT_LIST_BACK)).ToInt32();
+                return HelperMethods.FromWin32Color(color);
+            }
+            set
+            {
+                int color = HelperMethods.ToWin32Color(value);
+                DirectMessage(NativeMethods.SCI_SETELEMENTCOLOUR, new IntPtr(NativeMethods.SC_ELEMENT_LIST_BACK), new IntPtr(color));
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the text color of selected item in autocompletion lists.
+        /// </summary>
+        [Description("The text color of selected item in autocompletion lists.")]
+        [Category("Autocompletion")]
+        [DefaultValue(typeof(Color), "White")]
+        public Color AutocompleteListSelectedTextColor
+        {
+            get
+            {
+                int color = DirectMessage(NativeMethods.SCI_GETELEMENTCOLOUR, new IntPtr(NativeMethods.SC_ELEMENT_LIST_SELECTED)).ToInt32();
+                return HelperMethods.FromWin32Color(color);
+            }
+            set
+            {
+                int color = HelperMethods.ToWin32Color(value);
+                DirectMessage(NativeMethods.SCI_SETELEMENTCOLOUR, new IntPtr(NativeMethods.SC_ELEMENT_LIST_SELECTED), new IntPtr(color));
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the background color of selected item in autocompletion lists.
+        /// </summary>
+        [Description("The background color of selected item in autocompletion lists.")]
+        [Category("Autocompletion")]
+        [DefaultValue(typeof(Color), "0, 120, 215")]
+        public Color AutocompleteListSelectedBackColor
+        {
+            get
+            {
+                int color = DirectMessage(NativeMethods.SCI_GETELEMENTCOLOUR, new IntPtr(NativeMethods.SC_ELEMENT_LIST_SELECTED_BACK)).ToInt32();
+                return HelperMethods.FromWin32Color(color);
+            }
+            set
+            {
+                int color = HelperMethods.ToWin32Color(value);
+                DirectMessage(NativeMethods.SCI_SETELEMENTCOLOUR, new IntPtr(NativeMethods.SC_ELEMENT_LIST_SELECTED_BACK), new IntPtr(color));
             }
         }
 
@@ -4021,13 +4110,13 @@ namespace ScintillaNET
         {
             get
             {
-                var color = DirectMessage(NativeMethods.SCI_GETCARETFORE).ToInt32();
+                int color = DirectMessage(NativeMethods.SCI_GETELEMENTCOLOUR, new IntPtr(NativeMethods.SC_ELEMENT_CARET)).ToInt32();
                 return HelperMethods.FromWin32Color(color);
             }
             set
             {
                 int color = HelperMethods.ToWin32Color(value);
-                DirectMessage(NativeMethods.SCI_SETCARETFORE, new IntPtr(color));
+                DirectMessage(NativeMethods.SCI_SETELEMENTCOLOUR, new IntPtr(NativeMethods.SC_ELEMENT_CARET), new IntPtr(color));
             }
         }
 
@@ -4042,13 +4131,13 @@ namespace ScintillaNET
         {
             get
             {
-                var color = DirectMessage(NativeMethods.SCI_GETCARETLINEBACK).ToInt32();
+                int color = DirectMessage(NativeMethods.SCI_GETELEMENTCOLOUR, new IntPtr(NativeMethods.SC_ELEMENT_CARET_LINE_BACK)).ToInt32();
                 return HelperMethods.FromWin32Color(color);
             }
             set
             {
                 int color = HelperMethods.ToWin32Color(value);
-                DirectMessage(NativeMethods.SCI_SETCARETLINEBACK, new IntPtr(color));
+                DirectMessage(NativeMethods.SCI_SETELEMENTCOLOUR, new IntPtr(NativeMethods.SC_ELEMENT_CARET_LINE_BACK), new IntPtr(color));
             }
         }
 
@@ -4062,6 +4151,9 @@ namespace ScintillaNET
         [DefaultValue(256)]
         [Category("Caret")]
         [Description("The transparency of the current line background color.")]
+        [Obsolete("Use CaretLineBackColor with alpha channel instead.")]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [Browsable(false)]
         public int CaretLineBackColorAlpha
         {
             get
@@ -4102,11 +4194,14 @@ namespace ScintillaNET
         [DefaultValue(true)]
         [Category("Caret")]
         [Description("Determines whether to highlight the current caret line.")]
+        [Obsolete("Use CaretLineBackColor with alpha channel instead.")]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [Browsable(false)]
         public bool CaretLineVisible
         {
             get
             {
-                return (DirectMessage(NativeMethods.SCI_GETCARETLINEVISIBLE) != IntPtr.Zero);
+                return DirectMessage(NativeMethods.SCI_GETCARETLINEVISIBLE) != IntPtr.Zero;
             }
             set
             {
@@ -5515,6 +5610,326 @@ namespace ScintillaNET
             {
                 var eolFilled = (value ? new IntPtr(1) : IntPtr.Zero);
                 DirectMessage(NativeMethods.SCI_SETSELEOLFILLED, eolFilled);
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the color of visible white space.
+        /// </summary>
+        [Description("The color of visible white space.")]
+        [Category("Whitespace")]
+        [DefaultValue(typeof(Color), "Transparent")]
+        public Color WhitespaceTextColor
+        {
+            get
+            {
+                int color = DirectMessage(NativeMethods.SCI_GETELEMENTCOLOUR, new IntPtr(NativeMethods.SC_ELEMENT_WHITE_SPACE)).ToInt32();
+                return HelperMethods.FromWin32Color(color);
+            }
+            set
+            {
+                int color = HelperMethods.ToWin32Color(value);
+                DirectMessage(NativeMethods.SCI_SETELEMENTCOLOUR, new IntPtr(NativeMethods.SC_ELEMENT_WHITE_SPACE), new IntPtr(color));
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the background color of visible white space.
+        /// </summary>
+        [Description("The background color of visible white space.")]
+        [Category("Whitespace")]
+        [DefaultValue(typeof(Color), "Transparent")]
+        public Color WhitespaceBackColor
+        {
+            get
+            {
+                int color = DirectMessage(NativeMethods.SCI_GETELEMENTCOLOUR, new IntPtr(NativeMethods.SC_ELEMENT_WHITE_SPACE_BACK)).ToInt32();
+                return HelperMethods.FromWin32Color(color);
+            }
+            set
+            {
+                int color = HelperMethods.ToWin32Color(value);
+                DirectMessage(NativeMethods.SCI_SETELEMENTCOLOUR, new IntPtr(NativeMethods.SC_ELEMENT_WHITE_SPACE_BACK), new IntPtr(color));
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the text color of active hot spot.
+        /// </summary>
+        [Description("The text color of active hot spot.")]
+        [Category("Hotspot")]
+        [DefaultValue(typeof(Color), "Transparent")]
+        public Color ActiveHotspotTextColor
+        {
+            get
+            {
+                int color = DirectMessage(NativeMethods.SCI_GETELEMENTCOLOUR, new IntPtr(NativeMethods.SC_ELEMENT_HOT_SPOT_ACTIVE)).ToInt32();
+                return HelperMethods.FromWin32Color(color);
+            }
+            set
+            {
+                int color = HelperMethods.ToWin32Color(value);
+                DirectMessage(NativeMethods.SCI_SETELEMENTCOLOUR, new IntPtr(NativeMethods.SC_ELEMENT_HOT_SPOT_ACTIVE), new IntPtr(color));
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the background color of active hot spot.
+        /// </summary>
+        [Description("The background color of active hot spot.")]
+        [Category("Hotspot")]
+        [DefaultValue(typeof(Color), "Transparent")]
+        public Color ActiveHotspotBackColor
+        {
+            get
+            {
+                int color = DirectMessage(NativeMethods.SCI_GETELEMENTCOLOUR, new IntPtr(NativeMethods.SC_ELEMENT_HOT_SPOT_ACTIVE_BACK)).ToInt32();
+                return HelperMethods.FromWin32Color(color);
+            }
+            set
+            {
+                int color = HelperMethods.ToWin32Color(value);
+                DirectMessage(NativeMethods.SCI_SETELEMENTCOLOUR, new IntPtr(NativeMethods.SC_ELEMENT_HOT_SPOT_ACTIVE_BACK), new IntPtr(color));
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the text color of main selection.
+        /// </summary>
+        [Description("The text color of main selection.")]
+        [Category("Selection")]
+        [DefaultValue(typeof(Color), "Transparent")]
+        public Color SelectionTextColor
+        {
+            get
+            {
+                int color = DirectMessage(NativeMethods.SCI_GETELEMENTCOLOUR, new IntPtr(NativeMethods.SC_ELEMENT_SELECTION_TEXT)).ToInt32();
+                return HelperMethods.FromWin32Color(color);
+            }
+            set
+            {
+                int color = HelperMethods.ToWin32Color(value);
+                DirectMessage(NativeMethods.SCI_SETELEMENTCOLOUR, new IntPtr(NativeMethods.SC_ELEMENT_SELECTION_TEXT), new IntPtr(color));
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the background color of main selection.
+        /// </summary>
+        [Description("The background color of main selection.")]
+        [Category("Selection")]
+        [DefaultValue(typeof(Color), "Silver")]
+        public Color SelectionBackColor
+        {
+            get
+            {
+                int color = DirectMessage(NativeMethods.SCI_GETELEMENTCOLOUR, new IntPtr(NativeMethods.SC_ELEMENT_SELECTION_BACK)).ToInt32();
+                return HelperMethods.FromWin32Color(color);
+            }
+            set
+            {
+                int color = HelperMethods.ToWin32Color(value);
+                DirectMessage(NativeMethods.SCI_SETELEMENTCOLOUR, new IntPtr(NativeMethods.SC_ELEMENT_SELECTION_BACK), new IntPtr(color));
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the text color of additional selections.
+        /// </summary>
+        [Description("The text color of additional selections.")]
+        [Category("Selection")]
+        [DefaultValue(typeof(Color), "Transparent")]
+        public Color SelectionAdditionalTextColor
+        {
+            get
+            {
+                int color = DirectMessage(NativeMethods.SCI_GETELEMENTCOLOUR, new IntPtr(NativeMethods.SC_ELEMENT_SELECTION_ADDITIONAL_TEXT)).ToInt32();
+                return HelperMethods.FromWin32Color(color);
+            }
+            set
+            {
+                int color = HelperMethods.ToWin32Color(value);
+                DirectMessage(NativeMethods.SCI_SETELEMENTCOLOUR, new IntPtr(NativeMethods.SC_ELEMENT_SELECTION_ADDITIONAL_TEXT), new IntPtr(color));
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the background color of additional selections.
+        /// </summary>
+        [Description("The background color of additional selections.")]
+        [Category("Selection")]
+        [DefaultValue(typeof(Color), "215, 215, 215")]
+        public Color SelectionAdditionalBackColor
+        {
+            get
+            {
+                int color = DirectMessage(NativeMethods.SCI_GETELEMENTCOLOUR, new IntPtr(NativeMethods.SC_ELEMENT_SELECTION_ADDITIONAL_BACK)).ToInt32();
+                return HelperMethods.FromWin32Color(color);
+            }
+            set
+            {
+                int color = HelperMethods.ToWin32Color(value);
+                DirectMessage(NativeMethods.SCI_SETELEMENTCOLOUR, new IntPtr(NativeMethods.SC_ELEMENT_SELECTION_ADDITIONAL_BACK), new IntPtr(color));
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the text colour of selections when another window contains the primary selection.
+        /// </summary>
+        [Description("The text colour of selections when another window contains the primary selection.")]
+        [Category("Selection")]
+        [DefaultValue(typeof(Color), "Transparent")]
+        public Color SelectionSecondaryTextColor
+        {
+            get
+            {
+                int color = DirectMessage(NativeMethods.SCI_GETELEMENTCOLOUR, new IntPtr(NativeMethods.SC_ELEMENT_SELECTION_SECONDARY_TEXT)).ToInt32();
+                return HelperMethods.FromWin32Color(color);
+            }
+            set
+            {
+                int color = HelperMethods.ToWin32Color(value);
+                DirectMessage(NativeMethods.SCI_SETELEMENTCOLOUR, new IntPtr(NativeMethods.SC_ELEMENT_SELECTION_SECONDARY_TEXT), new IntPtr(color));
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the background color of selections when another window contains the primary selection.
+        /// </summary>
+        [Description("The background color of selections when another window contains the primary selection.")]
+        [Category("Selection")]
+        [DefaultValue(typeof(Color), "176, 176, 176")]
+        public Color SelectionSecondaryBackColor
+        {
+            get
+            {
+                int color = DirectMessage(NativeMethods.SCI_GETELEMENTCOLOUR, new IntPtr(NativeMethods.SC_ELEMENT_SELECTION_SECONDARY_BACK)).ToInt32();
+                return HelperMethods.FromWin32Color(color);
+            }
+            set
+            {
+                int color = HelperMethods.ToWin32Color(value);
+                DirectMessage(NativeMethods.SCI_SETELEMENTCOLOUR, new IntPtr(NativeMethods.SC_ELEMENT_SELECTION_SECONDARY_BACK), new IntPtr(color));
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the text colour of selections when the control has no focus.
+        /// </summary>
+        [Description("The text colour of selections when the control has no focus.")]
+        [Category("Selection")]
+        [DefaultValue(typeof(Color), "Transparent")]
+        public Color SelectionInactiveTextColor
+        {
+            get
+            {
+                int color = DirectMessage(NativeMethods.SCI_GETELEMENTCOLOUR, new IntPtr(NativeMethods.SC_ELEMENT_SELECTION_INACTIVE_TEXT)).ToInt32();
+                return HelperMethods.FromWin32Color(color);
+            }
+            set
+            {
+                int color = HelperMethods.ToWin32Color(value);
+                DirectMessage(NativeMethods.SCI_SETELEMENTCOLOUR, new IntPtr(NativeMethods.SC_ELEMENT_SELECTION_INACTIVE_TEXT), new IntPtr(color));
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the selection highlight color to use when the control has no focus.
+        /// </summary>
+        [Description("The selection highlight color to use when the control has no focus.")]
+        [Category("Selection")]
+        [DefaultValue(typeof(Color), "63, 128, 128, 128")]
+        public Color SelectionInactiveBackColor
+        {
+            get
+            {
+                int color = DirectMessage(NativeMethods.SCI_GETELEMENTCOLOUR, new IntPtr(NativeMethods.SC_ELEMENT_SELECTION_INACTIVE_BACK)).ToInt32();
+                return HelperMethods.FromWin32Color(color);
+            }
+            set
+            {
+                int color = HelperMethods.ToWin32Color(value);
+                DirectMessage(NativeMethods.SCI_SETELEMENTCOLOUR, new IntPtr(NativeMethods.SC_ELEMENT_SELECTION_INACTIVE_BACK), new IntPtr(color));
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the selected text color to use when the control has no focus.
+        /// </summary>
+        [Description("The selected text color to use when the control has no focus.")]
+        [Category("Selection")]
+        [DefaultValue(typeof(Color), "Transparent")]
+        public Color SelectionInactiveAdditionalTextColor
+        {
+            get
+            {
+                int color = DirectMessage(NativeMethods.SCI_GETELEMENTCOLOUR, new IntPtr(NativeMethods.SC_ELEMENT_SELECTION_INACTIVE_ADDITIONAL_TEXT)).ToInt32();
+                return HelperMethods.FromWin32Color(color);
+            }
+            set
+            {
+                int color = HelperMethods.ToWin32Color(value);
+                DirectMessage(NativeMethods.SCI_SETELEMENTCOLOUR, new IntPtr(NativeMethods.SC_ELEMENT_SELECTION_INACTIVE_ADDITIONAL_TEXT), new IntPtr(color));
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the selection highlight color to use when the control has no focus.
+        /// </summary>
+        [Description("The selection highlight color to use when the control has no focus.")]
+        [Category("Selection")]
+        [DefaultValue(typeof(Color), "Transparent")]
+        public Color SelectionInactiveAdditionalBackColor
+        {
+            get
+            {
+                int color = DirectMessage(NativeMethods.SCI_GETELEMENTCOLOUR, new IntPtr(NativeMethods.SC_ELEMENT_SELECTION_INACTIVE_ADDITIONAL_BACK)).ToInt32();
+                return HelperMethods.FromWin32Color(color);
+            }
+            set
+            {
+                int color = HelperMethods.ToWin32Color(value);
+                DirectMessage(NativeMethods.SCI_SETELEMENTCOLOUR, new IntPtr(NativeMethods.SC_ELEMENT_SELECTION_INACTIVE_ADDITIONAL_BACK), new IntPtr(color));
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the color of fold lines.
+        /// </summary>
+        [Description("The color of fold lines.")]
+        [Category("Folding")]
+        [DefaultValue(typeof(Color), "Transparent")]
+        public Color FoldLineBackColor
+        {
+            get
+            {
+                int color = DirectMessage(NativeMethods.SCI_GETELEMENTCOLOUR, new IntPtr(NativeMethods.SC_ELEMENT_FOLD_LINE)).ToInt32();
+                return HelperMethods.FromWin32Color(color);
+            }
+            set
+            {
+                int color = HelperMethods.ToWin32Color(value);
+                DirectMessage(NativeMethods.SCI_SETELEMENTCOLOUR, new IntPtr(NativeMethods.SC_ELEMENT_FOLD_LINE), new IntPtr(color));
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the color of line drawn to show there are lines hidden at that point.
+        /// </summary>
+        [Description("The color of line drawn to show there are lines hidden at that point.")]
+        [Category("Folding")]
+        [DefaultValue(typeof(Color), "Transparent")]
+        public Color FoldLineStripColor
+        {
+            get
+            {
+                int color = DirectMessage(NativeMethods.SCI_GETELEMENTCOLOUR, new IntPtr(NativeMethods.SC_ELEMENT_HIDDEN_LINE)).ToInt32();
+                return HelperMethods.FromWin32Color(color);
+            }
+            set
+            {
+                int color = HelperMethods.ToWin32Color(value);
+                DirectMessage(NativeMethods.SCI_SETELEMENTCOLOUR, new IntPtr(NativeMethods.SC_ELEMENT_HIDDEN_LINE), new IntPtr(color));
             }
         }
 

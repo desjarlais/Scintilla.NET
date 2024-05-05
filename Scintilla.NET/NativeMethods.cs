@@ -297,6 +297,31 @@ public static class NativeMethods
     public const int SCFIND_POSIX = 0x00400000;
     public const int SCFIND_CXX11REGEX = 0x00800000;
 
+    // Element colors
+    public const int SC_ELEMENT_LIST = 0;
+    public const int SC_ELEMENT_LIST_BACK = 1;
+    public const int SC_ELEMENT_LIST_SELECTED = 2;
+    public const int SC_ELEMENT_LIST_SELECTED_BACK = 3;
+    public const int SC_ELEMENT_SELECTION_TEXT = 10;
+    public const int SC_ELEMENT_SELECTION_BACK = 11;
+    public const int SC_ELEMENT_SELECTION_ADDITIONAL_TEXT = 12;
+    public const int SC_ELEMENT_SELECTION_ADDITIONAL_BACK = 13;
+    public const int SC_ELEMENT_SELECTION_SECONDARY_TEXT = 14;
+    public const int SC_ELEMENT_SELECTION_SECONDARY_BACK = 15;
+    public const int SC_ELEMENT_SELECTION_INACTIVE_TEXT = 16;
+    public const int SC_ELEMENT_SELECTION_INACTIVE_BACK = 17;
+    public const int SC_ELEMENT_SELECTION_INACTIVE_ADDITIONAL_TEXT = 18;
+    public const int SC_ELEMENT_SELECTION_INACTIVE_ADDITIONAL_BACK = 19;
+    public const int SC_ELEMENT_CARET = 40;
+    public const int SC_ELEMENT_CARET_ADDITIONAL = 41;
+    public const int SC_ELEMENT_CARET_LINE_BACK = 50;
+    public const int SC_ELEMENT_WHITE_SPACE = 60;
+    public const int SC_ELEMENT_WHITE_SPACE_BACK = 61;
+    public const int SC_ELEMENT_HOT_SPOT_ACTIVE = 70;
+    public const int SC_ELEMENT_HOT_SPOT_ACTIVE_BACK = 71;
+    public const int SC_ELEMENT_FOLD_LINE = 80;
+    public const int SC_ELEMENT_HIDDEN_LINE = 81;
+
     // Functions
     public const int SCI_START = 2000;
     public const int SCI_OPTIONAL_START = 3000;
@@ -965,6 +990,12 @@ public static class NativeMethods
     public const int SCI_FOLDDISPLAYTEXTSETSTYLE = 2701;
     public const int SCI_GETCARETLINEFRAME = 2704;
     public const int SCI_SETCARETLINEFRAME = 2705;
+    public const int SCI_SETELEMENTCOLOUR = 2753;
+    public const int SCI_GETELEMENTCOLOUR = 2754;
+    public const int SCI_RESETELEMENTCOLOUR = 2755;
+    public const int SCI_GETELEMENTISSET = 2756;
+    public const int SCI_GETELEMENTALLOWSTRANSLUCENT = 2757;
+    public const int SCI_GETELEMENTBASECOLOUR = 2758;
     public const int SCI_GETSELECTIONLAYER = 2762;
     public const int SCI_SETSELECTIONLAYER = 2763;
     public const int SCI_GETCARETLINELAYER = 2764;
