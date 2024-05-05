@@ -1423,13 +1423,24 @@ namespace ScintillaNET
 
         /// <summary>
         /// Default Attribute values do not always get applied to the control.
-        /// https://learn.microsoft.com/en-us/dotnet/api/system.componentmodel.defaultvalueattribute?view=net-8.0&redirectedfrom=MSDN
+        /// https://learn.microsoft.com/en-us/dotnet/api/system.componentmodel.defaultvalueattribute
         /// "A DefaultValueAttribute will not cause a member to be automatically initialized with the attribute's value. You must set the initial value in your code."
         /// This function is created to be called in the OnHandleCreated event so that we can force the default values to be applied.
         /// </summary>
         private void InitControlProps()
         {
-            CaretLineBackColor = Color.Yellow;
+            // I would like to see all of my text please
+            ScrollWidth = 1;
+            ScrollWidthTracking = true;
+
+            // Reset the valid "word chars" to work around a bug? in Scintilla which includes those below plus non-printable (beyond ASCII 127) characters
+            WordChars = "abcdefghijklmnopqrstuvwxyz_ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+
+            // Hide all default margins
+            foreach (var margin in Margins)
+            {
+                margin.Width = 0;
+            }
         }
 
         /// <summary>
@@ -1791,23 +1802,8 @@ namespace ScintillaNET
             InitDocument();
             InitControlProps();
 
-            // I would like to see all of my text please
-            DirectMessage(NativeMethods.SCI_SETSCROLLWIDTH, new IntPtr(1));
-            DirectMessage(NativeMethods.SCI_SETSCROLLWIDTHTRACKING, new IntPtr(1));
-
-            //hide all default margins
-            foreach (var margin in Margins)
-            {
-                margin.Width = 0;
-            }
-
             // Enable support for the call tip style and tabs
             DirectMessage(NativeMethods.SCI_CALLTIPUSESTYLE, new IntPtr(16));
-
-            // Reset the valid "word chars" to work around a bug? in Scintilla which includes those below plus non-printable (beyond ASCII 127) characters
-            var bytes = Helpers.GetBytes("abcdefghijklmnopqrstuvwxyz_ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789", Encoding.ASCII, zeroTerminated: true);
-            fixed (byte* bp = bytes)
-                DirectMessage(NativeMethods.SCI_SETWORDCHARS, IntPtr.Zero, new IntPtr(bp));
 
             // Native Scintilla uses the WM_CREATE message to register itself as an
             // IDropTarget... beating Windows Forms to the punch. There are many possible
@@ -3290,6 +3286,7 @@ namespace ScintillaNET
         /// Gets or sets the bi-directionality of the Scintilla control.
         /// </summary>
         /// <value>The bi-directionality of the Scintilla control.</value>
+        [DefaultValue(BiDirectionalDisplayType.Disabled)]
         [Category("Behaviour")]
         [Description("The bi-directionality of the Scintilla control.")]
         public BiDirectionalDisplayType BiDirectionality
@@ -3315,6 +3312,7 @@ namespace ScintillaNET
         /// Gets or sets a value indicating whether the reading layout is from right to left.
         /// </summary>
         /// <value><c>true</c> if reading layout is from right to left; otherwise, <c>false</c>.</value>
+        [DefaultValue(false)]
         [Category("Behaviour")]
         [Description("A value indicating whether the reading layout is from right to left.")]
         public bool UseRightToLeftReadingLayout
@@ -3650,9 +3648,9 @@ namespace ScintillaNET
         /// <summary>
         /// Gets or sets the maximum height of the autocompletion list measured in rows.
         /// </summary>
-        /// <returns>The max number of rows to display in an autocompletion window. The default is 5.</returns>
+        /// <returns>The max number of rows to display in an autocompletion window. The default is 9.</returns>
         /// <remarks>If there are more items in the list than max rows, a vertical scrollbar is shown.</remarks>
-        [DefaultValue(5)]
+        [DefaultValue(9)]
         [Category("Autocompletion")]
         [Description("The maximum number of rows to display in an autocompletion list.")]
         public int AutoCMaxHeight
@@ -4037,7 +4035,7 @@ namespace ScintillaNET
         /// Gets or sets the caret line background color.
         /// </summary>
         /// <returns>The caret line background color. The default is yellow.</returns>
-        [DefaultValue(typeof(Color), "Yellow")]
+        [DefaultValue(typeof(Color), "Transparent")]
         [Category("Caret")]
         [Description("The background color of the current line.")]
         public Color CaretLineBackColor
@@ -4100,7 +4098,7 @@ namespace ScintillaNET
         /// <summary>
         /// Gets or sets whether the caret line is visible (highlighted).
         /// </summary>
-        /// <returns>true if the caret line is visible; otherwise, false. The default is false.</returns>
+        /// <returns>true if the caret line is visible; otherwise, false. The default is true.</returns>
         [DefaultValue(true)]
         [Category("Caret")]
         [Description("Determines whether to highlight the current caret line.")]
@@ -4436,8 +4434,8 @@ namespace ScintillaNET
         /// Gets or sets the background color to use when indicating long lines with
         /// <see cref="ScintillaNET.EdgeMode.Background" />.
         /// </summary>
-        /// <returns>The background Color. The default is Silver.</returns>
-        [DefaultValue(typeof(Color), "Silver")]
+        /// <returns>The background Color.</returns>
+        [DefaultValue(typeof(Color), "0, 192, 192, 192")]
         [Category("Long Lines")]
         [Description("The background color to use when indicating long lines.")]
         public Color EdgeColor
@@ -5388,9 +5386,9 @@ namespace ScintillaNET
         /// <summary>
         /// Gets or sets the range of the horizontal scroll bar.
         /// </summary>
-        /// <returns>The range in pixels of the horizontal scroll bar. The default is 2000.</returns>
+        /// <returns>The range in pixels of the horizontal scroll bar.</returns>
         /// <remarks>The width will automatically increase as needed when <see cref="ScrollWidthTracking" /> is enabled.</remarks>
-        [DefaultValue(2000)]
+        [DefaultValue(1)]
         [Category("Scrolling")]
         [Description("The range in pixels of the horizontal scroll bar.")]
         public int ScrollWidth
@@ -5614,7 +5612,7 @@ namespace ScintillaNET
         /// Gets or sets whether tab inserts a tab character, or indents.
         /// </summary>
         /// <returns>Whether tab inserts a tab character (false), or indents (true).</returns>
-        [DefaultValue(false)]
+        [DefaultValue(true)]
         [Category("Indentation")]
         [Description("Determines whether tab inserts a tab character, or indents.")]
         public bool TabIndents
@@ -6079,9 +6077,9 @@ namespace ScintillaNET
         /// </summary>
         /// <returns>
         /// One of the <see cref="ScintillaNET.WrapMode" /> enumeration values.
-        /// The default is <see cref="ScintillaNET.WrapMode.Word" />.
+        /// The default is <see cref="ScintillaNET.WrapMode.None" />.
         /// </returns>
-        [DefaultValue(WrapMode.Word)]
+        [DefaultValue(WrapMode.None)]
         [Category("Line Wrapping")]
         [Description("The line wrapping strategy.")]
         public WrapMode WrapMode
