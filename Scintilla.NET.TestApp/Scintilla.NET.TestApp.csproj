@@ -11,6 +11,8 @@
     <UseWindowsForms>true</UseWindowsForms>
     <LangVersion>latest</LangVersion>
     <PlatformTarget>AnyCPU</PlatformTarget>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <RootNamespace>ScintillaNET.TestApp</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
     <Compile Update="FormMain.cs">
