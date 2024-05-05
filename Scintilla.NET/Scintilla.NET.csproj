@@ -5,7 +5,7 @@
 		<NeutralLanguage>en-US</NeutralLanguage>
 		<Description>Source Editing Component based on Scintilla 5 series.</Description>
 		<Copyright>Copyright (c) Jacob Slusser 2018, VPKSoft, cyber960 2022, desjarlais 2023.</Copyright>
-		<Version>5.3.3.19</Version>
+		<Version>5.5.0</Version>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
 		<UseWindowsForms>true</UseWindowsForms>
