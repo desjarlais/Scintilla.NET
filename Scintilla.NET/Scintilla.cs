@@ -482,7 +482,7 @@ namespace ScintillaNET
         /// <param name="color">The new highlight text Color. The default is dark blue.</param>
         public void CallTipSetForeHlt(Color color)
         {
-            var colour = ColorTranslator.ToWin32(color);
+            var colour = HelperMethods.ToWin32Color(color);
             DirectMessage(NativeMethods.SCI_CALLTIPSETFOREHLT, new IntPtr(colour));
         }
 
@@ -1574,7 +1574,7 @@ namespace ScintillaNET
         public void MultiEdgeAddLine(int column, Color edgeColor)
         {
             column = Helpers.ClampMin(column, 0);
-            var colour = ColorTranslator.ToWin32(edgeColor);
+            var colour = HelperMethods.ToWin32Color(edgeColor);
 
             DirectMessage(NativeMethods.SCI_MULTIEDGEADDLINE, new IntPtr(column), new IntPtr(colour));
         }
@@ -2416,7 +2416,7 @@ namespace ScintillaNET
         /// <remarks>Calling <see cref="SetSelectionBackColor" /> will reset the <paramref name="color" /> specified.</remarks>
         public void SetAdditionalSelBack(Color color)
         {
-            var colour = ColorTranslator.ToWin32(color);
+            var colour = HelperMethods.ToWin32Color(color);
             DirectMessage(NativeMethods.SCI_SETADDITIONALSELBACK, new IntPtr(colour));
         }
 
@@ -2427,7 +2427,7 @@ namespace ScintillaNET
         /// <remarks>Calling <see cref="SetSelectionForeColor" /> will reset the <paramref name="color" /> specified.</remarks>
         public void SetAdditionalSelFore(Color color)
         {
-            var colour = ColorTranslator.ToWin32(color);
+            var colour = HelperMethods.ToWin32Color(color);
             DirectMessage(NativeMethods.SCI_SETADDITIONALSELFORE, new IntPtr(colour));
         }
 
@@ -2460,7 +2460,7 @@ namespace ScintillaNET
         /// <seealso cref="SetFoldMarginHighlightColor" />
         public void SetFoldMarginColor(bool use, Color color)
         {
-            var colour = ColorTranslator.ToWin32(color);
+            var colour = HelperMethods.ToWin32Color(color);
             var useFoldMarginColour = (use ? new IntPtr(1) : IntPtr.Zero);
 
             DirectMessage(NativeMethods.SCI_SETFOLDMARGINCOLOUR, useFoldMarginColour, new IntPtr(colour));
@@ -2474,7 +2474,7 @@ namespace ScintillaNET
         /// <seealso cref="SetFoldMarginColor" />
         public void SetFoldMarginHighlightColor(bool use, Color color)
         {
-            var colour = ColorTranslator.ToWin32(color);
+            var colour = HelperMethods.ToWin32Color(color);
             var useFoldMarginHighlightColour = (use ? new IntPtr(1) : IntPtr.Zero);
 
             DirectMessage(NativeMethods.SCI_SETFOLDMARGINHICOLOUR, useFoldMarginHighlightColour, new IntPtr(colour));
@@ -2647,7 +2647,7 @@ namespace ScintillaNET
         /// <seealso cref="SetSelectionForeColor" />
         public void SetSelectionBackColor(bool use, Color color)
         {
-            var colour = ColorTranslator.ToWin32(color);
+            var colour = HelperMethods.ToWin32Color(color);
             var useSelectionForeColour = (use ? new IntPtr(1) : IntPtr.Zero);
 
             DirectMessage(NativeMethods.SCI_SETSELBACK, useSelectionForeColour, new IntPtr(colour));
@@ -2661,7 +2661,7 @@ namespace ScintillaNET
         /// <seealso cref="SetSelectionBackColor" />
         public void SetSelectionForeColor(bool use, Color color)
         {
-            var colour = ColorTranslator.ToWin32(color);
+            var colour = HelperMethods.ToWin32Color(color);
             var useSelectionForeColour = (use ? new IntPtr(1) : IntPtr.Zero);
 
             DirectMessage(NativeMethods.SCI_SETSELFORE, useSelectionForeColour, new IntPtr(colour));
@@ -2750,7 +2750,7 @@ namespace ScintillaNET
         /// <seealso cref="SetWhitespaceForeColor" />
         public void SetWhitespaceBackColor(bool use, Color color)
         {
-            var colour = ColorTranslator.ToWin32(color);
+            var colour = HelperMethods.ToWin32Color(color);
             var useWhitespaceBackColour = (use ? new IntPtr(1) : IntPtr.Zero);
 
             DirectMessage(NativeMethods.SCI_SETWHITESPACEBACK, useWhitespaceBackColour, new IntPtr(colour));
@@ -2766,7 +2766,7 @@ namespace ScintillaNET
         /// <seealso cref="SetWhitespaceBackColor" />
         public void SetWhitespaceForeColor(bool use, Color color)
         {
-            var colour = ColorTranslator.ToWin32(color);
+            var colour = HelperMethods.ToWin32Color(color);
             var useWhitespaceForeColour = (use ? new IntPtr(1) : IntPtr.Zero);
 
             DirectMessage(NativeMethods.SCI_SETWHITESPACEFORE, useWhitespaceForeColour, new IntPtr(colour));
@@ -3369,11 +3369,11 @@ namespace ScintillaNET
             get
             {
                 var color = DirectMessage(NativeMethods.SCI_GETADDITIONALCARETFORE).ToInt32();
-                return ColorTranslator.FromWin32(color);
+                return HelperMethods.FromWin32Color(color);
             }
             set
             {
-                var color = ColorTranslator.ToWin32(value);
+                int color = HelperMethods.ToWin32Color(value);
                 DirectMessage(NativeMethods.SCI_SETADDITIONALCARETFORE, new IntPtr(color));
             }
         }
@@ -4024,11 +4024,11 @@ namespace ScintillaNET
             get
             {
                 var color = DirectMessage(NativeMethods.SCI_GETCARETFORE).ToInt32();
-                return ColorTranslator.FromWin32(color);
+                return HelperMethods.FromWin32Color(color);
             }
             set
             {
-                var color = ColorTranslator.ToWin32(value);
+                int color = HelperMethods.ToWin32Color(value);
                 DirectMessage(NativeMethods.SCI_SETCARETFORE, new IntPtr(color));
             }
         }
@@ -4045,11 +4045,11 @@ namespace ScintillaNET
             get
             {
                 var color = DirectMessage(NativeMethods.SCI_GETCARETLINEBACK).ToInt32();
-                return ColorTranslator.FromWin32(color);
+                return HelperMethods.FromWin32Color(color);
             }
             set
             {
-                var color = ColorTranslator.ToWin32(value);
+                int color = HelperMethods.ToWin32Color(value);
                 DirectMessage(NativeMethods.SCI_SETCARETLINEBACK, new IntPtr(color));
             }
         }
@@ -4445,11 +4445,11 @@ namespace ScintillaNET
             get
             {
                 var color = DirectMessage(NativeMethods.SCI_GETEDGECOLOUR).ToInt32();
-                return ColorTranslator.FromWin32(color);
+                return HelperMethods.FromWin32Color(color);
             }
             set
             {
-                var color = ColorTranslator.ToWin32(value);
+                var color = HelperMethods.ToWin32Color(value);
                 DirectMessage(NativeMethods.SCI_SETEDGECOLOUR, new IntPtr(color));
             }
         }

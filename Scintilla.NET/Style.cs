@@ -98,14 +98,14 @@ public class Style
         get
         {
             var color = scintilla.DirectMessage(NativeMethods.SCI_STYLEGETBACK, new IntPtr(Index), IntPtr.Zero).ToInt32();
-            return ColorTranslator.FromWin32(color);
+            return HelperMethods.FromWin32Color(color);
         }
         set
         {
             if (value.IsEmpty)
                 value = Color.White;
 
-            var color = ColorTranslator.ToWin32(value);
+            var color = HelperMethods.ToWin32Color(value);
             scintilla.DirectMessage(NativeMethods.SCI_STYLESETBACK, new IntPtr(Index), new IntPtr(color));
         }
     }
@@ -231,14 +231,14 @@ public class Style
         get
         {
             var color = scintilla.DirectMessage(NativeMethods.SCI_STYLEGETFORE, new IntPtr(Index), IntPtr.Zero).ToInt32();
-            return ColorTranslator.FromWin32(color);
+            return HelperMethods.FromWin32Color(color);
         }
         set
         {
             if (value.IsEmpty)
                 value = Color.Black;
 
-            var color = ColorTranslator.ToWin32(value);
+            var color = HelperMethods.ToWin32Color(value);
             scintilla.DirectMessage(NativeMethods.SCI_STYLESETFORE, new IntPtr(Index), new IntPtr(color));
         }
     }

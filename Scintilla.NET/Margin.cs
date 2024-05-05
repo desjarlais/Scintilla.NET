@@ -26,14 +26,14 @@ public class Margin
         get
         {
             var color = scintilla.DirectMessage(NativeMethods.SCI_GETMARGINBACKN, new IntPtr(Index)).ToInt32();
-            return ColorTranslator.FromWin32(color);
+            return HelperMethods.FromWin32Color(color);
         }
         set
         {
             if (value.IsEmpty)
                 value = Color.Black;
 
-            var color = ColorTranslator.ToWin32(value);
+            var color = HelperMethods.ToWin32Color(value);
             scintilla.DirectMessage(NativeMethods.SCI_SETMARGINBACKN, new IntPtr(Index), new IntPtr(color));
         }
     }

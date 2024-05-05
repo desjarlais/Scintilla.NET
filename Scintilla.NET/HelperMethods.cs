@@ -1,4 +1,7 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
 
 namespace ScintillaNET;
 
@@ -7,6 +10,36 @@ namespace ScintillaNET;
 /// </summary>
 public static class HelperMethods
 {
+    static readonly Dictionary<int, Color> knownColorMap = [];
+
+    static HelperMethods()
+    {
+        foreach (var knownColor in Enum.GetValues(typeof(KnownColor)).Cast<KnownColor>().Where(k => k >= KnownColor.Transparent && k < KnownColor.ButtonFace))
+        {
+            Color color = Color.FromKnownColor(knownColor);
+            knownColorMap[ToWin32Color(color)] = color;
+        }
+    }
+
+    public static Color FromWin32Color(int color)
+    {
+        if (color == 0)
+            return Color.Transparent;
+
+        if (knownColorMap.TryGetValue(color, out Color result))
+            // We do all this nonsense because because Visual Studio designer
+            // does not mark raw colors as default if there exists a known color
+            // with the same value.
+            return result;
+
+        return Color.FromArgb((color >> 24) & 0xFF, (color >> 0) & 0xFF, (color >> 8) & 0xFF, (color >> 16) & 0xFF);
+    }
+
+    public static int ToWin32Color(Color color)
+    {
+        return (color.A << 24) | (color.R << 0) | (color.G << 8) | (color.B << 16);
+    }
+
     /// <summary>
     /// Gets the folding state of the control as a delimited string containing line indexes.
     /// </summary>

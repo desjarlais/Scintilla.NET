@@ -105,7 +105,7 @@ public class Marker
     /// <seealso cref="SetAlpha" />
     public void SetBackColor(Color color)
     {
-        var colour = ColorTranslator.ToWin32(color);
+        var colour = HelperMethods.ToWin32Color(color);
         scintilla.DirectMessage(NativeMethods.SCI_MARKERSETBACK, new IntPtr(Index), new IntPtr(colour));
     }
 
@@ -115,7 +115,7 @@ public class Marker
     /// <param name="color">The <see cref="Marker" /> foreground Color. The default is Black.</param>
     public void SetForeColor(Color color)
     {
-        var colour = ColorTranslator.ToWin32(color);
+        var colour = HelperMethods.ToWin32Color(color);
         scintilla.DirectMessage(NativeMethods.SCI_MARKERSETFORE, new IntPtr(Index), new IntPtr(colour));
     }
 

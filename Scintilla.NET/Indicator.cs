@@ -137,11 +137,11 @@ public class Indicator
         get
         {
             var color = scintilla.DirectMessage(NativeMethods.SCI_INDICGETFORE, new IntPtr(Index)).ToInt32();
-            return ColorTranslator.FromWin32(color);
+            return HelperMethods.FromWin32Color(color);
         }
         set
         {
-            var color = ColorTranslator.ToWin32(value);
+            var color = HelperMethods.ToWin32Color(value);
             scintilla.DirectMessage(NativeMethods.SCI_INDICSETFORE, new IntPtr(Index), new IntPtr(color));
         }
     }
@@ -160,11 +160,11 @@ public class Indicator
         get
         {
             var color = scintilla.DirectMessage(NativeMethods.SCI_INDICGETHOVERFORE, new IntPtr(Index)).ToInt32();
-            return ColorTranslator.FromWin32(color);
+            return HelperMethods.FromWin32Color(color);
         }
         set
         {
-            var color = ColorTranslator.ToWin32(value);
+            var color = HelperMethods.ToWin32Color(value);
             scintilla.DirectMessage(NativeMethods.SCI_INDICSETHOVERFORE, new IntPtr(Index), new IntPtr(color));
         }
     }
