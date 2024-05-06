@@ -4738,6 +4738,7 @@ namespace ScintillaNET
             set
             {
                 var defaultFontStyle = Styles[Style.Default];
+                value = value ?? Parent?.Font ?? Control.DefaultFont;
                 defaultFontStyle.Font = value.Name;
                 defaultFontStyle.SizeF = value.Size;
                 defaultFontStyle.Bold = value.Bold;
