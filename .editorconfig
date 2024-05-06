@@ -32,6 +32,6 @@ indent_size = 2
 indent_style = space
 indent_size = 2
 
-[[Aa]pp.config,[Aa]pp.manifest]
+[[Aa]pp.{config,manifest}]
 indent_style = space
 indent_size = 2
