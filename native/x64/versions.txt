@@ -1,2 +1,0 @@
-Scintilla 5.4.3
-Lexilla 5.3.1

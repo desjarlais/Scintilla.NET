@@ -1,96 +1,198 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Linq;
+using System.Text;
 using System.Windows.Forms;
-using ScintillaNET;
 
-namespace Scintilla.NET.TestApp;
+namespace ScintillaNET.TestApp;
 
 public partial class FormMain : Form
 {
     public FormMain()
     {
         InitializeComponent();
-        // ReSharper disable once VirtualMemberCallInConstructor
-        Text += @"  © desjarlais " + DateTime.Now.Year;
-        //            scintilla.Technology = Technology.DirectWrite;
-    }
 
-    private void mnuOpen_Click(object sender, EventArgs e)
-    {
-        if (odFile.ShowDialog() == DialogResult.OK)
-        {
-            scintilla.Text = File.ReadAllText(odFile.FileName);
-            scintilla.EmptyUndoBuffer();
-            SetLexerCs();
-        }
-    }
-
-    private void SetLexerCs()
-    {
-        // Configuring the default style with properties
-        // we have common to every lexer style saves time.
-        scintilla.StyleResetDefault();
-        scintilla.Styles[Style.Default].Font = "Consolas";
-        scintilla.Styles[Style.Default].Size = 10;
-        scintilla.StyleClearAll();
-
-        // Configure the CPP (C#) lexer styles
-        scintilla.Styles[Style.Cpp.Default].ForeColor = Color.Silver;
-        scintilla.Styles[Style.Cpp.Comment].ForeColor = Color.FromArgb(0, 128, 0); // Green
-        scintilla.Styles[Style.Cpp.CommentLine].ForeColor = Color.FromArgb(0, 128, 0); // Green
-        scintilla.Styles[Style.Cpp.CommentLineDoc].ForeColor = Color.FromArgb(128, 128, 128); // Gray
-        scintilla.Styles[Style.Cpp.Number].ForeColor = Color.Olive;
-        scintilla.Styles[Style.Cpp.Word].ForeColor = Color.Blue;
-        scintilla.Styles[Style.Cpp.Word2].ForeColor = Color.Blue;
-        scintilla.Styles[Style.Cpp.String].ForeColor = Color.FromArgb(163, 21, 21); // Red
-        scintilla.Styles[Style.Cpp.Character].ForeColor = Color.FromArgb(163, 21, 21); // Red
-        scintilla.Styles[Style.Cpp.Verbatim].ForeColor = Color.FromArgb(163, 21, 21); // Red
-        scintilla.Styles[Style.Cpp.StringEol].BackColor = Color.Pink;
-        scintilla.Styles[Style.Cpp.Operator].ForeColor = Color.Purple;
-        scintilla.Styles[Style.Cpp.Preprocessor].ForeColor = Color.Maroon;
         scintilla.LexerName = "cpp";
 
-        // Set the keywords
-        scintilla.SetKeywords(0,
-            "abstract as base break case catch checked continue default delegate do else event explicit extern false finally fixed for foreach goto if implicit in interface internal is lock namespace new null object operator out override params private protected public readonly ref return sealed sizeof stackalloc switch this throw true try typeof unchecked unsafe using virtual while");
-        scintilla.SetKeywords(1,
-            "bool byte char class const decimal double enum float int long sbyte short static string struct uint ulong ushort void");
-    }
+        SetScintillaStyles(scintilla);
+        AdjustLineNumberMargin(scintilla);
+        AdjustFoldMargin(scintilla);
 
-    private void mnuExit_Click(object sender, EventArgs e)
-    {
-        Close();
-    }
+        Version scintillaNetVersion = scintilla.GetType().Assembly.GetName().Version;
+        string version = scintillaNetVersion.Revision == 0 ? scintillaNetVersion.ToString(3) : scintillaNetVersion.ToString();
+        string scintillaVersion = scintilla.ScintillaVersion;
+        string lexillaVersion = scintilla.LexillaVersion;
 
-    private void mnuTestMethod_Click(object sender, EventArgs e)
-    {
-        scintilla.ConvertEols(Eol.Cr); 
-        scintilla.Refresh();
-/*            string ohm = "\u2126";
-            string omega = "\u03C9".ToUpper();
-            scintilla.Text = $"Ohm: {ohm}\r\nOmega: {omega}";
+        toolStripStatusLabel_Version.Text = $"ScintillaNET v{version} (Scintilla v{scintillaVersion}, Lexilla v{lexillaVersion})";
 
-            scintilla.SetRepresentation(ohm, "OHM");
-            scintilla.SetRepresentation(omega, "OMEGA");
-*/
-    }
-
-    private void listLexersToolStripMenuItem_Click(object sender, EventArgs e)
-    {
-        for (int i = 0; i < Lexilla.GetLexerCount(); i++)
+        foreach (var group in Lexilla.GetLexerNames().ToArray().OrderBy(x => x).GroupBy(x => char.ToUpperInvariant(x[0])))
         {
-            scintilla.AppendText(Lexilla.GetLexerName(i) + Environment.NewLine);
+            char first = group.Key;
+
+            if (group.Count() > 1)
+            {
+                var item = (ToolStripMenuItem)lexersToolStripMenuItem.DropDownItems.Add(first.ToString());
+
+                foreach (string lexer in group)
+                    item.DropDownItems.Add(lexer, null, Lexer_Click);
+            }
+            else
+                lexersToolStripMenuItem.DropDownItems.Add(group.Single(), null, Lexer_Click);
         }
     }
 
-    private void scintilla_MouseDoubleClick(object sender, MouseEventArgs e)
+    private void Lexer_Click(object sender, EventArgs e)
     {
-        MessageBox.Show($@"Selected text: {scintilla.SelectedText}.", @"Double-click", MessageBoxButtons.OK, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1);
+        ToolStripItem item = (ToolStripItem)sender;
+        scintilla.LexerName = item.Text;
+        SetScintillaStyles(scintilla);
+        scintilla.Colorize(0, scintilla.TextLength);
+        AdjustFoldMargin(scintilla);
     }
 
     private void FormMain_Shown(object sender, EventArgs e)
     {
-        scintilla1.Focus();
+        scintilla.Select();
+    }
+
+    private static void SetScintillaStyles(Scintilla scintilla)
+    {
+        scintilla.StyleClearAll();
+
+        // Configure the CPP (C#) lexer styles
+        scintilla.Styles[1].ForeColor = Color.FromArgb(0x00, 0x80, 0x00);  // COMMENT
+        scintilla.Styles[2].ForeColor = Color.FromArgb(0x00, 0x80, 0x00);  // COMMENT LINE
+        scintilla.Styles[3].ForeColor = Color.FromArgb(0x00, 0x80, 0x80);  // COMMENT DOC
+        scintilla.Styles[4].ForeColor = Color.FromArgb(0xFF, 0x80, 0x00);  // NUMBER
+        scintilla.Styles[5].ForeColor = Color.FromArgb(0x00, 0x00, 0xFF);  // INSTRUCTION WORD
+        scintilla.Styles[6].ForeColor = Color.FromArgb(0x80, 0x80, 0x80);  // STRING
+        scintilla.Styles[7].ForeColor = Color.FromArgb(0x80, 0x80, 0x80);  // CHARACTER
+        scintilla.Styles[9].ForeColor = Color.FromArgb(0x80, 0x40, 0x00);  // PREPROCESSOR
+        scintilla.Styles[10].ForeColor = Color.FromArgb(0x00, 0x00, 0x80); // OPERATOR
+        scintilla.Styles[11].ForeColor = Color.FromArgb(0x00, 0x00, 0x00); // DEFAULT
+        scintilla.Styles[13].ForeColor = Color.FromArgb(0x00, 0x00, 0x00); // VERBATIM
+        scintilla.Styles[14].ForeColor = Color.FromArgb(0x00, 0x00, 0x00); // REGEX
+        scintilla.Styles[15].ForeColor = Color.FromArgb(0x00, 0x80, 0x80); // COMMENT LINE DOC
+        scintilla.Styles[16].ForeColor = Color.FromArgb(0x80, 0x00, 0xFF); // TYPE WORD
+        scintilla.Styles[17].ForeColor = Color.FromArgb(0x00, 0x80, 0x80); // COMMENT DOC KEYWORD
+        scintilla.Styles[18].ForeColor = Color.FromArgb(0x00, 0x80, 0x80); // COMMENT DOC KEYWORD ERROR
+        scintilla.Styles[23].ForeColor = Color.FromArgb(0x00, 0x80, 0x00); // PREPROCESSOR COMMENT
+        scintilla.Styles[24].ForeColor = Color.FromArgb(0x00, 0x80, 0x80); // PREPROCESSOR COMMENT DOC
+        scintilla.Styles[5].Bold = true;
+        scintilla.Styles[10].Bold = true;
+        scintilla.Styles[14].Bold = true;
+        scintilla.Styles[17].Bold = true;
+
+        scintilla.SetKeywords(0,
+            "abstract add alias as ascending async await base break case catch checked continue default delegate descending do dynamic else event explicit extern false finally fixed for foreach from get global goto group if implicit in interface internal into is join let lock nameof namespace new null object operator orderby out override params partial private protected public readonly ref remove return sealed select set sizeof stackalloc switch this throw true try typeof unchecked unsafe using value virtual when where while yield");
+        scintilla.SetKeywords(1,
+            "bool byte char class const decimal double enum float int long nint nuint sbyte short static string struct uint ulong ushort var void");
+    }
+
+    private static byte CountDigits(int x)
+    {
+        if (x == 0)
+            return 1;
+
+        byte result = 0;
+        while (x > 0)
+        {
+            result++;
+            x /= 10;
+        }
+
+        return result;
+    }
+
+    private static readonly Dictionary<Scintilla, int> maxLineNumberCharLengthMap = [];
+
+    private static void AdjustLineNumberMargin(Scintilla scintilla)
+    {
+        int maxLineNumberCharLength = CountDigits(scintilla.Lines.Count);
+        if (maxLineNumberCharLength == (maxLineNumberCharLengthMap.TryGetValue(scintilla, out int charLen) ? charLen : 0))
+            return;
+
+        const int padding = 2;
+        scintilla.Margins[0].Width = scintilla.TextWidth(Style.LineNumber, new string('0', maxLineNumberCharLength + 1)) + padding;
+        maxLineNumberCharLengthMap[scintilla] = maxLineNumberCharLength;
+    }
+
+    private static void AdjustFoldMargin(Scintilla scintilla)
+    {
+        // Instruct the lexer to calculate folding
+        scintilla.SetProperty("fold", "1");
+
+        // Configure a margin to display folding symbols
+        scintilla.Margins[2].Type = MarginType.Symbol;
+        scintilla.Margins[2].Mask = Marker.MaskFolders;
+        scintilla.Margins[2].Sensitive = true;
+        scintilla.Margins[2].Width = 20;
+
+        // Set colors for all folding markers
+        for (int i = 25; i <= 31; i++)
+        {
+            scintilla.Markers[i].SetForeColor(SystemColors.ControlLightLight);
+            scintilla.Markers[i].SetBackColor(SystemColors.ControlDark);
+        }
+
+        // Configure folding markers with respective symbols
+        scintilla.Markers[Marker.Folder].Symbol = MarkerSymbol.BoxPlus;
+        scintilla.Markers[Marker.FolderOpen].Symbol = MarkerSymbol.BoxMinus;
+        scintilla.Markers[Marker.FolderEnd].Symbol = MarkerSymbol.BoxPlusConnected;
+        scintilla.Markers[Marker.FolderMidTail].Symbol = MarkerSymbol.TCorner;
+        scintilla.Markers[Marker.FolderOpenMid].Symbol = MarkerSymbol.BoxMinusConnected;
+        scintilla.Markers[Marker.FolderSub].Symbol = MarkerSymbol.VLine;
+        scintilla.Markers[Marker.FolderTail].Symbol = MarkerSymbol.LCorner;
+
+        // Enable automatic folding
+        scintilla.AutomaticFold = (AutomaticFold.Show | AutomaticFold.Click | AutomaticFold.Change);
+    }
+
+    private void openToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+        if (openFileDialog.ShowDialog(this) == DialogResult.OK)
+        {
+            scintilla.Text = File.ReadAllText(openFileDialog.FileName, Encoding.UTF8);
+        }
+    }
+
+    private void saveToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+        if (saveFileDialog.ShowDialog(this) == DialogResult.OK)
+        {
+            File.WriteAllText(saveFileDialog.FileName, scintilla.Text, Encoding.UTF8);
+            scintilla.SetSavePoint();
+        }
+    }
+
+    private void FormMain_FormClosing(object sender, FormClosingEventArgs e)
+    {
+        //if (scintilla.Modified)
+        //{
+        //    if (MessageBox.Show("You have unsaved changes, are you sure to exit?", "Scintilla", MessageBoxButtons.OKCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) == DialogResult.Cancel)
+        //        e.Cancel = true;
+        //}
+    }
+
+    private void describeKeywordSetsToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+        scintilla.ReplaceSelection(scintilla.DescribeKeywordSets());
+    }
+
+    private void scintilla_KeyDown(object sender, KeyEventArgs e)
+    {
+        if (e.KeyData == (Keys.Control | Keys.Shift | Keys.Z))
+        {
+            scintilla.Redo();
+            e.Handled = true;
+            e.SuppressKeyPress = true;
+        }
+    }
+
+    private void scintilla_TextChanged(object sender, EventArgs e)
+    {
+        AdjustLineNumberMargin(scintilla);
     }
 }
