@@ -59,6 +59,7 @@
 			this.scintilla._ScintillaManagedDragDrop = true;
 			this.scintilla.BorderStyle = ScintillaNET.BorderStyle.Fixed3DVisualStyles;
 			this.scintilla.CaretLineBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(232)))), ((int)(((byte)(232)))), ((int)(((byte)(255)))));
+			this.scintilla.ChangeHistory = ((ScintillaNET.ChangeHistory)((ScintillaNET.ChangeHistory.Enabled | ScintillaNET.ChangeHistory.Markers)));
 			this.scintilla.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.scintilla.FoldLineStripColor = System.Drawing.Color.Gray;
 			this.scintilla.Font = new System.Drawing.Font("Consolas", 10.2F);
@@ -68,6 +69,8 @@
 			this.scintilla.ScrollWidth = 1;
 			this.scintilla.Size = new System.Drawing.Size(914, 426);
 			this.scintilla.TabIndex = 2;
+			this.scintilla.SavePointLeft += new System.EventHandler<System.EventArgs>(this.scintilla_SavePointLeft);
+			this.scintilla.SavePointReached += new System.EventHandler<System.EventArgs>(this.scintilla_SavePointReached);
 			this.scintilla.TextChanged += new System.EventHandler(this.scintilla_TextChanged);
 			this.scintilla.KeyDown += new System.Windows.Forms.KeyEventHandler(this.scintilla_KeyDown);
 			// 
@@ -187,6 +190,10 @@
 			this.lexersToolStripMenuItem.Name = "lexersToolStripMenuItem";
 			this.lexersToolStripMenuItem.Size = new System.Drawing.Size(64, 24);
 			this.lexersToolStripMenuItem.Text = "Lexers";
+			// 
+			// saveFileDialog
+			// 
+			this.saveFileDialog.Filter = "All Files|*.*";
 			// 
 			// FormMain
 			// 
