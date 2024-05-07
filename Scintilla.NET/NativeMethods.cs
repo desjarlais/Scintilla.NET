@@ -79,7 +79,7 @@ public static class NativeMethods
     // Message-only window
     public const int HWND_MESSAGE = (-3);
 
-    // Indicators
+    // Indicator styles
     public const int INDIC_PLAIN = 0;
     public const int INDIC_SQUIGGLE = 1;
     public const int INDIC_TT = 2;
@@ -102,9 +102,26 @@ public static class NativeMethods
     public const int INDIC_POINTCHARACTER = 19;
     public const int INDIC_GRADIENT = 20;
     public const int INDIC_GRADIENTCENTRE = 21;
-    public const int INDIC_MAX = 31;
     public const int INDIC_POINT_TOP = 22;
+
+    [Obsolete("Use INDICATOR_CONTAINER instead.")]
     public const int INDIC_CONTAINER = 8;
+    [Obsolete("Use INDICATOR_MAX instead.")]
+    public const int INDIC_MAX = 31;
+
+    // Indicators
+    public const int INDICATOR_CONTAINER = 8;
+    public const int INDICATOR_IME = 32;
+    public const int INDICATOR_IME_MAX = 35;
+    public const int INDICATOR_HISTORY_REVERTED_TO_ORIGIN_INSERTION = 36;
+    public const int INDICATOR_HISTORY_REVERTED_TO_ORIGIN_DELETION = 37;
+    public const int INDICATOR_HISTORY_SAVED_INSERTION = 38;
+    public const int INDICATOR_HISTORY_SAVED_DELETION = 39;
+    public const int INDICATOR_HISTORY_MODIFIED_INSERTION = 40;
+    public const int INDICATOR_HISTORY_MODIFIED_DELETION = 41;
+    public const int INDICATOR_HISTORY_REVERTED_TO_MODIFIED_INSERTION = 42;
+    public const int INDICATOR_HISTORY_REVERTED_TO_MODIFIED_DELETION = 43;
+    public const int INDICATOR_MAX = 43;
 
     // Phases
     public const int SC_PHASES_ONE = 0;
@@ -239,7 +256,13 @@ public static class NativeMethods
     public const int SC_MARK_UNDERLINE = 29;
     public const int SC_MARK_RGBAIMAGE = 30;
     public const int SC_MARK_BOOKMARK = 31;
+    public const int SC_MARK_VERTICALBOOKMARK = 32;
+    public const int SC_MARK_BAR = 33;
     public const int SC_MARK_CHARACTER = 10000;
+    public const int SC_MARKNUM_HISTORY_REVERTED_TO_ORIGIN = 21;
+    public const int SC_MARKNUM_HISTORY_SAVED = 22;
+    public const int SC_MARKNUM_HISTORY_MODIFIED = 23;
+    public const int SC_MARKNUM_HISTORY_REVERTED_TO_MODIFIED = 24;
     public const int SC_MARKNUM_FOLDEREND = 25;
     public const int SC_MARKNUM_FOLDEROPENMID = 26;
     public const int SC_MARKNUM_FOLDERMIDTAIL = 27;
@@ -322,6 +345,12 @@ public static class NativeMethods
     public const int SC_ELEMENT_HOT_SPOT_ACTIVE_BACK = 71;
     public const int SC_ELEMENT_FOLD_LINE = 80;
     public const int SC_ELEMENT_HIDDEN_LINE = 81;
+
+    // Change history
+    public const int SC_CHANGE_HISTORY_DISABLED = 0;
+    public const int SC_CHANGE_HISTORY_ENABLED = 1;
+    public const int SC_CHANGE_HISTORY_MARKERS = 2;
+    public const int SC_CHANGE_HISTORY_INDICATORS = 4;
 
     // Functions
     public const int SCI_START = 2000;
@@ -1003,6 +1032,8 @@ public static class NativeMethods
     public const int SCI_SETSELECTIONLAYER = 2763;
     public const int SCI_GETCARETLINELAYER = 2764;
     public const int SCI_SETCARETLINELAYER = 2765;
+    public const int SCI_SETCHANGEHISTORY = 2780;
+    public const int SCI_GETCHANGEHISTORY = 2781;
     public const int SCI_STARTRECORD = 3001;
     public const int SCI_STOPRECORD = 3002;
     public const int SCI_SETLEXER = 4001;
@@ -1997,6 +2028,12 @@ public static class NativeMethods
     #endregion Callbacks
 
     #region Functions
+
+    [DllImport(DLL_NAME_USER32, SetLastError = true)]
+    public static extern IntPtr MB_GetString(uint hInst);
+
+    public static string GetMessageBoxString(uint msgId) =>
+        Marshal.PtrToStringUni(MB_GetString(msgId));
 
     [DllImport(DLL_NAME_USER32, SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]

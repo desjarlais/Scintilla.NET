@@ -16,6 +16,32 @@ public class Marker
     public const uint MaskAll = unchecked((uint)-1);
 
     /// <summary>
+    /// An unsigned 32-bit mask of history <see cref="Margin" /> indexes (21 through 24) where each bit cooresponds to a margin index.
+    /// </summary>
+    /// <seealso cref="Margin.Mask" />
+    public const uint MaskHistory = (1 << HistoryRevertedToOrigin) | (1 << HistorySaved) | (1 << HistoryModified) | (1 << HistoryRevertedToModified);
+
+    /// <summary>
+    /// A change was made to this line and saved but then reverted to its original state.
+    /// </summary>
+    public const int HistoryRevertedToOrigin = NativeMethods.SC_MARKNUM_HISTORY_REVERTED_TO_ORIGIN;
+
+    /// <summary>
+    /// This line was modified and saved.
+    /// </summary>
+    public const int HistorySaved = NativeMethods.SC_MARKNUM_HISTORY_SAVED;
+
+    /// <summary>
+    /// This line was modified but not yet saved.
+    /// </summary>
+    public const int HistoryModified = NativeMethods.SC_MARKNUM_HISTORY_MODIFIED;
+
+    /// <summary>
+    /// A change was made to this line and saved but then reverted but not to its original state.
+    /// </summary>
+    public const int HistoryRevertedToModified = NativeMethods.SC_MARKNUM_HISTORY_REVERTED_TO_MODIFIED;
+
+    /// <summary>
     /// An unsigned 32-bit mask of folder <see cref="Margin" /> indexes (25 through 31) where each bit cooresponds to a margin index.
     /// </summary>
     /// <seealso cref="Margin.Mask" />
