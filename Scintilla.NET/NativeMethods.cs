@@ -103,6 +103,7 @@ public static class NativeMethods
     public const int INDIC_GRADIENT = 20;
     public const int INDIC_GRADIENTCENTRE = 21;
     public const int INDIC_MAX = 31;
+    public const int INDIC_POINT_TOP = 22;
     public const int INDIC_CONTAINER = 8;
 
     // Phases
