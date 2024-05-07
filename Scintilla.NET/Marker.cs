@@ -106,7 +106,7 @@ public class Marker
     public void SetBackColor(Color color)
     {
         var colour = HelperMethods.ToWin32Color(color);
-        scintilla.DirectMessage(NativeMethods.SCI_MARKERSETBACK, new IntPtr(Index), new IntPtr(colour));
+        scintilla.DirectMessage(NativeMethods.SCI_MARKERSETBACKTRANSLUCENT, new IntPtr(Index), new IntPtr(colour));
     }
 
     /// <summary>
@@ -116,7 +116,7 @@ public class Marker
     public void SetForeColor(Color color)
     {
         var colour = HelperMethods.ToWin32Color(color);
-        scintilla.DirectMessage(NativeMethods.SCI_MARKERSETFORE, new IntPtr(Index), new IntPtr(colour));
+        scintilla.DirectMessage(NativeMethods.SCI_MARKERSETFORETRANSLUCENT, new IntPtr(Index), new IntPtr(colour));
     }
 
     /// <summary>

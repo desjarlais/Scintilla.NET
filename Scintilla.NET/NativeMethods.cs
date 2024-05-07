@@ -372,6 +372,8 @@ public static class NativeMethods
     public const int SCI_MARKERDEFINE = 2040;
     public const int SCI_MARKERSETFORE = 2041;
     public const int SCI_MARKERSETBACK = 2042;
+    public const int SCI_MARKERSETFORETRANSLUCENT = 2294;
+    public const int SCI_MARKERSETBACKTRANSLUCENT  = 2295;
     public const int SCI_MARKERSETBACKSELECTED = 2292;
     public const int SCI_MARKERENABLEHIGHLIGHT = 2293;
     public const int SCI_MARKERADD = 2043;
