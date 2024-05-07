@@ -5128,7 +5128,8 @@ namespace ScintillaNET
         /// <returns>A collection of margins.</returns>
         [Category("Collections")]
         [Description("The margins collection.")]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         [TypeConverter(typeof(ExpandableObjectConverter))]
         public MarginCollection Margins { get; private set; }
 
