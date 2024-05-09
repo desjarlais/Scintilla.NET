@@ -73,6 +73,11 @@ public enum IndicatorStyle
     /// </summary>
     DotBox = NativeMethods.INDIC_DOTBOX,
 
+    /// <summary>
+    /// A version of Squiggle that draws using a pixmap instead of as a series of line segments for performance.
+    /// </summary>
+    SquigglePixmap = NativeMethods.INDIC_SQUIGGLEPIXMAP,
+
     // PIXMAP
 
     /// <summary>
@@ -104,15 +109,20 @@ public enum IndicatorStyle
     /// <summary>
     /// A triangle below the center of the first character of the indicator range.
     /// </summary>
-    PointCharacter = NativeMethods.INDIC_POINTCHARACTER /*,
+    PointCharacter = NativeMethods.INDIC_POINTCHARACTER,
 
-        /// <summary>
-        /// A vertical gradient between a color and alpha at top to fully transparent at bottom.
-        /// </summary>
-        Gradient = NativeMethods.INDIC_GRADIENT,
+    /// <summary>
+    /// A vertical gradient between a color and alpha at top to fully transparent at bottom.
+    /// </summary>
+    Gradient = NativeMethods.INDIC_GRADIENT,
 
-        /// <summary>
-        /// A vertical gradient with color and alpha in the mid-line fading to fully transparent at top and bottom.
-        /// </summary>
-        GradientCenter = NativeMethods.INDIC_GRADIENTCENTRE */
+    /// <summary>
+    /// A vertical gradient with color and alpha in the mid-line fading to fully transparent at top and bottom.
+    /// </summary>
+    GradientCenter = NativeMethods.INDIC_GRADIENTCENTRE,
+
+    /// <summary>
+    /// A triangle above the start of the indicator range.
+    /// </summary>
+    PointTop = NativeMethods.INDIC_POINT_TOP,
 }

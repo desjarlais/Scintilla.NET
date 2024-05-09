@@ -1,10 +1,13 @@
 param (
+	[Parameter(Mandatory=$true)][string]$MSBuildProjectDirectory,
 	[Parameter(Mandatory=$true)][string]$NuGetPackageRoot,
 	[Parameter(Mandatory=$true)][string]$NuGetPackageSourceDir,
 	[Parameter(Mandatory=$true)][string]$PackageOutputPath,
 	[Parameter(Mandatory=$true)][string]$PackageId,
 	[Parameter(Mandatory=$true)][string]$PackageVersion
 )
+
+Set-Location -Path $MSBuildProjectDirectory
 
 $PackageVersionList = $PackageVersion.Split('.')
 

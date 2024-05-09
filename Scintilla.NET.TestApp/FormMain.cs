@@ -10,14 +10,38 @@ namespace ScintillaNET.TestApp;
 
 public partial class FormMain : Form
 {
+    string baseTitle;
+    string? currentFileName = null;
+
+    public string? CurrentFileName
+    {
+        get => this.currentFileName;
+        set
+        {
+            BaseTitle = Path.GetFileName(this.currentFileName = value);
+        }
+    }
+
+    public string BaseTitle
+    {
+        get => this.baseTitle;
+        set
+        {
+            this.Text = (this.baseTitle = value) + (scintilla.Modified ? " *" : "");
+        }
+    }
+
     public FormMain()
     {
         InitializeComponent();
+
+        baseTitle = this.Text;
 
         scintilla.LexerName = "cpp";
 
         SetScintillaStyles(scintilla);
         AdjustLineNumberMargin(scintilla);
+        AdjustMarkerMargin(scintilla);
         AdjustFoldMargin(scintilla);
 
         Version scintillaNetVersion = scintilla.GetType().Assembly.GetName().Version;
@@ -119,6 +143,16 @@ public partial class FormMain : Form
         maxLineNumberCharLengthMap[scintilla] = maxLineNumberCharLength;
     }
 
+    private static void AdjustMarkerMargin(Scintilla scintilla)
+    {
+        scintilla.Margins[1].Width = 16;
+        scintilla.Margins[1].Sensitive = false;
+        //scintilla.Markers[Marker.HistoryRevertedToModified].SetForeColor(Color.Orange);
+        //scintilla.Markers[Marker.HistoryRevertedToModified].SetBackColor(scintilla.Margins[1].BackColor);
+        //scintilla.Markers[Marker.HistoryRevertedToOrigin].SetForeColor(Color.Orange);
+        //scintilla.Markers[Marker.HistoryRevertedToOrigin].SetBackColor(scintilla.Margins[1].BackColor);
+    }
+
     private static void AdjustFoldMargin(Scintilla scintilla)
     {
         // Instruct the lexer to calculate folding
@@ -147,22 +181,28 @@ public partial class FormMain : Form
         scintilla.Markers[Marker.FolderTail].Symbol = MarkerSymbol.LCorner;
 
         // Enable automatic folding
-        scintilla.AutomaticFold = (AutomaticFold.Show | AutomaticFold.Click | AutomaticFold.Change);
+        scintilla.AutomaticFold = AutomaticFold.Show | AutomaticFold.Click | AutomaticFold.Change;
     }
 
     private void openToolStripMenuItem_Click(object sender, EventArgs e)
     {
         if (openFileDialog.ShowDialog(this) == DialogResult.OK)
         {
-            scintilla.Text = File.ReadAllText(openFileDialog.FileName, Encoding.UTF8);
+            CurrentFileName = openFileDialog.FileName;
+            scintilla.Text = File.ReadAllText(CurrentFileName, Encoding.UTF8);
+            scintilla.ClearChangeHistory();
+            scintilla.SetSavePoint();
         }
     }
 
     private void saveToolStripMenuItem_Click(object sender, EventArgs e)
     {
-        if (saveFileDialog.ShowDialog(this) == DialogResult.OK)
+        if (CurrentFileName is null && saveFileDialog.ShowDialog(this) == DialogResult.OK)
+            CurrentFileName = saveFileDialog.FileName;
+
+        if (CurrentFileName is not null)
         {
-            File.WriteAllText(saveFileDialog.FileName, scintilla.Text, Encoding.UTF8);
+            File.WriteAllText(CurrentFileName, scintilla.Text, Encoding.UTF8);
             scintilla.SetSavePoint();
         }
     }
@@ -194,5 +234,15 @@ public partial class FormMain : Form
     private void scintilla_TextChanged(object sender, EventArgs e)
     {
         AdjustLineNumberMargin(scintilla);
+    }
+
+    private void scintilla_SavePointLeft(object sender, EventArgs e)
+    {
+        Text = BaseTitle + " *";
+    }
+
+    private void scintilla_SavePointReached(object sender, EventArgs e)
+    {
+        Text = BaseTitle;
     }
 }

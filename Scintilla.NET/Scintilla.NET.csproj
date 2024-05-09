@@ -63,6 +63,6 @@
 		</Content>
 	</ItemGroup>
 	<Target Name="PostPack" AfterTargets="Pack">
-		<Exec Command="cd &quot;$(ProjectDir)&quot; &amp;&amp; powershell .\nupkg.ps1 -NuGetPackageRoot '$(NuGetPackageRoot)' -NuGetPackageSourceDir '$(SolutionDir)\registry' -PackageOutputPath '$(PackageOutputPath)' -PackageId '$(PackageId)' -PackageVersion '$(PackageVersion)'" />
+		<Exec Command="powershell .\nupkg.ps1 -MSBuildProjectDirectory '$(MSBuildProjectDirectory)' -NuGetPackageRoot '$(NuGetPackageRoot)' -NuGetPackageSourceDir '$(SolutionDir)\registry' -PackageOutputPath '$(PackageOutputPath)' -PackageId '$(PackageId)' -PackageVersion '$(PackageVersion)'" />
 	</Target>
 </Project>

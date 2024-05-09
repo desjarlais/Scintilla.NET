@@ -3271,6 +3271,18 @@ namespace ScintillaNET
                 DirectMessage(NativeMethods.SCI_CLEARREPRESENTATION, new IntPtr(bpEncoded), IntPtr.Zero);
             }
         }
+
+        /// <summary>
+        /// Clears the change history so that scintilla does not show any saved/modified markers.
+        /// Undo buffer is cleared but <see cref="SetSavePoint"/> is not called.
+        /// </summary>
+        public void ClearChangeHistory()
+        {
+            EmptyUndoBuffer();
+            var ch = this.ChangeHistory;
+            this.ChangeHistory = ChangeHistory.Disabled;
+            this.ChangeHistory = ch;
+        }
         #endregion Methods
 
         #region Properties
@@ -3358,7 +3370,11 @@ namespace ScintillaNET
                     exStyle &= ~WinApiHelpers.WS_EX_LAYOUTRTL;
                 }
                 Handle.SetWindowLongPtr(WinApiHelpers.GWL_EXSTYLE, new IntPtr(exStyle));
-                DirectMessage(NativeMethods.SCI_GRABFOCUS, new IntPtr(1)); // needs focus to update
+
+                // Workaround Scintilla mirrored rendering issue:
+                var wrapMode = WrapMode;
+                WrapMode = wrapMode == WrapMode.None ? WrapMode.Word : WrapMode.None;
+                WrapMode = wrapMode;
             }
         }
 
@@ -4318,6 +4334,26 @@ namespace ScintillaNET
         }
 
         /// <summary>
+        /// Gets or sets whether Scintilla should keep track of document change history and in which ways it should display the difference.
+        /// </summary>
+        [Editor(typeof(FlagsEditor), typeof(UITypeEditor))]
+        [TypeConverter(typeof(FlagsConverter<ChangeHistory>))]
+        [DefaultValue(ChangeHistory.Disabled)]
+        [Category("Change History")]
+        [Description("Controls whether Scintilla should keep track of document change history and in which ways it should display the difference.")]
+        public ChangeHistory ChangeHistory
+        {
+            get
+            {
+                return (ChangeHistory)DirectMessage(NativeMethods.SCI_GETCHANGEHISTORY).ToInt32();
+            }
+            set
+            {
+                DirectMessage(NativeMethods.SCI_SETCHANGEHISTORY, new IntPtr((int)value));
+            }
+        }
+
+        /// <summary>
         /// Gets the required creation parameters when the control handle is created.
         /// </summary>
         /// <returns>A CreateParams that contains the required creation parameters when the handle to the control is created.</returns>
@@ -5128,7 +5164,8 @@ namespace ScintillaNET
         /// <returns>A collection of margins.</returns>
         [Category("Collections")]
         [Description("The margins collection.")]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         [TypeConverter(typeof(ExpandableObjectConverter))]
         public MarginCollection Margins { get; private set; }
 
