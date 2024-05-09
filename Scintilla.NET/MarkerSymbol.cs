@@ -162,5 +162,15 @@ public enum MarkerSymbol
     /// </summary>
     Bookmark = NativeMethods.SC_MARK_BOOKMARK,
 
+    /// <summary>
+    /// A bookmark.
+    /// </summary>
+    VerticalBookmark = NativeMethods.SC_MARK_VERTICALBOOKMARK,
+
+    /// <summary>
+    /// A slim  rectangular vertical bar.
+    /// </summary>
+    Bar = NativeMethods.SC_MARK_BAR,
+
     // Character = NativeMethods.SC_MARK_CHARACTER
 }

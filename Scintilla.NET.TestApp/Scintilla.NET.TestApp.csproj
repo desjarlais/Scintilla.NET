@@ -13,6 +13,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <RootNamespace>ScintillaNET.TestApp</RootNamespace>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
     <Compile Update="FormMain.cs">
