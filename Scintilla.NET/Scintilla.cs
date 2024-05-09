@@ -3358,7 +3358,11 @@ namespace ScintillaNET
                     exStyle &= ~WinApiHelpers.WS_EX_LAYOUTRTL;
                 }
                 Handle.SetWindowLongPtr(WinApiHelpers.GWL_EXSTYLE, new IntPtr(exStyle));
-                DirectMessage(NativeMethods.SCI_GRABFOCUS, new IntPtr(1)); // needs focus to update
+
+                // Workaround Scintilla mirrored rendering issue:
+                var wrapMode = WrapMode;
+                WrapMode = wrapMode == WrapMode.None ? WrapMode.Word : WrapMode.None;
+                WrapMode = wrapMode;
             }
         }
 
