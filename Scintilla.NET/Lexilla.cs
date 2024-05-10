@@ -69,12 +69,12 @@ public class Lexilla
         lexerNameFromId = (NativeMethods.LexerNameFromID) Marshal.GetDelegateForFunctionPointer(
             functionPointer, typeof(NativeMethods.LexerNameFromID));
 
-        initialized = true;
+        //initialized = true;
     }
 
     #region Fields
 
-    private static bool initialized;
+    //private static bool initialized;
         
     #endregion
 

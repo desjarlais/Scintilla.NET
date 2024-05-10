@@ -68,6 +68,10 @@ namespace ScintillaNET
                 procName == "blend";
         }
 
+        /// <summary>
+        /// Enumerates a list of folder paths that the native satellite libraries
+        /// ('Scintilla.dll' &amp; 'Lexilla.dll') are searched in.
+        /// </summary>
         public static IEnumerable<string> EnumerateSatelliteLibrarySearchPaths()
         {
             // check run-time paths
@@ -554,7 +558,7 @@ namespace ScintillaNET
         }
 
         /// <summary>
-        /// Indicates to the current <see cref="Lexer" /> that the internal lexer state has changed in the specified
+        /// Indicates to the current <see cref="LexerName">Lexer</see> that the internal lexer state has changed in the specified
         /// range and therefore may need to be redrawn.
         /// </summary>
         /// <param name="startPos">The zero-based document position at which the lexer state change starts.</param>
@@ -853,11 +857,11 @@ namespace ScintillaNET
         }
 
         /// <summary>
-        /// Retrieves a brief description of the specified property name for the current <see cref="Lexer" />.
+        /// Retrieves a brief description of the specified property name for the current <see cref="LexerName">Lexer</see>.
         /// </summary>
-        /// <param name="name">A property name supported by the current <see cref="Lexer" />.</param>
+        /// <param name="name">A property name supported by the current <see cref="LexerName">Lexer</see>.</param>
         /// <returns>A String describing the lexer property name if found; otherwise, String.Empty.</returns>
-        /// <remarks>A list of supported property names for the current <see cref="Lexer" /> can be obtained by calling <see cref="PropertyNames" />.</remarks>
+        /// <remarks>A list of supported property names for the current <see cref="LexerName">Lexer</see> can be obtained by calling <see cref="PropertyNames" />.</remarks>
         public unsafe string DescribeProperty(string name)
         {
             if (String.IsNullOrEmpty(name))
@@ -1098,7 +1102,7 @@ namespace ScintillaNET
         }
 
         /// <summary>
-        /// Lookup a property value for the current <see cref="Lexer" />.
+        /// Lookup a property value for the current <see cref="LexerName">Lexer</see>.
         /// </summary>
         /// <param name="name">The property name to lookup.</param>
         /// <returns>
@@ -1128,7 +1132,7 @@ namespace ScintillaNET
         }
 
         /// <summary>
-        /// Lookup a property value for the current <see cref="Lexer" /> and expand any embedded property macros.
+        /// Lookup a property value for the current <see cref="LexerName">Lexer</see> and expand any embedded property macros.
         /// </summary>
         /// <param name="name">The property name to lookup.</param>
         /// <returns>
@@ -1158,7 +1162,7 @@ namespace ScintillaNET
         }
 
         /// <summary>
-        /// Lookup a property value for the current <see cref="Lexer" /> and convert it to an integer.
+        /// Lookup a property value for the current <see cref="LexerName">Lexer</see> and convert it to an integer.
         /// </summary>
         /// <param name="name">The property name to lookup.</param>
         /// <param name="defaultValue">A default value to return if the property name is not found or has no value.</param>
@@ -2059,7 +2063,7 @@ namespace ScintillaNET
         }
 
         /// <summary>
-        /// Retrieves a list of property names that can be set for the current <see cref="Lexer" />.
+        /// Retrieves a list of property names that can be set for the current <see cref="LexerName">Lexer</see>.
         /// </summary>
         /// <returns>A String of property names separated by line breaks.</returns>
         public unsafe string PropertyNames()
@@ -2077,11 +2081,11 @@ namespace ScintillaNET
         }
 
         /// <summary>
-        /// Retrieves the data type of the specified property name for the current <see cref="Lexer" />.
+        /// Retrieves the data type of the specified property name for the current <see cref="LexerName">Lexer</see>.
         /// </summary>
-        /// <param name="name">A property name supported by the current <see cref="Lexer" />.</param>
+        /// <param name="name">A property name supported by the current <see cref="LexerName">Lexer</see>.</param>
         /// <returns>One of the <see cref="PropertyType" /> enumeration values. The default is <see cref="ScintillaNET.PropertyType.Boolean" />.</returns>
-        /// <remarks>A list of supported property names for the current <see cref="Lexer" /> can be obtained by calling <see cref="PropertyNames" />.</remarks>
+        /// <remarks>A list of supported property names for the current <see cref="LexerName">Lexer</see> can be obtained by calling <see cref="PropertyNames" />.</remarks>
         public unsafe PropertyType PropertyType(string name)
         {
             if (String.IsNullOrEmpty(name))
@@ -2498,13 +2502,13 @@ namespace ScintillaNET
         }
 
         /// <summary>
-        /// Updates a keyword set used by the current <see cref="Lexer" />.
+        /// Updates a keyword set used by the current <see cref="LexerName">Lexer</see>.
         /// </summary>
         /// <param name="set">The zero-based index of the keyword set to update.</param>
         /// <param name="keywords">
-        /// A list of keywords pertaining to the current <see cref="Lexer" /> separated by whitespace (space, tab, '\n', '\r') characters.
+        /// A list of keywords pertaining to the current <see cref="LexerName">Lexer</see> separated by whitespace (space, tab, '\n', '\r') characters.
         /// </param>
-        /// <remarks>The keywords specified will be styled according to the current <see cref="Lexer" />.</remarks>
+        /// <remarks>The keywords specified will be styled according to the current <see cref="LexerName">Lexer</see>.</remarks>
         /// <seealso cref="DescribeKeywordSets" />
         public unsafe void SetKeywords(int set, string keywords)
         {
@@ -2533,12 +2537,12 @@ namespace ScintillaNET
         }
 
         /// <summary>
-        /// Passes the specified property name-value pair to the current <see cref="Lexer" />.
+        /// Passes the specified property name-value pair to the current <see cref="LexerName">Lexer</see>.
         /// </summary>
         /// <param name="name">The property name to set.</param>
         /// <param name="value">
         /// The property value. Values can refer to other property names using the syntax $(name), where 'name' is another property
-        /// name for the current <see cref="Lexer" />. When the property value is retrieved by a call to <see cref="GetPropertyExpanded" />
+        /// name for the current <see cref="LexerName">Lexer</see>. When the property value is retrieved by a call to <see cref="GetPropertyExpanded" />
         /// the embedded property name macro will be replaced (expanded) with that current property value.
         /// </param>
         /// <remarks>Property names are case-sensitive.</remarks>
