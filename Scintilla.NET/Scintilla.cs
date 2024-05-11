@@ -4337,7 +4337,7 @@ namespace ScintillaNET
         /// Gets or sets whether Scintilla should keep track of document change history and in which ways it should display the difference.
         /// </summary>
         [Editor(typeof(FlagsEditor), typeof(UITypeEditor))]
-        [TypeConverter(typeof(FlagsConverter<ChangeHistory>))]
+        [TypeConverter(typeof(FlagsConverter))]
         [DefaultValue(ChangeHistory.Disabled)]
         [Category("Change History")]
         [Description("Controls whether Scintilla should keep track of document change history and in which ways it should display the difference.")]

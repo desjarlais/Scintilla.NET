@@ -12,7 +12,7 @@ using System.Windows.Forms.Design;
 
 namespace ScintillaNET;
 
-internal class FlagsConverter<T> : TypeConverter where T : struct, Enum
+internal class FlagsConverter : TypeConverter
 {
     public override bool CanConvertTo(ITypeDescriptorContext context, Type destinationType)
     {
@@ -51,15 +51,12 @@ internal class FlagsConverter<T> : TypeConverter where T : struct, Enum
     {
         if (value is string str)
         {
-            Type t = typeof(T);
+            Type t = context.PropertyDescriptor.PropertyType;
             ulong bits = 0;
             var nameList = str.Split('|').Select(x => x.Trim());
             foreach (var name in nameList)
             {
-                if (Enum.TryParse(name, out T bit))
-                    bits |= Convert.ToUInt64(bit);
-                else
-                    throw new InvalidCastException($"Cannot convert \"{str.Replace("\"", "\\\"")}\" to {t}.");
+                bits |= Convert.ToUInt64(Enum.Parse(t, name));
             }
             return Enum.ToObject(t, bits);
         }
