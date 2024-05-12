@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<ProjectGuid>{22AE2386-60F1-476E-9303-61CDB0AAC4CF}</ProjectGuid>
-		<TargetFrameworks>net462;net6.0-windows</TargetFrameworks>
+		<TargetFrameworks>net47;net6.0-windows</TargetFrameworks>
 		<NeutralLanguage>en-US</NeutralLanguage>
 		<Description>Source Editing Component based on Scintilla 5 series.</Description>
 		<Copyright>Copyright (c) Jacob Slusser 2018, VPKSoft, cyber960 2022, desjarlais 2023.</Copyright>
