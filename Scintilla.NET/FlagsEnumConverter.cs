@@ -48,7 +48,8 @@ internal class FlagsEnumConverter: EnumConverter
         /// </returns>
         public override object GetValue(object component)
         {
-            return ((int)component & (int)Enum.Parse(ComponentType, Name)) != 0;
+            var bits = Convert.ToUInt64(Enum.Parse(ComponentType, Name));
+            return (Convert.ToUInt64(component) & bits) == bits;
         }
 
         /// <summary>
@@ -64,14 +65,14 @@ internal class FlagsEnumConverter: EnumConverter
         public override void SetValue(object component, object value)
         {
             bool myValue = (bool)value;
-            int myNewValue;
+            ulong myNewValue;
             if(myValue)
-                myNewValue = ((int)component) | (int)Enum.Parse(ComponentType, Name);
+                myNewValue = Convert.ToUInt64(component) | Convert.ToUInt64(Enum.Parse(ComponentType, Name));
             else
-                myNewValue = ((int)component) & ~(int)Enum.Parse(ComponentType, Name);
+                myNewValue = Convert.ToUInt64(component) & ~Convert.ToUInt64(Enum.Parse(ComponentType, Name));
 				
             FieldInfo myField = component.GetType().GetField("value__", BindingFlags.Instance | BindingFlags.Public);
-            myField.SetValue(component, myNewValue);
+            myField.SetValue(component, Convert.ChangeType(myNewValue, Enum.GetUnderlyingType(ComponentType)));
             fContext.PropertyDescriptor.SetValue(fContext.Instance, component);
         }
 
@@ -118,7 +119,7 @@ internal class FlagsEnumConverter: EnumConverter
                 myDefaultValue = myDefaultValueAttribute.Value;
 
             if(myDefaultValue != null)
-                return ((int)myDefaultValue & (int)Enum.Parse(ComponentType, Name)) != 0;
+                return (Convert.ToUInt64(myDefaultValue) & Convert.ToUInt64(Enum.Parse(ComponentType, Name))) != 0;
             return false;
         }
         #endregion
@@ -160,7 +161,7 @@ internal class FlagsEnumConverter: EnumConverter
                 PropertyDescriptorCollection myCollection = new PropertyDescriptorCollection(null);
                 for(int i = 0; i < myNames.Length; i++)
                 {
-                    if((int)myValues.GetValue(i) != 0 && myNames[i] != "All")
+                    if (Convert.ToUInt64(myValues.GetValue(i)) != 0)
                         myCollection.Add(new EnumFieldDescriptor(myType, myNames[i], context));
                 }
                 return myCollection;

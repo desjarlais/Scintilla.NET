@@ -3895,7 +3895,8 @@ namespace ScintillaNET
         [DefaultValue(AutomaticFold.None)]
         [Category("Behavior")]
         [Description("Options for allowing the control to automatically handle folding.")]
-        [TypeConverter(typeof(FlagsEnumTypeConverter.FlagsEnumConverter))]
+        [Editor(typeof(FlagsEditor), typeof(UITypeEditor))]
+        [TypeConverter(typeof(FlagsConverter))]
         public AutomaticFold AutomaticFold
         {
             get
@@ -4336,11 +4337,11 @@ namespace ScintillaNET
         /// <summary>
         /// Gets or sets whether Scintilla should keep track of document change history and in which ways it should display the difference.
         /// </summary>
-        [Editor(typeof(FlagsEditor), typeof(UITypeEditor))]
-        [TypeConverter(typeof(FlagsConverter<ChangeHistory>))]
         [DefaultValue(ChangeHistory.Disabled)]
         [Category("Change History")]
         [Description("Controls whether Scintilla should keep track of document change history and in which ways it should display the difference.")]
+        [Editor(typeof(FlagsEditor), typeof(UITypeEditor))]
+        [TypeConverter(typeof(FlagsConverter))]
         public ChangeHistory ChangeHistory
         {
             get
@@ -5086,7 +5087,8 @@ namespace ScintillaNET
         [DefaultValue(LineEndType.Default)]
         [Category("Line Endings")]
         [Description("Line endings types interpreted by the control.")]
-        [TypeConverter(typeof(FlagsEnumTypeConverter.FlagsEnumConverter))]
+        [Editor(typeof(FlagsEditor), typeof(UITypeEditor))]
+        [TypeConverter(typeof(FlagsConverter))]
         public LineEndType LineEndTypesAllowed
         {
             get
@@ -5166,7 +5168,6 @@ namespace ScintillaNET
         [Description("The margins collection.")]
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        [TypeConverter(typeof(ExpandableObjectConverter))]
         public MarginCollection Margins { get; private set; }
 
         /// <summary>
@@ -6354,7 +6355,8 @@ namespace ScintillaNET
         [DefaultValue(VirtualSpace.None)]
         [Category("Behavior")]
         [Description("Options for allowing the caret to move beyond the end of each line.")]
-        [TypeConverter(typeof(FlagsEnumTypeConverter.FlagsEnumConverter))]
+        [Editor(typeof(FlagsEditor), typeof(UITypeEditor))]
+        [TypeConverter(typeof(FlagsConverter))]
         public VirtualSpace VirtualSpaceOptions
         {
             get
@@ -6582,7 +6584,8 @@ namespace ScintillaNET
         [DefaultValue(WrapVisualFlags.None)]
         [Category("Line Wrapping")]
         [Description("The visual indicator displayed on a wrapped line.")]
-        [TypeConverter(typeof(FlagsEnumTypeConverter.FlagsEnumConverter))]
+        [Editor(typeof(FlagsEditor), typeof(UITypeEditor))]
+        [TypeConverter(typeof(FlagsConverter))]
         public WrapVisualFlags WrapVisualFlags
         {
             get
