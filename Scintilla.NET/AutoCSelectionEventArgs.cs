@@ -35,10 +35,9 @@ public class AutoCSelectionEventArgs : EventArgs
     {
         get
         {
-            if (position == null)
-                position = scintilla.Lines.ByteToCharPosition(bytePosition);
+            this.position ??= this.scintilla.Lines.ByteToCharPosition(this.bytePosition);
 
-            return (int)position;
+            return (int)this.position;
         }
     }
 
@@ -50,16 +49,16 @@ public class AutoCSelectionEventArgs : EventArgs
     {
         get
         {
-            if (text == null)
+            if (this.text == null)
             {
-                var len = 0;
-                while (((byte*)textPtr)[len] != 0)
+                int len = 0;
+                while (((byte*)this.textPtr)[len] != 0)
                     len++;
 
-                text = Helpers.GetString(textPtr, len, scintilla.Encoding);
+                this.text = Helpers.GetString(this.textPtr, len, this.scintilla.Encoding);
             }
 
-            return text;
+            return this.text;
         }
     }
 

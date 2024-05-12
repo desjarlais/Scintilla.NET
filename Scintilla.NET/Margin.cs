@@ -25,7 +25,7 @@ public class Margin
     {
         get
         {
-            var color = scintilla.DirectMessage(NativeMethods.SCI_GETMARGINBACKN, new IntPtr(Index)).ToInt32();
+            int color = this.scintilla.DirectMessage(NativeMethods.SCI_GETMARGINBACKN, new IntPtr(Index)).ToInt32();
             return HelperMethods.FromWin32Color(color);
         }
         set
@@ -33,8 +33,8 @@ public class Margin
             if (value.IsEmpty)
                 value = Color.Black;
 
-            var color = HelperMethods.ToWin32Color(value);
-            scintilla.DirectMessage(NativeMethods.SCI_SETMARGINBACKN, new IntPtr(Index), new IntPtr(color));
+            int color = HelperMethods.ToWin32Color(value);
+            this.scintilla.DirectMessage(NativeMethods.SCI_SETMARGINBACKN, new IntPtr(Index), new IntPtr(color));
         }
     }
 
@@ -46,12 +46,12 @@ public class Margin
     {
         get
         {
-            return (MarginCursor)scintilla.DirectMessage(NativeMethods.SCI_GETMARGINCURSORN, new IntPtr(Index));
+            return (MarginCursor)this.scintilla.DirectMessage(NativeMethods.SCI_GETMARGINCURSORN, new IntPtr(Index));
         }
         set
         {
-            var cursor = (int)value;
-            scintilla.DirectMessage(NativeMethods.SCI_SETMARGINCURSORN, new IntPtr(Index), new IntPtr(cursor));
+            int cursor = (int)value;
+            this.scintilla.DirectMessage(NativeMethods.SCI_SETMARGINCURSORN, new IntPtr(Index), new IntPtr(cursor));
         }
     }
 
@@ -70,12 +70,12 @@ public class Margin
     {
         get
         {
-            return (scintilla.DirectMessage(NativeMethods.SCI_GETMARGINSENSITIVEN, new IntPtr(Index)) != IntPtr.Zero);
+            return this.scintilla.DirectMessage(NativeMethods.SCI_GETMARGINSENSITIVEN, new IntPtr(Index)) != IntPtr.Zero;
         }
         set
         {
-            var sensitive = (value ? new IntPtr(1) : IntPtr.Zero);
-            scintilla.DirectMessage(NativeMethods.SCI_SETMARGINSENSITIVEN, new IntPtr(Index), sensitive);
+            IntPtr sensitive = value ? new IntPtr(1) : IntPtr.Zero;
+            this.scintilla.DirectMessage(NativeMethods.SCI_SETMARGINSENSITIVEN, new IntPtr(Index), sensitive);
         }
     }
 
@@ -87,12 +87,12 @@ public class Margin
     {
         get
         {
-            return (MarginType)(scintilla.DirectMessage(NativeMethods.SCI_GETMARGINTYPEN, new IntPtr(Index)));
+            return (MarginType)this.scintilla.DirectMessage(NativeMethods.SCI_GETMARGINTYPEN, new IntPtr(Index));
         }
         set
         {
-            var type = (int)value;
-            scintilla.DirectMessage(NativeMethods.SCI_SETMARGINTYPEN, new IntPtr(Index), new IntPtr(type));
+            int type = (int)value;
+            this.scintilla.DirectMessage(NativeMethods.SCI_SETMARGINTYPEN, new IntPtr(Index), new IntPtr(type));
         }
     }
 
@@ -105,12 +105,12 @@ public class Margin
     {
         get
         {
-            return scintilla.DirectMessage(NativeMethods.SCI_GETMARGINWIDTHN, new IntPtr(Index)).ToInt32();
+            return this.scintilla.DirectMessage(NativeMethods.SCI_GETMARGINWIDTHN, new IntPtr(Index)).ToInt32();
         }
         set
         {
             value = Helpers.ClampMin(value, 0);
-            scintilla.DirectMessage(NativeMethods.SCI_SETMARGINWIDTHN, new IntPtr(Index), new IntPtr(value));
+            this.scintilla.DirectMessage(NativeMethods.SCI_SETMARGINWIDTHN, new IntPtr(Index), new IntPtr(value));
         }
     }
 
@@ -129,12 +129,12 @@ public class Margin
     {
         get
         {
-            return unchecked((uint)scintilla.DirectMessage(NativeMethods.SCI_GETMARGINMASKN, new IntPtr(Index)).ToInt32());
+            return unchecked((uint)this.scintilla.DirectMessage(NativeMethods.SCI_GETMARGINMASKN, new IntPtr(Index)).ToInt32());
         }
         set
         {
-            var mask = unchecked((int)value);
-            scintilla.DirectMessage(NativeMethods.SCI_SETMARGINMASKN, new IntPtr(Index), new IntPtr(mask));
+            int mask = unchecked((int)value);
+            this.scintilla.DirectMessage(NativeMethods.SCI_SETMARGINMASKN, new IntPtr(Index), new IntPtr(mask));
         }
     }
 

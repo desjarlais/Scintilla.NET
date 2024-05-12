@@ -10,13 +10,13 @@ namespace ScintillaNET;
 /// </summary>
 public static class HelperMethods
 {
-    static readonly Dictionary<int, Color> knownColorMap = [];
+    private static readonly Dictionary<int, Color> knownColorMap = [];
 
     static HelperMethods()
     {
-        foreach (var knownColor in Enum.GetValues(typeof(KnownColor)).Cast<KnownColor>().Where(k => k >= KnownColor.Transparent && k < KnownColor.ButtonFace))
+        foreach (KnownColor knownColor in Enum.GetValues(typeof(KnownColor)).Cast<KnownColor>().Where(k => k is >= KnownColor.Transparent and < KnownColor.ButtonFace))
         {
-            Color color = Color.FromKnownColor(knownColor);
+            var color = Color.FromKnownColor(knownColor);
             knownColorMap[ToWin32Color(color)] = color;
         }
     }
@@ -71,12 +71,13 @@ public static class HelperMethods
     public static void SetFoldingState(this Scintilla scintilla, string foldingState, string separator = ";")
     {
         scintilla.FoldAll(FoldAction.Expand);
-        foreach (var index in foldingState.Split(new[] { separator }, System.StringSplitOptions.None).Select(int.Parse))
+        foreach (int index in foldingState.Split(new[] { separator }, System.StringSplitOptions.None).Select(int.Parse))
         {
             if (index < 0 || index >= scintilla.Lines.Count)
             {
                 continue;
             }
+
             scintilla.Lines[index].ToggleFold();
         }
     }

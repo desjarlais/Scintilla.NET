@@ -27,8 +27,7 @@ public class ModificationEventArgs : BeforeModificationEventArgs
     {
         get
         {
-            if (CachedText == null)
-                CachedText = Helpers.GetString(textPtr, byteLength, scintilla.Encoding);
+            CachedText ??= Helpers.GetString(this.textPtr, this.byteLength, this.scintilla.Encoding);
 
             return CachedText;
         }

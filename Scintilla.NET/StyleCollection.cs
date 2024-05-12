@@ -25,7 +25,7 @@ public class StyleCollection : IEnumerable<Style>
 
     IEnumerator IEnumerable.GetEnumerator()
     {
-        return this.GetEnumerator();
+        return GetEnumerator();
     }
 
     /// <summary>
@@ -36,7 +36,7 @@ public class StyleCollection : IEnumerable<Style>
     {
         get
         {
-            return (NativeMethods.STYLE_MAX + 1);
+            return NativeMethods.STYLE_MAX + 1;
         }
     }
 
@@ -51,7 +51,7 @@ public class StyleCollection : IEnumerable<Style>
         get
         {
             index = Helpers.Clamp(index, 0, Count - 1);
-            return new Style(scintilla, index);
+            return new Style(this.scintilla, index);
         }
     }
 

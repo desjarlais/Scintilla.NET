@@ -5,7 +5,7 @@ namespace ScintillaNET;
 /// <summary>
 /// Provides data for the <see cref="Scintilla.CallTipClick" /> event.
 /// </summary>
-public class CallTipClickEventArgs: EventArgs
+public class CallTipClickEventArgs : EventArgs
 {
     private readonly Scintilla scintilla;
 

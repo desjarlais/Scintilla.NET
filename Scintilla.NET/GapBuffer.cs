@@ -26,22 +26,22 @@ internal sealed class GapBuffer<T> : IEnumerable<T>
 
     private void EnsureGapCapacity(int length)
     {
-        if (length > (gapEnd - gapStart))
+        if (length > this.gapEnd - this.gapStart)
         {
             // How much to grow the buffer is a tricky question.
             // Our current algo will double the capacity unless that's not enough.
-            var minCapacity = Count + length;
-            var newCapacity = (buffer.Length * 2);
+            int minCapacity = Count + length;
+            int newCapacity = this.buffer.Length * 2;
             if (newCapacity < minCapacity)
             {
                 newCapacity = minCapacity;
             }
 
             var newBuffer = new T[newCapacity];
-            var newGapEnd = newBuffer.Length - (buffer.Length - gapEnd);
+            int newGapEnd = newBuffer.Length - (this.buffer.Length - this.gapEnd);
 
-            Array.Copy(buffer, 0, newBuffer, 0, gapStart);
-            Array.Copy(buffer, gapEnd, newBuffer, newGapEnd, newBuffer.Length - newGapEnd);
+            Array.Copy(this.buffer, 0, newBuffer, 0, this.gapStart);
+            Array.Copy(this.buffer, this.gapEnd, newBuffer, newGapEnd, newBuffer.Length - newGapEnd);
             this.buffer = newBuffer;
             this.gapEnd = newGapEnd;
         }
@@ -49,7 +49,7 @@ internal sealed class GapBuffer<T> : IEnumerable<T>
 
     public IEnumerator<T> GetEnumerator()
     {
-        var count = Count;
+        int count = Count;
         for (int i = 0; i < count; i++)
             yield return this[i];
 
@@ -58,7 +58,7 @@ internal sealed class GapBuffer<T> : IEnumerable<T>
 
     IEnumerator IEnumerable.GetEnumerator()
     {
-        return this.GetEnumerator();
+        return GetEnumerator();
     }
 
     public void Insert(int index, T item)
@@ -66,54 +66,54 @@ internal sealed class GapBuffer<T> : IEnumerable<T>
         PlaceGapStart(index);
         EnsureGapCapacity(1);
 
-        buffer[index] = item;
-        gapStart++;
+        this.buffer[index] = item;
+        this.gapStart++;
     }
 
     public void InsertRange(int index, ICollection<T> collection)
     {
-        var count = collection.Count;
+        int count = collection.Count;
         if (count > 0)
         {
             PlaceGapStart(index);
             EnsureGapCapacity(count);
 
-            collection.CopyTo(buffer, gapStart);
-            gapStart += count;
+            collection.CopyTo(this.buffer, this.gapStart);
+            this.gapStart += count;
         }
     }
 
     private void PlaceGapStart(int index)
     {
-        if (index != gapStart)
+        if (index != this.gapStart)
         {
-            if ((gapEnd - gapStart) == 0)
+            if (this.gapEnd - this.gapStart == 0)
             {
                 // There is no gap
-                gapStart = index;
-                gapEnd = index;
+                this.gapStart = index;
+                this.gapEnd = index;
             }
-            else if (index < gapStart)
+            else if (index < this.gapStart)
             {
                 // Move gap left (copy contents right)
-                var length = (gapStart - index);
-                var deltaLength = (gapEnd - gapStart < length ? gapEnd - gapStart : length);
-                Array.Copy(buffer, index, buffer, gapEnd - length, length);
-                gapStart -= length;
-                gapEnd -= length;
+                int length = this.gapStart - index;
+                int deltaLength = this.gapEnd - this.gapStart < length ? this.gapEnd - this.gapStart : length;
+                Array.Copy(this.buffer, index, this.buffer, this.gapEnd - length, length);
+                this.gapStart -= length;
+                this.gapEnd -= length;
 
-                Array.Clear(buffer, index, deltaLength);
+                Array.Clear(this.buffer, index, deltaLength);
             }
             else
             {
                 // Move gap right (copy contents left)
-                var length = (index - gapStart);
-                var deltaIndex = (index > gapEnd ? index : gapEnd);
-                Array.Copy(buffer, gapEnd, buffer, gapStart, length);
-                gapStart += length;
-                gapEnd += length;
+                int length = index - this.gapStart;
+                int deltaIndex = index > this.gapEnd ? index : this.gapEnd;
+                Array.Copy(this.buffer, this.gapEnd, this.buffer, this.gapStart, length);
+                this.gapStart += length;
+                this.gapEnd += length;
 
-                Array.Clear(buffer, deltaIndex, gapEnd - deltaIndex);
+                Array.Clear(this.buffer, deltaIndex, this.gapEnd - deltaIndex);
             }
         }
     }
@@ -121,8 +121,8 @@ internal sealed class GapBuffer<T> : IEnumerable<T>
     public void RemoveAt(int index)
     {
         PlaceGapStart(index);
-        buffer[gapEnd] = default(T);
-        gapEnd++;
+        this.buffer[this.gapEnd] = default;
+        this.gapEnd++;
     }
 
     public void RemoveRange(int index, int count)
@@ -130,8 +130,8 @@ internal sealed class GapBuffer<T> : IEnumerable<T>
         if (count > 0)
         {
             PlaceGapStart(index);
-            Array.Clear(buffer, gapEnd, count);
-            gapEnd += count;
+            Array.Clear(this.buffer, this.gapEnd, count);
+            this.gapEnd += count;
         }
     }
 
@@ -139,7 +139,7 @@ internal sealed class GapBuffer<T> : IEnumerable<T>
     {
         get
         {
-            return buffer.Length - (gapEnd - gapStart);
+            return this.buffer.Length - (this.gapEnd - this.gapStart);
         }
     }
 
@@ -159,23 +159,23 @@ internal sealed class GapBuffer<T> : IEnumerable<T>
     {
         get
         {
-            if (index < gapStart)
-                return buffer[index];
+            if (index < this.gapStart)
+                return this.buffer[index];
 
-            return buffer[index + (gapEnd - gapStart)];
+            return this.buffer[index + (this.gapEnd - this.gapStart)];
         }
         set
         {
-            if (index >= gapStart)
-                index += (gapEnd - gapStart);
+            if (index >= this.gapStart)
+                index += this.gapEnd - this.gapStart;
 
-            buffer[index] = value;
+            this.buffer[index] = value;
         }
     }
 
     public GapBuffer(int capacity = 0)
     {
         this.buffer = new T[capacity];
-        this.gapEnd = buffer.Length;
+        this.gapEnd = this.buffer.Length;
     }
 }

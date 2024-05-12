@@ -20,7 +20,7 @@ public class Line
     /// </summary>
     public void EnsureVisible()
     {
-        scintilla.DirectMessage(NativeMethods.SCI_ENSUREVISIBLE, new IntPtr(Index));
+        this.scintilla.DirectMessage(NativeMethods.SCI_ENSUREVISIBLE, new IntPtr(Index));
     }
 
     //public void ExpandChildren(int level)
@@ -33,7 +33,7 @@ public class Line
     /// <param name="action">One of the <see cref="FoldAction" /> enumeration values.</param>
     public void FoldChildren(FoldAction action)
     {
-        scintilla.DirectMessage(NativeMethods.SCI_FOLDCHILDREN, new IntPtr(Index), new IntPtr((int)action));
+        this.scintilla.DirectMessage(NativeMethods.SCI_FOLDCHILDREN, new IntPtr(Index), new IntPtr((int)action));
     }
 
     /// <summary>
@@ -42,7 +42,7 @@ public class Line
     /// <param name="action">One of the <see cref="FoldAction" /> enumeration values.</param>
     public void FoldLine(FoldAction action)
     {
-        scintilla.DirectMessage(NativeMethods.SCI_FOLDLINE, new IntPtr(Index), new IntPtr((int)action));
+        this.scintilla.DirectMessage(NativeMethods.SCI_FOLDLINE, new IntPtr(Index), new IntPtr((int)action));
     }
 
     /// <summary>
@@ -57,7 +57,7 @@ public class Line
     /// </returns>
     public int GetLastChild(int level)
     {
-        return scintilla.DirectMessage(NativeMethods.SCI_GETLASTCHILD, new IntPtr(Index), new IntPtr(level)).ToInt32();
+        return this.scintilla.DirectMessage(NativeMethods.SCI_GETLASTCHILD, new IntPtr(Index), new IntPtr(level)).ToInt32();
     }
 
     /// <summary>
@@ -66,7 +66,7 @@ public class Line
     /// <remarks>Any selection is discarded.</remarks>
     public void Goto()
     {
-        scintilla.DirectMessage(NativeMethods.SCI_GOTOLINE, new IntPtr(Index));
+        this.scintilla.DirectMessage(NativeMethods.SCI_GOTOLINE, new IntPtr(Index));
     }
 
     /// <summary>
@@ -77,8 +77,8 @@ public class Line
     /// <remarks>This method does not check if the line already contains the <paramref name="marker" />.</remarks>
     public MarkerHandle MarkerAdd(int marker)
     {
-        marker = Helpers.Clamp(marker, 0, scintilla.Markers.Count - 1);
-        var handle = scintilla.DirectMessage(NativeMethods.SCI_MARKERADD, new IntPtr(Index), new IntPtr(marker));
+        marker = Helpers.Clamp(marker, 0, this.scintilla.Markers.Count - 1);
+        IntPtr handle = this.scintilla.DirectMessage(NativeMethods.SCI_MARKERADD, new IntPtr(Index), new IntPtr(marker));
         return new MarkerHandle { Value = handle };
     }
 
@@ -88,8 +88,8 @@ public class Line
     /// <param name="markerMask">An unsigned 32-bit value with each bit cooresponding to one of the 32 zero-based <see cref="Margin" /> indexes to add.</param>
     public void MarkerAddSet(uint markerMask)
     {
-        var mask = unchecked((int)markerMask);
-        scintilla.DirectMessage(NativeMethods.SCI_MARKERADDSET, new IntPtr(Index), new IntPtr(mask));
+        int mask = unchecked((int)markerMask);
+        this.scintilla.DirectMessage(NativeMethods.SCI_MARKERADDSET, new IntPtr(Index), new IntPtr(mask));
     }
 
     /// <summary>
@@ -99,8 +99,8 @@ public class Line
     /// <remarks>If the same marker has been added to the line more than once, this will delete one copy each time it is used.</remarks>
     public void MarkerDelete(int marker)
     {
-        marker = Helpers.Clamp(marker, -1, scintilla.Markers.Count - 1);
-        scintilla.DirectMessage(NativeMethods.SCI_MARKERDELETE, new IntPtr(Index), new IntPtr(marker));
+        marker = Helpers.Clamp(marker, -1, this.scintilla.Markers.Count - 1);
+        this.scintilla.DirectMessage(NativeMethods.SCI_MARKERDELETE, new IntPtr(Index), new IntPtr(marker));
     }
 
     /// <summary>
@@ -109,7 +109,7 @@ public class Line
     /// <returns>An unsigned 32-bit value with each bit cooresponding to one of the 32 zero-based <see cref="Marker" /> indexes.</returns>
     public uint MarkerGet()
     {
-        var mask = scintilla.DirectMessage(NativeMethods.SCI_MARKERGET, new IntPtr(Index)).ToInt32();
+        int mask = this.scintilla.DirectMessage(NativeMethods.SCI_MARKERGET, new IntPtr(Index)).ToInt32();
         return unchecked((uint)mask);
     }
 
@@ -121,8 +121,8 @@ public class Line
     /// <remarks>For example, the mask for marker index 10 is 1 shifted left 10 times (1 &lt;&lt; 10).</remarks>
     public int MarkerNext(uint markerMask)
     {
-        var mask = unchecked((int)markerMask);
-        return scintilla.DirectMessage(NativeMethods.SCI_MARKERNEXT, new IntPtr(Index), new IntPtr(mask)).ToInt32();
+        int mask = unchecked((int)markerMask);
+        return this.scintilla.DirectMessage(NativeMethods.SCI_MARKERNEXT, new IntPtr(Index), new IntPtr(mask)).ToInt32();
     }
 
     /// <summary>
@@ -133,8 +133,8 @@ public class Line
     /// <remarks>For example, the mask for marker index 10 is 1 shifted left 10 times (1 &lt;&lt; 10).</remarks>
     public int MarkerPrevious(uint markerMask)
     {
-        var mask = unchecked((int)markerMask);
-        return scintilla.DirectMessage(NativeMethods.SCI_MARKERPREVIOUS, new IntPtr(Index), new IntPtr(mask)).ToInt32();
+        int mask = unchecked((int)markerMask);
+        return this.scintilla.DirectMessage(NativeMethods.SCI_MARKERPREVIOUS, new IntPtr(Index), new IntPtr(mask)).ToInt32();
     }
 
     /// <summary>
@@ -144,7 +144,7 @@ public class Line
     /// <seealso cref="ToggleFoldShowText"/>
     public void ToggleFold()
     {
-        scintilla.DirectMessage(NativeMethods.SCI_TOGGLEFOLD, new IntPtr(Index));
+        this.scintilla.DirectMessage(NativeMethods.SCI_TOGGLEFOLD, new IntPtr(Index));
     }
 
     /// <summary>
@@ -157,13 +157,13 @@ public class Line
     {
         if (string.IsNullOrEmpty(text))
         {
-            scintilla.DirectMessage(NativeMethods.SCI_TOGGLEFOLDSHOWTEXT, new IntPtr(Index), IntPtr.Zero);
+            this.scintilla.DirectMessage(NativeMethods.SCI_TOGGLEFOLDSHOWTEXT, new IntPtr(Index), IntPtr.Zero);
         }
         else
         {
-            var bytes = Helpers.GetBytes(text, scintilla.Encoding, zeroTerminated: true);
+            byte[] bytes = Helpers.GetBytes(text, this.scintilla.Encoding, zeroTerminated: true);
             fixed (byte* bp = bytes)
-                scintilla.DirectMessage(NativeMethods.SCI_TOGGLEFOLDSHOWTEXT, new IntPtr(Index), new IntPtr(bp));
+                this.scintilla.DirectMessage(NativeMethods.SCI_TOGGLEFOLDSHOWTEXT, new IntPtr(Index), new IntPtr(bp));
         }
     }
 
@@ -179,7 +179,7 @@ public class Line
     {
         get
         {
-            return scintilla.DirectMessage(NativeMethods.SCI_ANNOTATIONGETLINES, new IntPtr(Index)).ToInt32();
+            return this.scintilla.DirectMessage(NativeMethods.SCI_ANNOTATIONGETLINES, new IntPtr(Index)).ToInt32();
         }
     }
 
@@ -195,12 +195,12 @@ public class Line
     {
         get
         {
-            return scintilla.DirectMessage(NativeMethods.SCI_ANNOTATIONGETSTYLE, new IntPtr(Index)).ToInt32();
+            return this.scintilla.DirectMessage(NativeMethods.SCI_ANNOTATIONGETSTYLE, new IntPtr(Index)).ToInt32();
         }
         set
         {
-            value = Helpers.Clamp(value, 0, scintilla.Styles.Count - 1);
-            scintilla.DirectMessage(NativeMethods.SCI_ANNOTATIONSETSTYLE, new IntPtr(Index), new IntPtr(value));
+            value = Helpers.Clamp(value, 0, this.scintilla.Styles.Count - 1);
+            this.scintilla.DirectMessage(NativeMethods.SCI_ANNOTATIONSETSTYLE, new IntPtr(Index), new IntPtr(value));
         }
     }
 
@@ -221,36 +221,36 @@ public class Line
     {
         get
         {
-            var length = scintilla.DirectMessage(NativeMethods.SCI_ANNOTATIONGETTEXT, new IntPtr(Index)).ToInt32();
+            int length = this.scintilla.DirectMessage(NativeMethods.SCI_ANNOTATIONGETTEXT, new IntPtr(Index)).ToInt32();
             if (length == 0)
                 return new byte[0];
 
-            var text = new byte[length + 1];
-            var styles = new byte[length + 1];
+            byte[] text = new byte[length + 1];
+            byte[] styles = new byte[length + 1];
 
             fixed (byte* textPtr = text)
             fixed (byte* stylePtr = styles)
             {
-                scintilla.DirectMessage(NativeMethods.SCI_ANNOTATIONGETTEXT, new IntPtr(Index), new IntPtr(textPtr));
-                scintilla.DirectMessage(NativeMethods.SCI_ANNOTATIONGETSTYLES, new IntPtr(Index), new IntPtr(stylePtr));
+                this.scintilla.DirectMessage(NativeMethods.SCI_ANNOTATIONGETTEXT, new IntPtr(Index), new IntPtr(textPtr));
+                this.scintilla.DirectMessage(NativeMethods.SCI_ANNOTATIONGETSTYLES, new IntPtr(Index), new IntPtr(stylePtr));
 
-                return Helpers.ByteToCharStyles(stylePtr, textPtr, length, scintilla.Encoding);
+                return Helpers.ByteToCharStyles(stylePtr, textPtr, length, this.scintilla.Encoding);
             }
         }
         set
         {
-            var length = scintilla.DirectMessage(NativeMethods.SCI_ANNOTATIONGETTEXT, new IntPtr(Index)).ToInt32();
+            int length = this.scintilla.DirectMessage(NativeMethods.SCI_ANNOTATIONGETTEXT, new IntPtr(Index)).ToInt32();
             if (length == 0)
                 return;
 
-            var text = new byte[length + 1];
+            byte[] text = new byte[length + 1];
             fixed (byte* textPtr = text)
             {
-                scintilla.DirectMessage(NativeMethods.SCI_ANNOTATIONGETTEXT, new IntPtr(Index), new IntPtr(textPtr));
+                this.scintilla.DirectMessage(NativeMethods.SCI_ANNOTATIONGETTEXT, new IntPtr(Index), new IntPtr(textPtr));
 
-                var styles = Helpers.CharToByteStyles(value ?? new byte[0], textPtr, length, scintilla.Encoding);
+                byte[] styles = Helpers.CharToByteStyles(value ?? new byte[0], textPtr, length, this.scintilla.Encoding);
                 fixed (byte* stylePtr = styles)
-                    scintilla.DirectMessage(NativeMethods.SCI_ANNOTATIONSETSTYLES, new IntPtr(Index), new IntPtr(stylePtr));
+                    this.scintilla.DirectMessage(NativeMethods.SCI_ANNOTATIONSETSTYLES, new IntPtr(Index), new IntPtr(stylePtr));
             }
         }
     }
@@ -263,15 +263,15 @@ public class Line
     {
         get
         {
-            var length = scintilla.DirectMessage(NativeMethods.SCI_ANNOTATIONGETTEXT, new IntPtr(Index)).ToInt32();
+            int length = this.scintilla.DirectMessage(NativeMethods.SCI_ANNOTATIONGETTEXT, new IntPtr(Index)).ToInt32();
             if (length == 0)
                 return string.Empty;
 
-            var bytes = new byte[length + 1];
+            byte[] bytes = new byte[length + 1];
             fixed (byte* bp = bytes)
             {
-                scintilla.DirectMessage(NativeMethods.SCI_ANNOTATIONGETTEXT, new IntPtr(Index), new IntPtr(bp));
-                return Helpers.GetString(new IntPtr(bp), length, scintilla.Encoding);
+                this.scintilla.DirectMessage(NativeMethods.SCI_ANNOTATIONGETTEXT, new IntPtr(Index), new IntPtr(bp));
+                return Helpers.GetString(new IntPtr(bp), length, this.scintilla.Encoding);
             }
         }
         set
@@ -280,13 +280,13 @@ public class Line
             if (value == null)
             {
                 // Scintilla docs suggest that setting to NULL rather than an empty string will free memory
-                scintilla.DirectMessage(NativeMethods.SCI_ANNOTATIONSETTEXT, new IntPtr(Index), IntPtr.Zero);
+                this.scintilla.DirectMessage(NativeMethods.SCI_ANNOTATIONSETTEXT, new IntPtr(Index), IntPtr.Zero);
             }
             else
             {
-                var bytes = Helpers.GetBytes(value, scintilla.Encoding, zeroTerminated: true);
+                byte[] bytes = Helpers.GetBytes(value, this.scintilla.Encoding, zeroTerminated: true);
                 fixed (byte* bp = bytes)
-                    scintilla.DirectMessage(NativeMethods.SCI_ANNOTATIONSETTEXT, new IntPtr(Index), new IntPtr(bp));
+                    this.scintilla.DirectMessage(NativeMethods.SCI_ANNOTATIONSETTEXT, new IntPtr(Index), new IntPtr(bp));
             }
         }
     }
@@ -300,7 +300,7 @@ public class Line
     {
         get
         {
-            return scintilla.DirectMessage(NativeMethods.SCI_CONTRACTEDFOLDNEXT, new IntPtr(Index)).ToInt32();
+            return this.scintilla.DirectMessage(NativeMethods.SCI_CONTRACTEDFOLDNEXT, new IntPtr(Index)).ToInt32();
         }
     }
 
@@ -314,7 +314,7 @@ public class Line
     {
         get
         {
-            return scintilla.DirectMessage(NativeMethods.SCI_VISIBLEFROMDOCLINE, new IntPtr(Index)).ToInt32();
+            return this.scintilla.DirectMessage(NativeMethods.SCI_VISIBLEFROMDOCLINE, new IntPtr(Index)).ToInt32();
         }
     }
 
@@ -342,12 +342,12 @@ public class Line
     {
         get
         {
-            return (scintilla.DirectMessage(NativeMethods.SCI_GETFOLDEXPANDED, new IntPtr(Index)) != IntPtr.Zero);
+            return this.scintilla.DirectMessage(NativeMethods.SCI_GETFOLDEXPANDED, new IntPtr(Index)) != IntPtr.Zero;
         }
         set
         {
-            var expanded = (value ? new IntPtr(1) : IntPtr.Zero);
-            scintilla.DirectMessage(NativeMethods.SCI_SETFOLDEXPANDED, new IntPtr(Index), expanded);
+            IntPtr expanded = value ? new IntPtr(1) : IntPtr.Zero;
+            this.scintilla.DirectMessage(NativeMethods.SCI_SETFOLDEXPANDED, new IntPtr(Index), expanded);
         }
     }
 
@@ -359,15 +359,15 @@ public class Line
     {
         get
         {
-            var level = scintilla.DirectMessage(NativeMethods.SCI_GETFOLDLEVEL, new IntPtr(Index)).ToInt32();
-            return (level & NativeMethods.SC_FOLDLEVELNUMBERMASK);
+            int level = this.scintilla.DirectMessage(NativeMethods.SCI_GETFOLDLEVEL, new IntPtr(Index)).ToInt32();
+            return level & NativeMethods.SC_FOLDLEVELNUMBERMASK;
         }
         set
         {
-            var bits = (int)FoldLevelFlags;
+            int bits = (int)FoldLevelFlags;
             bits |= value;
 
-            scintilla.DirectMessage(NativeMethods.SCI_SETFOLDLEVEL, new IntPtr(Index), new IntPtr(bits));
+            this.scintilla.DirectMessage(NativeMethods.SCI_SETFOLDLEVEL, new IntPtr(Index), new IntPtr(bits));
         }
     }
 
@@ -379,15 +379,15 @@ public class Line
     {
         get
         {
-            var flags = scintilla.DirectMessage(NativeMethods.SCI_GETFOLDLEVEL, new IntPtr(Index)).ToInt32();
+            int flags = this.scintilla.DirectMessage(NativeMethods.SCI_GETFOLDLEVEL, new IntPtr(Index)).ToInt32();
             return (FoldLevelFlags)(flags & ~NativeMethods.SC_FOLDLEVELNUMBERMASK);
         }
         set
         {
-            var bits = FoldLevel;
+            int bits = FoldLevel;
             bits |= (int)value;
 
-            scintilla.DirectMessage(NativeMethods.SCI_SETFOLDLEVEL, new IntPtr(Index), new IntPtr(bits));
+            this.scintilla.DirectMessage(NativeMethods.SCI_SETFOLDLEVEL, new IntPtr(Index), new IntPtr(bits));
         }
     }
 
@@ -400,7 +400,7 @@ public class Line
     {
         get
         {
-            return scintilla.DirectMessage(NativeMethods.SCI_GETFOLDPARENT, new IntPtr(Index)).ToInt32();
+            return this.scintilla.DirectMessage(NativeMethods.SCI_GETFOLDPARENT, new IntPtr(Index)).ToInt32();
         }
     }
 
@@ -413,7 +413,7 @@ public class Line
     {
         get
         {
-            return scintilla.DirectMessage(NativeMethods.SCI_TEXTHEIGHT, new IntPtr(Index)).ToInt32();
+            return this.scintilla.DirectMessage(NativeMethods.SCI_TEXTHEIGHT, new IntPtr(Index)).ToInt32();
         }
     }
 
@@ -431,7 +431,7 @@ public class Line
     {
         get
         {
-            return scintilla.Lines.CharLineLength(Index);
+            return this.scintilla.Lines.CharLineLength(Index);
         }
     }
 
@@ -447,12 +447,12 @@ public class Line
     {
         get
         {
-            return scintilla.DirectMessage(NativeMethods.SCI_MARGINGETSTYLE, new IntPtr(Index)).ToInt32();
+            return this.scintilla.DirectMessage(NativeMethods.SCI_MARGINGETSTYLE, new IntPtr(Index)).ToInt32();
         }
         set
         {
-            value = Helpers.Clamp(value, 0, scintilla.Styles.Count - 1);
-            scintilla.DirectMessage(NativeMethods.SCI_MARGINSETSTYLE, new IntPtr(Index), new IntPtr(value));
+            value = Helpers.Clamp(value, 0, this.scintilla.Styles.Count - 1);
+            this.scintilla.DirectMessage(NativeMethods.SCI_MARGINSETSTYLE, new IntPtr(Index), new IntPtr(value));
         }
     }
 
@@ -473,36 +473,36 @@ public class Line
     {
         get
         {
-            var length = scintilla.DirectMessage(NativeMethods.SCI_MARGINGETTEXT, new IntPtr(Index)).ToInt32();
+            int length = this.scintilla.DirectMessage(NativeMethods.SCI_MARGINGETTEXT, new IntPtr(Index)).ToInt32();
             if (length == 0)
                 return new byte[0];
 
-            var text = new byte[length + 1];
-            var styles = new byte[length + 1];
+            byte[] text = new byte[length + 1];
+            byte[] styles = new byte[length + 1];
 
             fixed (byte* textPtr = text)
             fixed (byte* stylePtr = styles)
             {
-                scintilla.DirectMessage(NativeMethods.SCI_MARGINGETTEXT, new IntPtr(Index), new IntPtr(textPtr));
-                scintilla.DirectMessage(NativeMethods.SCI_MARGINGETSTYLES, new IntPtr(Index), new IntPtr(stylePtr));
+                this.scintilla.DirectMessage(NativeMethods.SCI_MARGINGETTEXT, new IntPtr(Index), new IntPtr(textPtr));
+                this.scintilla.DirectMessage(NativeMethods.SCI_MARGINGETSTYLES, new IntPtr(Index), new IntPtr(stylePtr));
 
-                return Helpers.ByteToCharStyles(stylePtr, textPtr, length, scintilla.Encoding);
+                return Helpers.ByteToCharStyles(stylePtr, textPtr, length, this.scintilla.Encoding);
             }
         }
         set
         {
-            var length = scintilla.DirectMessage(NativeMethods.SCI_MARGINGETTEXT, new IntPtr(Index)).ToInt32();
+            int length = this.scintilla.DirectMessage(NativeMethods.SCI_MARGINGETTEXT, new IntPtr(Index)).ToInt32();
             if (length == 0)
                 return;
 
-            var text = new byte[length + 1];
+            byte[] text = new byte[length + 1];
             fixed (byte* textPtr = text)
             {
-                scintilla.DirectMessage(NativeMethods.SCI_MARGINGETTEXT, new IntPtr(Index), new IntPtr(textPtr));
+                this.scintilla.DirectMessage(NativeMethods.SCI_MARGINGETTEXT, new IntPtr(Index), new IntPtr(textPtr));
 
-                var styles = Helpers.CharToByteStyles(value ?? new byte[0], textPtr, length, scintilla.Encoding);
+                byte[] styles = Helpers.CharToByteStyles(value ?? new byte[0], textPtr, length, this.scintilla.Encoding);
                 fixed (byte* stylePtr = styles)
-                    scintilla.DirectMessage(NativeMethods.SCI_MARGINSETSTYLES, new IntPtr(Index), new IntPtr(stylePtr));
+                    this.scintilla.DirectMessage(NativeMethods.SCI_MARGINSETSTYLES, new IntPtr(Index), new IntPtr(stylePtr));
             }
         }
     }
@@ -516,15 +516,15 @@ public class Line
     {
         get
         {
-            var length = scintilla.DirectMessage(NativeMethods.SCI_MARGINGETTEXT, new IntPtr(Index)).ToInt32();
+            int length = this.scintilla.DirectMessage(NativeMethods.SCI_MARGINGETTEXT, new IntPtr(Index)).ToInt32();
             if (length == 0)
                 return string.Empty;
 
-            var bytes = new byte[length + 1];
+            byte[] bytes = new byte[length + 1];
             fixed (byte* bp = bytes)
             {
-                scintilla.DirectMessage(NativeMethods.SCI_MARGINGETTEXT, new IntPtr(Index), new IntPtr(bp));
-                return Helpers.GetString(new IntPtr(bp), length, scintilla.Encoding);
+                this.scintilla.DirectMessage(NativeMethods.SCI_MARGINGETTEXT, new IntPtr(Index), new IntPtr(bp));
+                return Helpers.GetString(new IntPtr(bp), length, this.scintilla.Encoding);
             }
         }
         set
@@ -532,13 +532,13 @@ public class Line
             if (string.IsNullOrEmpty(value))
             {
                 // Scintilla docs suggest that setting to NULL rather than an empty string will free memory
-                scintilla.DirectMessage(NativeMethods.SCI_MARGINSETTEXT, new IntPtr(Index), IntPtr.Zero);
+                this.scintilla.DirectMessage(NativeMethods.SCI_MARGINSETTEXT, new IntPtr(Index), IntPtr.Zero);
             }
             else
             {
-                var bytes = Helpers.GetBytes(value, scintilla.Encoding, zeroTerminated: true);
+                byte[] bytes = Helpers.GetBytes(value, this.scintilla.Encoding, zeroTerminated: true);
                 fixed (byte* bp = bytes)
-                    scintilla.DirectMessage(NativeMethods.SCI_MARGINSETTEXT, new IntPtr(Index), new IntPtr(bp));
+                    this.scintilla.DirectMessage(NativeMethods.SCI_MARGINSETTEXT, new IntPtr(Index), new IntPtr(bp));
             }
         }
     }
@@ -551,7 +551,7 @@ public class Line
     {
         get
         {
-            return scintilla.Lines.CharPositionFromLine(Index);
+            return this.scintilla.Lines.CharPositionFromLine(Index);
         }
     }
 
@@ -564,13 +564,13 @@ public class Line
     {
         get
         {
-            var start = scintilla.DirectMessage(NativeMethods.SCI_POSITIONFROMLINE, new IntPtr(Index));
-            var length = scintilla.DirectMessage(NativeMethods.SCI_LINELENGTH, new IntPtr(Index));
-            var ptr = scintilla.DirectMessage(NativeMethods.SCI_GETRANGEPOINTER, start, length);
+            IntPtr start = this.scintilla.DirectMessage(NativeMethods.SCI_POSITIONFROMLINE, new IntPtr(Index));
+            IntPtr length = this.scintilla.DirectMessage(NativeMethods.SCI_LINELENGTH, new IntPtr(Index));
+            IntPtr ptr = this.scintilla.DirectMessage(NativeMethods.SCI_GETRANGEPOINTER, start, length);
             if (ptr == IntPtr.Zero)
                 return string.Empty;
 
-            var text = new string((sbyte*)ptr, 0, length.ToInt32(), scintilla.Encoding);
+            string text = new((sbyte*)ptr, 0, length.ToInt32(), this.scintilla.Encoding);
             return text;
         }
     }
@@ -583,11 +583,11 @@ public class Line
     {
         get
         {
-            return (scintilla.DirectMessage(NativeMethods.SCI_GETLINEINDENTATION, new IntPtr(Index)).ToInt32());
+            return this.scintilla.DirectMessage(NativeMethods.SCI_GETLINEINDENTATION, new IntPtr(Index)).ToInt32();
         }
         set
         {
-            scintilla.DirectMessage(NativeMethods.SCI_SETLINEINDENTATION, new IntPtr(Index), new IntPtr(value));
+            this.scintilla.DirectMessage(NativeMethods.SCI_SETLINEINDENTATION, new IntPtr(Index), new IntPtr(value));
         }
     }
 
@@ -598,8 +598,8 @@ public class Line
     {
         get
         {
-            var pos = scintilla.DirectMessage(NativeMethods.SCI_GETLINEINDENTPOSITION, new IntPtr(Index));
-            return scintilla.Lines.ByteToCharPosition(pos.ToInt32());
+            IntPtr pos = this.scintilla.DirectMessage(NativeMethods.SCI_GETLINEINDENTPOSITION, new IntPtr(Index));
+            return this.scintilla.Lines.ByteToCharPosition(pos.ToInt32());
         }
     }
 
@@ -613,7 +613,7 @@ public class Line
     {
         get
         {
-            return (scintilla.DirectMessage(NativeMethods.SCI_GETLINEVISIBLE, new IntPtr(Index)) != IntPtr.Zero);
+            return this.scintilla.DirectMessage(NativeMethods.SCI_GETLINEVISIBLE, new IntPtr(Index)) != IntPtr.Zero;
         }
     }
 
@@ -625,7 +625,7 @@ public class Line
     {
         get
         {
-            return scintilla.DirectMessage(NativeMethods.SCI_WRAPCOUNT, new IntPtr(Index)).ToInt32();
+            return this.scintilla.DirectMessage(NativeMethods.SCI_WRAPCOUNT, new IntPtr(Index)).ToInt32();
         }
     }
 

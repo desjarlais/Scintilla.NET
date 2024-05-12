@@ -25,7 +25,7 @@ public class MarkerCollection : IEnumerable<Marker>
 
     IEnumerator IEnumerable.GetEnumerator()
     {
-        return this.GetEnumerator();
+        return GetEnumerator();
     }
 
     /// <summary>
@@ -36,7 +36,7 @@ public class MarkerCollection : IEnumerable<Marker>
     {
         get
         {
-            return (NativeMethods.MARKER_MAX + 1);
+            return NativeMethods.MARKER_MAX + 1;
         }
     }
 
@@ -51,7 +51,7 @@ public class MarkerCollection : IEnumerable<Marker>
         get
         {
             index = Helpers.Clamp(index, 0, Count - 1);
-            return new Marker(scintilla, index);
+            return new Marker(this.scintilla, index);
         }
     }
 

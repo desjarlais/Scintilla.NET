@@ -28,6 +28,7 @@ internal class FlagsConverter : TypeConverter
             {
                 return Enum.ToObject(enumType, 0).ToString();
             }
+
             ulong bits = 0;
             List<Enum> enums = [];
             var items = Enum.GetValues(enumType).Cast<Enum>()
@@ -46,7 +47,7 @@ internal class FlagsConverter : TypeConverter
                         (x.item.bits < y.item.bits) ? -1 : (x.item.bits > y.item.bits ? 1 : 0)       // With the highest integer value
                     );
 
-                var item = items[maxIndex];
+                (Enum @enum, ulong bits, byte bitCount) item = items[maxIndex];
 
                 if ((valueBits & item.bits) == item.bits && (bits & item.bits) != item.bits)
                 {
@@ -55,9 +56,11 @@ internal class FlagsConverter : TypeConverter
                     enums.Add(item.@enum);
                 }
             }
+
             enums.Sort();
             return string.Join(" | ", enums);
         }
+
         return base.ConvertTo(context, culture, value, destinationType);
     }
 
@@ -67,13 +70,15 @@ internal class FlagsConverter : TypeConverter
         {
             Type t = context.PropertyDescriptor.PropertyType;
             ulong bits = 0;
-            var nameList = str.Split('|').Select(x => x.Trim());
-            foreach (var name in nameList)
+            IEnumerable<string> nameList = str.Split('|').Select(x => x.Trim());
+            foreach (string name in nameList)
             {
                 bits |= Convert.ToUInt64(Enum.Parse(t, name));
             }
+
             return Enum.ToObject(t, bits);
         }
+
         return base.ConvertFrom(context, culture, value);
     }
 }

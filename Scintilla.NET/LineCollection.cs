@@ -33,12 +33,12 @@ public class LineCollection : IEnumerable<Line>
     private void AdjustLineLength(int index, int delta)
     {
         MoveStep(index);
-        stepLength += delta;
+        this.stepLength += delta;
 
         // Invalidate multibyte flag
-        var perLine = perLineData[index];
+        PerLine perLine = this.perLineData[index];
         perLine.ContainsMultibyte = ContainsMultibyte.Unkown;
-        perLineData[index] = perLine;
+        this.perLineData[index] = perLine;
     }
 
     /// <summary>
@@ -47,11 +47,11 @@ public class LineCollection : IEnumerable<Line>
     internal int ByteToCharPosition(int pos)
     {
         Debug.Assert(pos >= 0);
-        Debug.Assert(pos <= scintilla.DirectMessage(NativeMethods.SCI_GETLENGTH).ToInt32());
+        Debug.Assert(pos <= this.scintilla.DirectMessage(NativeMethods.SCI_GETLENGTH).ToInt32());
 
-        var line = scintilla.DirectMessage(NativeMethods.SCI_LINEFROMPOSITION, new IntPtr(pos)).ToInt32();
-        var byteStart = scintilla.DirectMessage(NativeMethods.SCI_POSITIONFROMLINE, new IntPtr(line)).ToInt32();
-        var count = CharPositionFromLine(line) + GetCharCount(byteStart, pos - byteStart);
+        int line = this.scintilla.DirectMessage(NativeMethods.SCI_LINEFROMPOSITION, new IntPtr(pos)).ToInt32();
+        int byteStart = this.scintilla.DirectMessage(NativeMethods.SCI_POSITIONFROMLINE, new IntPtr(line)).ToInt32();
+        int count = CharPositionFromLine(line) + GetCharCount(byteStart, pos - byteStart);
 
         return count;
     }
@@ -68,12 +68,12 @@ public class LineCollection : IEnumerable<Line>
         // the start of the line following. We keep a terminal (faux) line at
         // the end of the list so we can calculate the length of the last line.
 
-        if (index + 1 <= stepLine)
-            return perLineData[index + 1].Start - perLineData[index].Start;
-        else if (index <= stepLine)
-            return (perLineData[index + 1].Start + stepLength) - perLineData[index].Start;
+        if (index + 1 <= this.stepLine)
+            return this.perLineData[index + 1].Start - this.perLineData[index].Start;
+        else if (index <= this.stepLine)
+            return this.perLineData[index + 1].Start + this.stepLength - this.perLineData[index].Start;
         else
-            return (perLineData[index + 1].Start + stepLength) - (perLineData[index].Start + stepLength);
+            return this.perLineData[index + 1].Start + this.stepLength - (this.perLineData[index].Start + this.stepLength);
     }
 
     /// <summary>
@@ -82,11 +82,11 @@ public class LineCollection : IEnumerable<Line>
     internal int CharPositionFromLine(int index)
     {
         Debug.Assert(index >= 0);
-        Debug.Assert(index < perLineData.Count); // Allow query of terminal line start
+        Debug.Assert(index < this.perLineData.Count); // Allow query of terminal line start
 
-        var start = perLineData[index].Start;
-        if (index > stepLine)
-            start += stepLength;
+        int start = this.perLineData[index].Start;
+        if (index > this.stepLine)
+            start += this.stepLength;
 
         return start;
     }
@@ -97,22 +97,22 @@ public class LineCollection : IEnumerable<Line>
         Debug.Assert(pos <= TextLength);
 
         // Adjust to the nearest line start
-        var line = LineFromCharPosition(pos);
-        var bytePos = scintilla.DirectMessage(NativeMethods.SCI_POSITIONFROMLINE, new IntPtr(line)).ToInt32();
+        int line = LineFromCharPosition(pos);
+        int bytePos = this.scintilla.DirectMessage(NativeMethods.SCI_POSITIONFROMLINE, new IntPtr(line)).ToInt32();
         pos -= CharPositionFromLine(line);
 
         // Optimization when the line contains NO multibyte characters
         if (!LineContainsMultibyteChar(line))
-            return (bytePos + pos);
+            return bytePos + pos;
 
         int prevBytePos;
         while (pos > 0)
         {
             // hang onto the prev byte position so we can determine if we are single or multi byte
             prevBytePos = bytePos;
-            bytePos = scintilla.DirectMessage(NativeMethods.SCI_POSITIONRELATIVE, new IntPtr(bytePos), new IntPtr(1)).ToInt32();
+            bytePos = this.scintilla.DirectMessage(NativeMethods.SCI_POSITIONRELATIVE, new IntPtr(bytePos), new IntPtr(1)).ToInt32();
 
-            if ((bytePos - prevBytePos) == 1)
+            if (bytePos - prevBytePos == 1)
             {
                 // if the byte position is 1, we are single byte
                 pos--;
@@ -133,18 +133,18 @@ public class LineCollection : IEnumerable<Line>
         Debug.Assert(pos <= TextLength);
 
         // Adjust to the nearest line start
-        var line = LineFromCharPosition(pos);
-        var bytePos = scintilla.DirectMessage(NativeMethods.SCI_POSITIONFROMLINE, new IntPtr(line)).ToInt32();
+        int line = LineFromCharPosition(pos);
+        int bytePos = this.scintilla.DirectMessage(NativeMethods.SCI_POSITIONFROMLINE, new IntPtr(line)).ToInt32();
         pos -= CharPositionFromLine(line);
 
         // Optimization when the line contains NO multibyte characters
         if (!LineContainsMultibyteChar(line))
-            return (bytePos + pos);
+            return bytePos + pos;
 
         while (pos > 0)
         {
             // Move char-by-char
-            bytePos = scintilla.DirectMessage(NativeMethods.SCI_POSITIONRELATIVE, new IntPtr(bytePos),
+            bytePos = this.scintilla.DirectMessage(NativeMethods.SCI_POSITIONRELATIVE, new IntPtr(bytePos),
                 new IntPtr(1)).ToInt32();
             pos--;
         }
@@ -159,13 +159,13 @@ public class LineCollection : IEnumerable<Line>
         MoveStep(index);
 
         // Subtract the line length
-        stepLength -= CharLineLength(index);
+        this.stepLength -= CharLineLength(index);
 
         // Remove the line
-        perLineData.RemoveAt(index);
+        this.perLineData.RemoveAt(index);
 
         // Move the step to the line before the one removed
-        stepLine--;
+        this.stepLine--;
     }
 
 #if DEBUG
@@ -176,11 +176,9 @@ public class LineCollection : IEnumerable<Line>
     /// <returns>A string representing the line buffer.</returns>
     public string Dump()
     {
-        using (var writer = new StringWriter())
-        {
-            scintilla.Lines.Dump(writer);
-            return writer.ToString();
-        }
+        using var writer = new StringWriter();
+        this.scintilla.Lines.Dump(writer);
+        return writer.ToString();
     }
 
     /// <summary>
@@ -189,28 +187,28 @@ public class LineCollection : IEnumerable<Line>
     /// <param name="writer">The writer to use for dumping the line buffer.</param>
     public unsafe void Dump(TextWriter writer)
     {
-        var totalChars = 0;
+        int totalChars = 0;
 
-        for (int i = 0; i < perLineData.Count; i++)
+        for (int i = 0; i < this.perLineData.Count; i++)
         {
-            var error = totalChars == CharPositionFromLine(i) ? null : "*";
-            if (i == perLineData.Count - 1)
+            string error = totalChars == CharPositionFromLine(i) ? null : "*";
+            if (i == this.perLineData.Count - 1)
             {
                 writer.WriteLine("{0}[{1}] {2} (terminal)", error, i, CharPositionFromLine(i));
             }
             else
             {
-                var len = scintilla.DirectMessage(NativeMethods.SCI_GETLINE, new IntPtr(i)).ToInt32();
-                var bytes = new byte[len];
+                int len = this.scintilla.DirectMessage(NativeMethods.SCI_GETLINE, new IntPtr(i)).ToInt32();
+                byte[] bytes = new byte[len];
 
                 fixed (byte* ptr = bytes)
-                    scintilla.DirectMessage(NativeMethods.SCI_GETLINE, new IntPtr(i), new IntPtr(ptr));
+                    this.scintilla.DirectMessage(NativeMethods.SCI_GETLINE, new IntPtr(i), new IntPtr(ptr));
 
-                var str = scintilla.Encoding.GetString(bytes);
-                var containsMultibyte = "U";
-                if (perLineData[i].ContainsMultibyte == ContainsMultibyte.Yes)
+                string str = this.scintilla.Encoding.GetString(bytes);
+                string containsMultibyte = "U";
+                if (this.perLineData[i].ContainsMultibyte == ContainsMultibyte.Yes)
                     containsMultibyte = "Y";
-                else if (perLineData[i].ContainsMultibyte == ContainsMultibyte.No)
+                else if (this.perLineData[i].ContainsMultibyte == ContainsMultibyte.No)
                     containsMultibyte = "N";
 
                 writer.WriteLine("{0}[{1}] {2}:{3}:{4} {5}", error, i, CharPositionFromLine(i), str.Length, containsMultibyte, str.Replace("\r", "\\r").Replace("\n", "\\n"));
@@ -226,8 +224,8 @@ public class LineCollection : IEnumerable<Line>
     /// </summary>
     private int GetCharCount(int pos, int length)
     {
-        var ptr = scintilla.DirectMessage(NativeMethods.SCI_GETRANGEPOINTER, new IntPtr(pos), new IntPtr(length));
-        return GetCharCount(ptr, length, scintilla.Encoding);
+        IntPtr ptr = this.scintilla.DirectMessage(NativeMethods.SCI_GETRANGEPOINTER, new IntPtr(pos), new IntPtr(length));
+        return GetCharCount(ptr, length, this.scintilla.Encoding);
     }
 
     /// <summary>
@@ -239,7 +237,7 @@ public class LineCollection : IEnumerable<Line>
             return 0;
 
         // Never use SCI_COUNTCHARACTERS. It counts CRLF as 1 char!
-        var count = encoding.GetCharCount((byte*)text, length);
+        int count = encoding.GetCharCount((byte*)text, length);
         return count;
     }
 
@@ -258,23 +256,23 @@ public class LineCollection : IEnumerable<Line>
 
     IEnumerator IEnumerable.GetEnumerator()
     {
-        return this.GetEnumerator();
+        return GetEnumerator();
     }
 
     private bool LineContainsMultibyteChar(int index)
     {
-        var perLine = perLineData[index];
+        PerLine perLine = this.perLineData[index];
         if (perLine.ContainsMultibyte == ContainsMultibyte.Unkown)
         {
             perLine.ContainsMultibyte =
-                (scintilla.DirectMessage(NativeMethods.SCI_LINELENGTH, new IntPtr(index)).ToInt32() == CharLineLength(index))
+                (this.scintilla.DirectMessage(NativeMethods.SCI_LINELENGTH, new IntPtr(index)).ToInt32() == CharLineLength(index))
                     ? ContainsMultibyte.No
                     : ContainsMultibyte.Yes;
 
-            perLineData[index] = perLine;
+            this.perLineData[index] = perLine;
         }
 
-        return (perLine.ContainsMultibyte == ContainsMultibyte.Yes);
+        return perLine.ContainsMultibyte == ContainsMultibyte.Yes;
     }
 
     /// <summary>
@@ -288,13 +286,13 @@ public class LineCollection : IEnumerable<Line>
         // http://en.wikipedia.org/wiki/Binary_search_algorithm
         // System.Collections.Generic.ArraySortHelper.InternalBinarySearch
 
-        var low = 0;
-        var high = Count - 1;
+        int low = 0;
+        int high = Count - 1;
 
         while (low <= high)
         {
-            var mid = low + ((high - low) / 2);
-            var start = CharPositionFromLine(mid);
+            int mid = low + (high - low) / 2;
+            int start = CharPositionFromLine(mid);
 
             if (pos == start)
                 return mid;
@@ -318,75 +316,77 @@ public class LineCollection : IEnumerable<Line>
         MoveStep(index);
 
         PerLine data;
-        var lineStart = 0;
+        int lineStart = 0;
 
         // Add the new line length to the existing line start
-        data = perLineData[index];
+        data = this.perLineData[index];
         lineStart = data.Start;
         data.Start += length;
-        perLineData[index] = data;
+        this.perLineData[index] = data;
 
         // Insert the new line
         data = new PerLine { Start = lineStart };
-        perLineData.Insert(index, data);
+        this.perLineData.Insert(index, data);
 
         // Move the step
-        stepLength += length;
-        stepLine++;
+        this.stepLength += length;
+        this.stepLine++;
     }
 
     private void MoveStep(int line)
     {
-        if (stepLength == 0)
+        if (this.stepLength == 0)
         {
-            stepLine = line;
+            this.stepLine = line;
         }
-        else if (stepLine < line)
+        else if (this.stepLine < line)
         {
             PerLine data;
-            while (stepLine < line)
+            while (this.stepLine < line)
             {
-                stepLine++;
-                data = perLineData[stepLine];
-                data.Start += stepLength;
-                perLineData[stepLine] = data;
+                this.stepLine++;
+                data = this.perLineData[this.stepLine];
+                data.Start += this.stepLength;
+                this.perLineData[this.stepLine] = data;
             }
         }
-        else if (stepLine > line)
+        else if (this.stepLine > line)
         {
             PerLine data;
-            while (stepLine > line)
+            while (this.stepLine > line)
             {
-                data = perLineData[stepLine];
-                data.Start -= stepLength;
-                perLineData[stepLine] = data;
-                stepLine--;
+                data = this.perLineData[this.stepLine];
+                data.Start -= this.stepLength;
+                this.perLineData[this.stepLine] = data;
+                this.stepLine--;
             }
         }
     }
 
     internal void RebuildLineData()
     {
-        stepLine = 0;
-        stepLength = 0;
+        this.stepLine = 0;
+        this.stepLength = 0;
 
-        perLineData = new GapBuffer<PerLine>();
-        perLineData.Add(new PerLine { Start = 0 });
-        perLineData.Add(new PerLine { Start = 0 }); // Terminal
+        this.perLineData =
+        [
+            new PerLine { Start = 0 },
+            new PerLine { Start = 0 }, // Terminal
+        ];
 
         // Fake an insert notification
         var scn = new NativeMethods.SCNotification();
-        var adjustedLines = scintilla.DirectMessage(NativeMethods.SCI_GETLINECOUNT).ToInt32() - 1;
+        int adjustedLines = this.scintilla.DirectMessage(NativeMethods.SCI_GETLINECOUNT).ToInt32() - 1;
         scn.linesAdded = new IntPtr(adjustedLines);
         scn.position = IntPtr.Zero;
-        scn.length = scintilla.DirectMessage(NativeMethods.SCI_GETLENGTH);
-        scn.text = scintilla.DirectMessage(NativeMethods.SCI_GETRANGEPOINTER, scn.position, scn.length);
+        scn.length = this.scintilla.DirectMessage(NativeMethods.SCI_GETLENGTH);
+        scn.text = this.scintilla.DirectMessage(NativeMethods.SCI_GETRANGEPOINTER, scn.position, scn.length);
         TrackInsertText(scn);
     }
 
     private void scintilla_SCNotification(object sender, SCNotificationEventArgs e)
     {
-        var scn = e.SCNotification;
+        NativeMethods.SCNotification scn = e.SCNotification;
         switch (scn.nmhdr.code)
         {
             case NativeMethods.SCN_MODIFIED:
@@ -410,21 +410,21 @@ public class LineCollection : IEnumerable<Line>
 
     private void TrackDeleteText(NativeMethods.SCNotification scn)
     {
-        var startLine = scintilla.DirectMessage(NativeMethods.SCI_LINEFROMPOSITION, scn.position).ToInt32();
+        int startLine = this.scintilla.DirectMessage(NativeMethods.SCI_LINEFROMPOSITION, scn.position).ToInt32();
         if (scn.linesAdded == IntPtr.Zero)
         {
             // That was easy
-            var delta = GetCharCount(scn.text, scn.length.ToInt32(), scintilla.Encoding);
+            int delta = GetCharCount(scn.text, scn.length.ToInt32(), this.scintilla.Encoding);
             AdjustLineLength(startLine, delta * -1);
         }
         else
         {
             // Adjust the existing line
-            var lineByteStart = scintilla.DirectMessage(NativeMethods.SCI_POSITIONFROMLINE, new IntPtr(startLine)).ToInt32();
-            var lineByteLength = scintilla.DirectMessage(NativeMethods.SCI_LINELENGTH, new IntPtr(startLine)).ToInt32();
+            int lineByteStart = this.scintilla.DirectMessage(NativeMethods.SCI_POSITIONFROMLINE, new IntPtr(startLine)).ToInt32();
+            int lineByteLength = this.scintilla.DirectMessage(NativeMethods.SCI_LINELENGTH, new IntPtr(startLine)).ToInt32();
             AdjustLineLength(startLine, GetCharCount(lineByteStart, lineByteLength) - CharLineLength(startLine));
 
-            var linesRemoved = scn.linesAdded.ToInt32() * -1;
+            int linesRemoved = scn.linesAdded.ToInt32() * -1;
             for (int i = 0; i < linesRemoved; i++)
             {
                 // Deleted line
@@ -435,30 +435,30 @@ public class LineCollection : IEnumerable<Line>
 
     private void TrackInsertText(NativeMethods.SCNotification scn)
     {
-        var startLine = scintilla.DirectMessage(NativeMethods.SCI_LINEFROMPOSITION, scn.position).ToInt32();
+        int startLine = this.scintilla.DirectMessage(NativeMethods.SCI_LINEFROMPOSITION, scn.position).ToInt32();
         if (scn.linesAdded == IntPtr.Zero)
         {
             // That was easy
-            var delta = GetCharCount(scn.position.ToInt32(), scn.length.ToInt32());
+            int delta = GetCharCount(scn.position.ToInt32(), scn.length.ToInt32());
             AdjustLineLength(startLine, delta);
         }
         else
         {
-            var lineByteStart = 0;
-            var lineByteLength = 0;
+            int lineByteStart = 0;
+            int lineByteLength = 0;
 
             // Adjust existing line
-            lineByteStart = scintilla.DirectMessage(NativeMethods.SCI_POSITIONFROMLINE, new IntPtr(startLine)).ToInt32();
-            lineByteLength = scintilla.DirectMessage(NativeMethods.SCI_LINELENGTH, new IntPtr(startLine)).ToInt32();
+            lineByteStart = this.scintilla.DirectMessage(NativeMethods.SCI_POSITIONFROMLINE, new IntPtr(startLine)).ToInt32();
+            lineByteLength = this.scintilla.DirectMessage(NativeMethods.SCI_LINELENGTH, new IntPtr(startLine)).ToInt32();
             AdjustLineLength(startLine, GetCharCount(lineByteStart, lineByteLength) - CharLineLength(startLine));
 
             for (int i = 1; i <= scn.linesAdded.ToInt32(); i++)
             {
-                var line = startLine + i;
+                int line = startLine + i;
 
                 // Insert new line
                 lineByteStart += lineByteLength;
-                lineByteLength = scintilla.DirectMessage(NativeMethods.SCI_LINELENGTH, new IntPtr(line)).ToInt32();
+                lineByteLength = this.scintilla.DirectMessage(NativeMethods.SCI_LINELENGTH, new IntPtr(line)).ToInt32();
                 InsertPerLine(line, GetCharCount(lineByteStart, lineByteLength));
             }
         }
@@ -476,7 +476,7 @@ public class LineCollection : IEnumerable<Line>
     {
         get
         {
-            return (scintilla.DirectMessage(NativeMethods.SCI_GETALLLINESVISIBLE) != IntPtr.Zero);
+            return this.scintilla.DirectMessage(NativeMethods.SCI_GETALLLINESVISIBLE) != IntPtr.Zero;
         }
     }
 
@@ -489,7 +489,7 @@ public class LineCollection : IEnumerable<Line>
         get
         {
             // Subtract the terminal line
-            return (perLineData.Count - 1);
+            return this.perLineData.Count - 1;
         }
     }
 
@@ -501,7 +501,7 @@ public class LineCollection : IEnumerable<Line>
         get
         {
             // Where the terminal line begins
-            return CharPositionFromLine(perLineData.Count - 1);
+            return CharPositionFromLine(this.perLineData.Count - 1);
         }
     }
 
@@ -515,7 +515,7 @@ public class LineCollection : IEnumerable<Line>
         get
         {
             index = Helpers.Clamp(index, 0, Count - 1);
-            return new Line(scintilla, index);
+            return new Line(this.scintilla, index);
         }
     }
 
@@ -532,9 +532,11 @@ public class LineCollection : IEnumerable<Line>
         this.scintilla = scintilla;
         this.scintilla.SCNotification += scintilla_SCNotification;
 
-        this.perLineData = new GapBuffer<PerLine>();
-        this.perLineData.Add(new PerLine { Start = 0 });
-        this.perLineData.Add(new PerLine { Start = 0 }); // Terminal
+        this.perLineData =
+        [
+            new PerLine { Start = 0 },
+            new PerLine { Start = 0 }, // Terminal
+        ];
     }
 
     #endregion Constructors

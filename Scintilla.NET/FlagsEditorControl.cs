@@ -11,15 +11,15 @@ internal partial class FlagsEditorControl : UserControl
     public FlagsEditorControl()
     {
         InitializeComponent();
-        button_Ok.Text = NativeMethods.GetMessageBoxString(0);
-        button_Cancel.Text = NativeMethods.GetMessageBoxString(1);
+        this.button_Ok.Text = NativeMethods.GetMessageBoxString(0);
+        this.button_Cancel.Text = NativeMethods.GetMessageBoxString(1);
     }
 
     private readonly Type enumType;
     private readonly Enum initialValue;
     public Enum Value { get; protected set; }
 
-    private IWindowsFormsEditorService editorService;
+    private readonly IWindowsFormsEditorService editorService;
 
     private int inCheck;
 
@@ -27,18 +27,18 @@ internal partial class FlagsEditorControl : UserControl
     {
         this.editorService = editorService;
 
-        enumType = value.GetType();
-        Value = initialValue = value;
+        this.enumType = value.GetType();
+        Value = this.initialValue = value;
 
-        inCheck++;
+        this.inCheck++;
         try
         {
-            ulong allBits = CalculateEnumAllValue(enumType);
+            ulong allBits = CalculateEnumAllValue(this.enumType);
             bool hasAll = false;
             ulong valueBits = Convert.ToUInt64(Value);
-            foreach (string itemName in Enum.GetNames(enumType))
+            foreach (string itemName in Enum.GetNames(this.enumType))
             {
-                Enum item = (Enum)Enum.Parse(enumType, itemName);
+                var item = (Enum)Enum.Parse(this.enumType, itemName);
                 ulong itemBits = Convert.ToUInt64(item);
                 if (itemBits == allBits)
                     hasAll = true;
@@ -54,28 +54,30 @@ internal partial class FlagsEditorControl : UserControl
                         UseVisualStyleBackColor = true,
                     };
                     checkBox.CheckStateChanged += checkBox_CheckStateChanged;
-                    flowLayoutPanel_CheckBoxList.Controls.Add(checkBox);
+                    this.flowLayoutPanel_CheckBoxList.Controls.Add(checkBox);
                 }
             }
+
             if (!hasAll)
             {
                 var checkBox = new CheckBox() {
                     Text = "All",
                     CheckState = CheckStateFromBits(allBits, valueBits),
                     AutoSize = true,
-                    Tag = (Enum)Enum.ToObject(enumType, allBits),
+                    Tag = (Enum)Enum.ToObject(this.enumType, allBits),
                     Margin = new Padding(3, 0, 3, 0),
                     Padding = Padding.Empty,
                     UseVisualStyleBackColor = true,
                 };
                 checkBox.CheckStateChanged += checkBox_CheckStateChanged;
-                flowLayoutPanel_CheckBoxList.Controls.Add(checkBox);
+                this.flowLayoutPanel_CheckBoxList.Controls.Add(checkBox);
             }
-            this.AutoSize = true;
+
+            AutoSize = true;
         }
         finally
         {
-            inCheck--;
+            this.inCheck--;
         }
     }
 
@@ -86,6 +88,7 @@ internal partial class FlagsEditorControl : UserControl
         {
             all |= Convert.ToUInt64(bits);
         }
+
         return all;
     }
 
@@ -96,34 +99,35 @@ internal partial class FlagsEditorControl : UserControl
         {
             bits |= Convert.ToUInt64(checkBox.Tag);
         }
+
         return bits;
     }
 
     private void checkBox_CheckStateChanged(object sender, EventArgs e)
     {
-        if (inCheck > 0)
+        if (this.inCheck > 0)
             return;
-        inCheck++;
+        this.inCheck++;
         try
         {
             var checkTarget = (CheckBox)sender;
-            var checkBoxList = flowLayoutPanel_CheckBoxList.Controls.OfType<CheckBox>();
+            IEnumerable<CheckBox> checkBoxList = this.flowLayoutPanel_CheckBoxList.Controls.OfType<CheckBox>();
             ulong valueBits = CombineEnumBits(checkBoxList);
             ulong changedBits = Convert.ToUInt64(checkTarget.Tag);
             if (checkTarget.CheckState == CheckState.Checked)
                 valueBits |= changedBits;
             else if (checkTarget.CheckState == CheckState.Unchecked)
                 valueBits &= ~changedBits;
-            Value = (Enum)Enum.ToObject(enumType, valueBits);
+            Value = (Enum)Enum.ToObject(this.enumType, valueBits);
             foreach (CheckBox checkBox in checkBoxList)
             {
-                var itemBits = Convert.ToUInt64(checkBox.Tag);
+                ulong itemBits = Convert.ToUInt64(checkBox.Tag);
                 checkBox.CheckState = CheckStateFromBits(itemBits, valueBits);
             }
         }
         finally
         {
-            inCheck--;
+            this.inCheck--;
         }
     }
 
@@ -136,25 +140,27 @@ internal partial class FlagsEditorControl : UserControl
     {
         if (keyData == Keys.Return)
         {
-            button_Ok_Click(button_Ok, EventArgs.Empty);
+            button_Ok_Click(this.button_Ok, EventArgs.Empty);
             return true;
         }
+
         if (keyData == Keys.Escape)
         {
-            button_Cancel_Click(button_Cancel, EventArgs.Empty);
+            button_Cancel_Click(this.button_Cancel, EventArgs.Empty);
             return true;
         }
+
         return base.ProcessDialogKey(keyData);
     }
 
     private void button_Ok_Click(object sender, EventArgs e)
     {
-        editorService.CloseDropDown();
+        this.editorService.CloseDropDown();
     }
 
     private void button_Cancel_Click(object sender, EventArgs e)
     {
-        Value = initialValue;
-        editorService.CloseDropDown();
+        Value = this.initialValue;
+        this.editorService.CloseDropDown();
     }
 }

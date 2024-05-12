@@ -9,6 +9,6 @@ internal sealed class SCNotificationEventArgs : EventArgs
 
     public SCNotificationEventArgs(NativeMethods.SCNotification scn)
     {
-        this.SCNotification = scn;
+        SCNotification = scn;
     }
 }

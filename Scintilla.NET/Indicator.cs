@@ -44,10 +44,10 @@ public class Indicator
     /// </remarks>
     public int End(int position)
     {
-        position = Helpers.Clamp(position, 0, scintilla.TextLength);
-        position = scintilla.Lines.CharToBytePosition(position);
-        position = scintilla.DirectMessage(NativeMethods.SCI_INDICATOREND, new IntPtr(Index), new IntPtr(position)).ToInt32();
-        return scintilla.Lines.ByteToCharPosition(position);
+        position = Helpers.Clamp(position, 0, this.scintilla.TextLength);
+        position = this.scintilla.Lines.CharToBytePosition(position);
+        position = this.scintilla.DirectMessage(NativeMethods.SCI_INDICATOREND, new IntPtr(Index), new IntPtr(position)).ToInt32();
+        return this.scintilla.Lines.ByteToCharPosition(position);
     }
 
     /// <summary>
@@ -63,10 +63,10 @@ public class Indicator
     /// </remarks>
     public int Start(int position)
     {
-        position = Helpers.Clamp(position, 0, scintilla.TextLength);
-        position = scintilla.Lines.CharToBytePosition(position);
-        position = scintilla.DirectMessage(NativeMethods.SCI_INDICATORSTART, new IntPtr(Index), new IntPtr(position)).ToInt32();
-        return scintilla.Lines.ByteToCharPosition(position);
+        position = Helpers.Clamp(position, 0, this.scintilla.TextLength);
+        position = this.scintilla.Lines.CharToBytePosition(position);
+        position = this.scintilla.DirectMessage(NativeMethods.SCI_INDICATORSTART, new IntPtr(Index), new IntPtr(position)).ToInt32();
+        return this.scintilla.Lines.ByteToCharPosition(position);
     }
 
     /// <summary>
@@ -76,10 +76,10 @@ public class Indicator
     /// <returns>The user-defined value at the specified <paramref name="position" />.</returns>
     public int ValueAt(int position)
     {
-        position = Helpers.Clamp(position, 0, scintilla.TextLength);
-        position = scintilla.Lines.CharToBytePosition(position);
+        position = Helpers.Clamp(position, 0, this.scintilla.TextLength);
+        position = this.scintilla.Lines.CharToBytePosition(position);
 
-        return scintilla.DirectMessage(NativeMethods.SCI_INDICATORVALUEAT, new IntPtr(Index), new IntPtr(position)).ToInt32();
+        return this.scintilla.DirectMessage(NativeMethods.SCI_INDICATORVALUEAT, new IntPtr(Index), new IntPtr(position)).ToInt32();
     }
 
     #endregion Methods
@@ -97,12 +97,12 @@ public class Indicator
     {
         get
         {
-            return scintilla.DirectMessage(NativeMethods.SCI_INDICGETALPHA, new IntPtr(Index)).ToInt32();
+            return this.scintilla.DirectMessage(NativeMethods.SCI_INDICGETALPHA, new IntPtr(Index)).ToInt32();
         }
         set
         {
             value = Helpers.Clamp(value, 0, 255);
-            scintilla.DirectMessage(NativeMethods.SCI_INDICSETALPHA, new IntPtr(Index), new IntPtr(value));
+            this.scintilla.DirectMessage(NativeMethods.SCI_INDICSETALPHA, new IntPtr(Index), new IntPtr(value));
         }
     }
 
@@ -117,12 +117,12 @@ public class Indicator
     {
         get
         {
-            return (IndicatorFlags)scintilla.DirectMessage(NativeMethods.SCI_INDICGETFLAGS, new IntPtr(Index));
+            return (IndicatorFlags)this.scintilla.DirectMessage(NativeMethods.SCI_INDICGETFLAGS, new IntPtr(Index));
         }
         set
         {
             int flags = (int)value;
-            scintilla.DirectMessage(NativeMethods.SCI_INDICSETFLAGS, new IntPtr(Index), new IntPtr(flags));
+            this.scintilla.DirectMessage(NativeMethods.SCI_INDICSETFLAGS, new IntPtr(Index), new IntPtr(flags));
         }
     }
 
@@ -136,13 +136,13 @@ public class Indicator
     {
         get
         {
-            var color = scintilla.DirectMessage(NativeMethods.SCI_INDICGETFORE, new IntPtr(Index)).ToInt32();
+            int color = this.scintilla.DirectMessage(NativeMethods.SCI_INDICGETFORE, new IntPtr(Index)).ToInt32();
             return HelperMethods.FromWin32Color(color);
         }
         set
         {
-            var color = HelperMethods.ToWin32Color(value);
-            scintilla.DirectMessage(NativeMethods.SCI_INDICSETFORE, new IntPtr(Index), new IntPtr(color));
+            int color = HelperMethods.ToWin32Color(value);
+            this.scintilla.DirectMessage(NativeMethods.SCI_INDICSETFORE, new IntPtr(Index), new IntPtr(color));
         }
     }
 
@@ -159,13 +159,13 @@ public class Indicator
     {
         get
         {
-            var color = scintilla.DirectMessage(NativeMethods.SCI_INDICGETHOVERFORE, new IntPtr(Index)).ToInt32();
+            int color = this.scintilla.DirectMessage(NativeMethods.SCI_INDICGETHOVERFORE, new IntPtr(Index)).ToInt32();
             return HelperMethods.FromWin32Color(color);
         }
         set
         {
-            var color = HelperMethods.ToWin32Color(value);
-            scintilla.DirectMessage(NativeMethods.SCI_INDICSETHOVERFORE, new IntPtr(Index), new IntPtr(color));
+            int color = HelperMethods.ToWin32Color(value);
+            this.scintilla.DirectMessage(NativeMethods.SCI_INDICSETHOVERFORE, new IntPtr(Index), new IntPtr(color));
         }
     }
 
@@ -182,12 +182,12 @@ public class Indicator
     {
         get
         {
-            return (IndicatorStyle)scintilla.DirectMessage(NativeMethods.SCI_INDICGETHOVERSTYLE, new IntPtr(Index));
+            return (IndicatorStyle)this.scintilla.DirectMessage(NativeMethods.SCI_INDICGETHOVERSTYLE, new IntPtr(Index));
         }
         set
         {
-            var style = (int)value;
-            scintilla.DirectMessage(NativeMethods.SCI_INDICSETHOVERSTYLE, new IntPtr(Index), new IntPtr(style));
+            int style = (int)value;
+            this.scintilla.DirectMessage(NativeMethods.SCI_INDICSETHOVERSTYLE, new IntPtr(Index), new IntPtr(style));
         }
     }
 
@@ -208,12 +208,12 @@ public class Indicator
     {
         get
         {
-            return scintilla.DirectMessage(NativeMethods.SCI_INDICGETOUTLINEALPHA, new IntPtr(Index)).ToInt32();
+            return this.scintilla.DirectMessage(NativeMethods.SCI_INDICGETOUTLINEALPHA, new IntPtr(Index)).ToInt32();
         }
         set
         {
             value = Helpers.Clamp(value, 0, 255);
-            scintilla.DirectMessage(NativeMethods.SCI_INDICSETOUTLINEALPHA, new IntPtr(Index), new IntPtr(value));
+            this.scintilla.DirectMessage(NativeMethods.SCI_INDICSETOUTLINEALPHA, new IntPtr(Index), new IntPtr(value));
         }
     }
 
@@ -227,12 +227,12 @@ public class Indicator
     {
         get
         {
-            return (IndicatorStyle)scintilla.DirectMessage(NativeMethods.SCI_INDICGETSTYLE, new IntPtr(Index));
+            return (IndicatorStyle)this.scintilla.DirectMessage(NativeMethods.SCI_INDICGETSTYLE, new IntPtr(Index));
         }
         set
         {
-            var style = (int)value;
-            scintilla.DirectMessage(NativeMethods.SCI_INDICSETSTYLE, new IntPtr(Index), new IntPtr(style));
+            int style = (int)value;
+            this.scintilla.DirectMessage(NativeMethods.SCI_INDICSETSTYLE, new IntPtr(Index), new IntPtr(style));
         }
     }
 
@@ -245,12 +245,12 @@ public class Indicator
     {
         get
         {
-            return (scintilla.DirectMessage(NativeMethods.SCI_INDICGETUNDER, new IntPtr(Index)) != IntPtr.Zero);
+            return this.scintilla.DirectMessage(NativeMethods.SCI_INDICGETUNDER, new IntPtr(Index)) != IntPtr.Zero;
         }
         set
         {
-            var under = (value ? new IntPtr(1) : IntPtr.Zero);
-            scintilla.DirectMessage(NativeMethods.SCI_INDICSETUNDER, new IntPtr(Index), under);
+            IntPtr under = value ? new IntPtr(1) : IntPtr.Zero;
+            this.scintilla.DirectMessage(NativeMethods.SCI_INDICSETUNDER, new IntPtr(Index), under);
         }
     }
 

@@ -17,7 +17,7 @@ public class MarginCollection : IEnumerable<Margin>
     /// </summary>
     public void ClearAllText()
     {
-        scintilla.DirectMessage(NativeMethods.SCI_MARGINTEXTCLEARALL);
+        this.scintilla.DirectMessage(NativeMethods.SCI_MARGINTEXTCLEARALL);
     }
 
     /// <summary>
@@ -35,7 +35,7 @@ public class MarginCollection : IEnumerable<Margin>
 
     IEnumerator IEnumerable.GetEnumerator()
     {
-        return this.GetEnumerator();
+        return GetEnumerator();
     }
 
     /// <summary>
@@ -48,12 +48,12 @@ public class MarginCollection : IEnumerable<Margin>
     {
         get
         {
-            return scintilla.DirectMessage(NativeMethods.SCI_GETMARGINS).ToInt32();
+            return this.scintilla.DirectMessage(NativeMethods.SCI_GETMARGINS).ToInt32();
         }
         set
         {
             value = Helpers.ClampMin(value, 0);
-            scintilla.DirectMessage(NativeMethods.SCI_SETMARGINS, new IntPtr(value));
+            this.scintilla.DirectMessage(NativeMethods.SCI_SETMARGINS, new IntPtr(value));
         }
     }
 
@@ -83,12 +83,12 @@ public class MarginCollection : IEnumerable<Margin>
     {
         get
         {
-            return scintilla.DirectMessage(NativeMethods.SCI_GETMARGINLEFT).ToInt32();
+            return this.scintilla.DirectMessage(NativeMethods.SCI_GETMARGINLEFT).ToInt32();
         }
         set
         {
             value = Helpers.ClampMin(value, 0);
-            scintilla.DirectMessage(NativeMethods.SCI_SETMARGINLEFT, IntPtr.Zero, new IntPtr(value));
+            this.scintilla.DirectMessage(NativeMethods.SCI_SETMARGINLEFT, IntPtr.Zero, new IntPtr(value));
         }
     }
 
@@ -128,12 +128,12 @@ public class MarginCollection : IEnumerable<Margin>
     {
         get
         {
-            return scintilla.DirectMessage(NativeMethods.SCI_GETMARGINRIGHT).ToInt32();
+            return this.scintilla.DirectMessage(NativeMethods.SCI_GETMARGINRIGHT).ToInt32();
         }
         set
         {
             value = Helpers.ClampMin(value, 0);
-            scintilla.DirectMessage(NativeMethods.SCI_SETMARGINRIGHT, IntPtr.Zero, new IntPtr(value));
+            this.scintilla.DirectMessage(NativeMethods.SCI_SETMARGINRIGHT, IntPtr.Zero, new IntPtr(value));
         }
     }
 
@@ -150,7 +150,7 @@ public class MarginCollection : IEnumerable<Margin>
         get
         {
             index = Helpers.Clamp(index, 0, Count - 1);
-            return new Margin(scintilla, index);
+            return new Margin(this.scintilla, index);
         }
     }
 
