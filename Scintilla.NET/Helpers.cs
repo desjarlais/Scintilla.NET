@@ -1160,11 +1160,106 @@ internal static class Helpers
     }
 
     // https://stackoverflow.com/questions/2709430/count-number-of-bits-in-a-64-bit-long-big-integer/2709523#2709523
-    public static ulong PopCount(ulong i)
+    public static byte PopCount(ulong i)
     {
         i = i - ((i >> 1) & 0x5555555555555555UL);
         i = (i & 0x3333333333333333UL) + ((i >> 2) & 0x3333333333333333UL);
-        return (((i + (i >> 4)) & 0xF0F0F0F0F0F0F0FUL) * 0x101010101010101UL) >> 56;
+        return (byte)((((i + (i >> 4)) & 0xF0F0F0F0F0F0F0FUL) * 0x101010101010101UL) >> 56);
+    }
+
+    public static int MaxIndex<TSource>(this IEnumerable<TSource> source) => MaxIndex(source, comparer: null);
+
+    /// <summary>Returns index of the maximum value in a generic sequence.</summary>
+    /// <typeparam name="TSource">The type of the elements of <paramref name="source" />.</typeparam>
+    /// <param name="source">A sequence of values to determine the index of the maximum value of.</param>
+    /// <param name="comparer">The <see cref="IComparer{T}" /> to compare values.</param>
+    /// <returns>The index of the maximum value in the sequence.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="source" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentException">No object in <paramref name="source" /> implements the <see cref="System.IComparable" /> or <see cref="System.IComparable{T}" /> interface.</exception>
+    /// <remarks>
+    /// <para>If type <typeparamref name="TSource" /> implements <see cref="System.IComparable{T}" />, the <see cref="MaxIndex{T}(IEnumerable{T})" /> method uses that implementation to compare values. Otherwise, if type <typeparamref name="TSource" /> implements <see cref="System.IComparable" />, that implementation is used to compare values.</para>
+    /// <para>If <typeparamref name="TSource" /> is a reference type and the source sequence is empty or contains only values that are <see langword="null" />, this method returns -1.</para>
+    /// </remarks>
+    public static int MaxIndex<TSource>(this IEnumerable<TSource> source, Func<TSource, TSource, int> comparer)
+    {
+        if (source == null)
+        {
+            throw new ArgumentNullException(nameof(source));
+        }
+
+        comparer ??= Comparer<TSource>.Default.Compare;
+
+        int index = -1;
+        int maxIndex = index;
+        TSource value = default;
+        using (IEnumerator<TSource> e = source.GetEnumerator())
+        {
+            if (value == null)
+            {
+                do
+                {
+                    if (!e.MoveNext())
+                    {
+                        return maxIndex;
+                    }
+                    index++;
+
+                    value = e.Current;
+                    maxIndex = index;
+                }
+                while (value == null);
+
+                while (e.MoveNext())
+                {
+                    index++;
+                    TSource next = e.Current;
+                    if (next != null && comparer(next, value) > 0)
+                    {
+                        value = next;
+                        maxIndex = index;
+                    }
+                }
+            }
+            else
+            {
+                if (!e.MoveNext())
+                {
+                    throw new InvalidOperationException("Sequence contains no elements");
+                }
+                index++;
+
+                value = e.Current;
+                maxIndex = index;
+                if (comparer == Comparer<TSource>.Default.Compare)
+                {
+                    while (e.MoveNext())
+                    {
+                        index++;
+                        TSource next = e.Current;
+                        if (Comparer<TSource>.Default.Compare(next, value) > 0)
+                        {
+                            value = next;
+                            maxIndex = index;
+                        }
+                    }
+                }
+                else
+                {
+                    while (e.MoveNext())
+                    {
+                        index++;
+                        TSource next = e.Current;
+                        if (comparer(next, value) > 0)
+                        {
+                            value = next;
+                            maxIndex = index;
+                        }
+                    }
+                }
+            }
+        }
+
+        return maxIndex;
     }
 
     #endregion Methods
