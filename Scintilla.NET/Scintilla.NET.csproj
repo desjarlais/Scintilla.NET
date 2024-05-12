@@ -32,12 +32,6 @@
 		<Authors>Jacob Slusser, VPKSoft, cyber960, desjarlais</Authors>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 	</PropertyGroup>
-	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-windows|AnyCPU'">
-	  <WarningLevel>7</WarningLevel>
-	</PropertyGroup>
-	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-windows|AnyCPU'">
-	  <WarningLevel>7</WarningLevel>
-	</PropertyGroup>
 	<ItemGroup>
 		<None Include="..\README.md">
 			<Pack>True</Pack>
@@ -61,6 +55,9 @@
 			<PackagePath>runtimes</PackagePath>
 			<Pack>true</Pack>
 		</Content>
+	</ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework.TrimEnd(`0123456789`))' == 'net'">
+	  <Reference Include="System.Design" />
 	</ItemGroup>
 	<Target Name="PostPack" AfterTargets="Pack">
 		<Exec Command="powershell .\nupkg.ps1 -MSBuildProjectDirectory '$(MSBuildProjectDirectory)' -NuGetPackageRoot '$(NuGetPackageRoot)' -NuGetPackageSourceDir '$(SolutionDir)\registry' -PackageOutputPath '$(PackageOutputPath)' -PackageId '$(PackageId)' -PackageVersion '$(PackageVersion)'" />

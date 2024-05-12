@@ -19,6 +19,7 @@ namespace ScintillaNET
     /// Represents a Scintilla editor control.
     /// </summary>
     [Docking(DockingBehavior.Ask)]
+    [Designer(typeof(ScintillaDesigner))]
     public class Scintilla : Control
     {
         static Scintilla()
