@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using System.Windows.Forms.Design;
@@ -51,7 +52,6 @@ internal partial class FlagsEditorControl : UserControl
                         Tag = item,
                         Margin = new Padding(3, 0, 3, 0),
                         Padding = Padding.Empty,
-                        UseVisualStyleBackColor = true,
                     };
                     checkBox.CheckStateChanged += checkBox_CheckStateChanged;
                     this.flowLayoutPanel_CheckBoxList.Controls.Add(checkBox);
@@ -67,7 +67,6 @@ internal partial class FlagsEditorControl : UserControl
                     Tag = (Enum)Enum.ToObject(this.enumType, allBits),
                     Margin = new Padding(3, 0, 3, 0),
                     Padding = Padding.Empty,
-                    UseVisualStyleBackColor = true,
                 };
                 checkBox.CheckStateChanged += checkBox_CheckStateChanged;
                 this.flowLayoutPanel_CheckBoxList.Controls.Add(checkBox);
@@ -79,6 +78,18 @@ internal partial class FlagsEditorControl : UserControl
         {
             this.inCheck--;
         }
+    }
+
+    protected override void OnBackColorChanged(EventArgs e)
+    {
+        base.OnBackColorChanged(e);
+        Helpers.ApplyToControlTree(this, c => {
+            OkLab backColor = Srgb.FromColor(c.BackColor).ToLinearSrgb().ToOkLab();
+            if (backColor.L < 0.5f)
+                c.ForeColor = Color.White;
+            else
+                c.ForeColor = Color.Black;
+        });
     }
 
     private static ulong CalculateEnumAllValue(Type enumType)

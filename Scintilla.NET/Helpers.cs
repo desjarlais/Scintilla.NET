@@ -106,6 +106,11 @@ internal static class Helpers
         return result;
     }
 
+    public static float Clamp(float f, float min, float max)
+    {
+        return f < min ? min : f > max ? max : f;
+    }
+
     public static int Clamp(int value, int min, int max)
     {
         if (value < min)
@@ -1258,6 +1263,15 @@ internal static class Helpers
         }
 
         return maxIndex;
+    }
+
+    public static void ApplyToControlTree(Control control, Action<Control> action)
+    {
+        foreach (Control child in control.Controls)
+        {
+            ApplyToControlTree(child, action);
+        }
+        action(control);
     }
 
     #endregion Methods
