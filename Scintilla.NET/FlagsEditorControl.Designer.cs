@@ -84,7 +84,7 @@ partial class FlagsEditorControl
 			this.button_Ok.Size = new System.Drawing.Size(75, 26);
 			this.button_Ok.TabIndex = 1;
 			this.button_Ok.Text = "OK";
-			this.button_Ok.UseVisualStyleBackColor = true;
+			this.button_Ok.UseVisualStyleBackColor = false;
 			this.button_Ok.Click += new System.EventHandler(this.button_Ok_Click);
 			// 
 			// button_Cancel
@@ -100,7 +100,7 @@ partial class FlagsEditorControl
 			this.button_Cancel.Size = new System.Drawing.Size(75, 26);
 			this.button_Cancel.TabIndex = 1;
 			this.button_Cancel.Text = "Cancel";
-			this.button_Cancel.UseVisualStyleBackColor = true;
+			this.button_Cancel.UseVisualStyleBackColor = false;
 			this.button_Cancel.Click += new System.EventHandler(this.button_Cancel_Click);
 			// 
 			// FlagsEditorControl
