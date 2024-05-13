@@ -10,18 +10,18 @@ namespace FlagsEnumTypeConverter;
 /// <summary>
 /// Flags enumeration type converter.
 /// </summary>
-internal class FlagsEnumConverter: EnumConverter
+internal class FlagsEnumConverter : EnumConverter
 {
     /// <summary>
     /// This class represents an enumeration field in the property grid.
     /// </summary>
-    protected class EnumFieldDescriptor: SimplePropertyDescriptor
+    protected class EnumFieldDescriptor : SimplePropertyDescriptor
     {
         #region Fields
         /// <summary>
         /// Stores the context which the enumeration field descriptor was created in.
         /// </summary>
-        ITypeDescriptorContext fContext;
+        private readonly ITypeDescriptorContext fContext;
         #endregion
 
         #region Methods
@@ -31,9 +31,9 @@ internal class FlagsEnumConverter: EnumConverter
         /// <param name="componentType">The type of the enumeration.</param>
         /// <param name="name">The name of the enumeration field.</param>
         /// <param name="context">The current context.</param>
-        public EnumFieldDescriptor(Type componentType, string name, ITypeDescriptorContext context): base(componentType, name, typeof(bool))
+        public EnumFieldDescriptor(Type componentType, string name, ITypeDescriptorContext context) : base(componentType, name, typeof(bool))
         {
-            fContext = context;
+            this.fContext = context;
         }
 
         /// <summary>
@@ -48,7 +48,7 @@ internal class FlagsEnumConverter: EnumConverter
         /// </returns>
         public override object GetValue(object component)
         {
-            var bits = Convert.ToUInt64(Enum.Parse(ComponentType, Name));
+            ulong bits = Convert.ToUInt64(Enum.Parse(ComponentType, Name));
             return (Convert.ToUInt64(component) & bits) == bits;
         }
 
@@ -66,14 +66,14 @@ internal class FlagsEnumConverter: EnumConverter
         {
             bool myValue = (bool)value;
             ulong myNewValue;
-            if(myValue)
+            if (myValue)
                 myNewValue = Convert.ToUInt64(component) | Convert.ToUInt64(Enum.Parse(ComponentType, Name));
             else
                 myNewValue = Convert.ToUInt64(component) & ~Convert.ToUInt64(Enum.Parse(ComponentType, Name));
-				
+
             FieldInfo myField = component.GetType().GetField("value__", BindingFlags.Instance | BindingFlags.Public);
             myField.SetValue(component, Convert.ChangeType(myNewValue, Enum.GetUnderlyingType(ComponentType)));
-            fContext.PropertyDescriptor.SetValue(fContext.Instance, component);
+            this.fContext.PropertyDescriptor.SetValue(this.fContext.Instance, component);
         }
 
         /// <summary>
@@ -108,17 +108,17 @@ internal class FlagsEnumConverter: EnumConverter
         private bool GetDefaultValue()
         {
             object myDefaultValue = null;
-            string myPropertyName = fContext.PropertyDescriptor.Name;
-            Type myComponentType = fContext.PropertyDescriptor.ComponentType;
+            string myPropertyName = this.fContext.PropertyDescriptor.Name;
+            Type myComponentType = this.fContext.PropertyDescriptor.ComponentType;
 
             // Get DefaultValueAttribute
-            DefaultValueAttribute myDefaultValueAttribute = (DefaultValueAttribute)Attribute.GetCustomAttribute(
-                myComponentType.GetProperty(myPropertyName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic), 
+            var myDefaultValueAttribute = (DefaultValueAttribute)Attribute.GetCustomAttribute(
+                myComponentType.GetProperty(myPropertyName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic),
                 typeof(DefaultValueAttribute));
-            if(myDefaultValueAttribute != null)
+            if (myDefaultValueAttribute != null)
                 myDefaultValue = myDefaultValueAttribute.Value;
 
-            if(myDefaultValue != null)
+            if (myDefaultValue != null)
                 return (Convert.ToUInt64(myDefaultValue) & Convert.ToUInt64(Enum.Parse(ComponentType, Name))) != 0;
             return false;
         }
@@ -129,7 +129,7 @@ internal class FlagsEnumConverter: EnumConverter
         {
             get
             {
-                return new AttributeCollection(new Attribute[]{RefreshPropertiesAttribute.Repaint});
+                return new AttributeCollection(new Attribute[] { RefreshPropertiesAttribute.Repaint });
             }
         }
         #endregion
@@ -140,7 +140,7 @@ internal class FlagsEnumConverter: EnumConverter
     /// Creates an instance of the FlagsEnumConverter class.
     /// </summary>
     /// <param name="type">The type of the enumeration.</param>
-    public FlagsEnumConverter(Type type): base(type){}
+    public FlagsEnumConverter(Type type) : base(type) { }
 
     /// <summary>
     /// Retrieves the property descriptors for the enumeration fields. 
@@ -151,31 +151,34 @@ internal class FlagsEnumConverter: EnumConverter
     /// <param name="value">A value of an enumeration type.</param>
     public override PropertyDescriptorCollection GetProperties(ITypeDescriptorContext context, object value, Attribute[] attributes)
     {
-        if(context != null)
+        if (context != null)
         {
             Type myType = value.GetType();
             string[] myNames = Enum.GetNames(myType);
             Array myValues = Enum.GetValues(myType);
-            if(myNames != null)
+            if (myNames != null)
             {
-                PropertyDescriptorCollection myCollection = new PropertyDescriptorCollection(null);
-                for(int i = 0; i < myNames.Length; i++)
+                var myCollection = new PropertyDescriptorCollection(null);
+                for (int i = 0; i < myNames.Length; i++)
                 {
                     if (Convert.ToUInt64(myValues.GetValue(i)) != 0)
                         myCollection.Add(new EnumFieldDescriptor(myType, myNames[i], context));
                 }
+
                 return myCollection;
             }
         }
+
         return base.GetProperties(context, value, attributes);
     }
 
     public override bool GetPropertiesSupported(ITypeDescriptorContext context)
     {
-        if(context != null)
+        if (context != null)
         {
             return true;
         }
+
         return base.GetPropertiesSupported(context);
     }
 

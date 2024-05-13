@@ -1,10 +1,9 @@
 ﻿// http://stackoverflow.com/questions/188120/can-i-specify-my-explicit-type-comparator-inline
 
-namespace ScintillaNET;
-
 using System;
 using System.Collections.Generic;
 
+namespace ScintillaNET;
 /// <summary>
 /// Non-generic class to produce instances of the generic class,
 /// optionally using type inference.
@@ -42,7 +41,6 @@ internal static class ProjectionEqualityComparer
     {
         return new ProjectionEqualityComparer<TSource, TKey>(projection);
     }
-
 }
 
 /// <summary>
@@ -75,8 +73,8 @@ internal static class ProjectionEqualityComparer<TSource>
 /// from the element</typeparam>
 internal class ProjectionEqualityComparer<TSource, TKey> : IEqualityComparer<TSource>
 {
-    readonly Func<TSource, TKey> projection;
-    readonly IEqualityComparer<TKey> comparer;
+    private readonly Func<TSource, TKey> projection;
+    private readonly IEqualityComparer<TKey> comparer;
 
     /// <summary>
     /// Creates a new instance using the specified projection, which must not be null.
@@ -96,12 +94,8 @@ internal class ProjectionEqualityComparer<TSource, TKey> : IEqualityComparer<TSo
     /// which case the default comparer will be used.</param>
     public ProjectionEqualityComparer(Func<TSource, TKey> projection, IEqualityComparer<TKey> comparer)
     {
-        if (projection == null)
-        {
-            throw new ArgumentNullException("projection");
-        }
         this.comparer = comparer ?? EqualityComparer<TKey>.Default;
-        this.projection = projection;
+        this.projection = projection ?? throw new ArgumentNullException("projection");
     }
 
     /// <summary>
@@ -115,11 +109,13 @@ internal class ProjectionEqualityComparer<TSource, TKey> : IEqualityComparer<TSo
         {
             return true;
         }
+
         if (x == null || y == null)
         {
             return false;
         }
-        return comparer.Equals(projection(x), projection(y));
+
+        return this.comparer.Equals(this.projection(x), this.projection(y));
     }
 
     /// <summary>
@@ -133,6 +129,7 @@ internal class ProjectionEqualityComparer<TSource, TKey> : IEqualityComparer<TSo
         {
             throw new ArgumentNullException("obj");
         }
-        return comparer.GetHashCode(projection(obj));
+
+        return this.comparer.GetHashCode(this.projection(obj));
     }
 }

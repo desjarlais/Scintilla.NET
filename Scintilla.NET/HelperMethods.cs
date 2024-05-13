@@ -10,17 +10,22 @@ namespace ScintillaNET;
 /// </summary>
 public static class HelperMethods
 {
-    static readonly Dictionary<int, Color> knownColorMap = [];
+    private static readonly Dictionary<int, Color> knownColorMap = [];
 
     static HelperMethods()
     {
-        foreach (var knownColor in Enum.GetValues(typeof(KnownColor)).Cast<KnownColor>().Where(k => k >= KnownColor.Transparent && k < KnownColor.ButtonFace))
+        foreach (KnownColor knownColor in Enum.GetValues(typeof(KnownColor)).Cast<KnownColor>().Where(k => k is >= KnownColor.Transparent and < KnownColor.ButtonFace))
         {
-            Color color = Color.FromKnownColor(knownColor);
+            var color = Color.FromKnownColor(knownColor);
             knownColorMap[ToWin32Color(color)] = color;
         }
     }
 
+    /// <summary>
+    /// Converts a 32-bit WinAPI color to <see cref="Color"/>.
+    /// </summary>
+    /// <param name="color">The color value to convert.</param>
+    /// <returns>A <see cref="Color"/> equivalent of the 32-bit WinAPI color.</returns>
     public static Color FromWin32Color(int color)
     {
         if (color == 0)
@@ -35,6 +40,11 @@ public static class HelperMethods
         return Color.FromArgb((color >> 24) & 0xFF, (color >> 0) & 0xFF, (color >> 8) & 0xFF, (color >> 16) & 0xFF);
     }
 
+    /// <summary>
+    /// Converts a <see cref="Color"/> to 32-bit WinAPI color.
+    /// </summary>
+    /// <param name="color">The <see cref="Color"/> instance to convert.</param>
+    /// <returns>32-bit WinAPI color value of the <see cref="Color"/> instance.</returns>
     public static int ToWin32Color(Color color)
     {
         return (color.A << 24) | (color.R << 0) | (color.G << 8) | (color.B << 16);
@@ -61,12 +71,13 @@ public static class HelperMethods
     public static void SetFoldingState(this Scintilla scintilla, string foldingState, string separator = ";")
     {
         scintilla.FoldAll(FoldAction.Expand);
-        foreach (var index in foldingState.Split(new[] { separator }, System.StringSplitOptions.None).Select(int.Parse))
+        foreach (int index in foldingState.Split(new[] { separator }, System.StringSplitOptions.None).Select(int.Parse))
         {
             if (index < 0 || index >= scintilla.Lines.Count)
             {
                 continue;
             }
+
             scintilla.Lines[index].ToggleFold();
         }
     }

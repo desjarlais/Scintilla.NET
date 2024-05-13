@@ -1,8 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
-using System.Text;
 
 namespace ScintillaNET;
 
@@ -28,32 +28,39 @@ internal class FlagsConverter : TypeConverter
             {
                 return Enum.ToObject(enumType, 0).ToString();
             }
+
             ulong bits = 0;
-            StringBuilder sb = new StringBuilder();
-            void Add(Enum item, ulong itemBits)
+            List<Enum> enums = [];
+            var items = Enum.GetValues(enumType).Cast<Enum>()
+                .Select(e => (@enum: e, bits: Convert.ToUInt64(e), bitCount: Helpers.PopCount(Convert.ToUInt64(e))))
+                .Where(e => e.bits != 0 && e.bitCount > 0)
+                .ToList();
+            int maxIterations = items.Count;
+            for (int i = 0; i < maxIterations && bits != valueBits && items.Count > 0; i++)
             {
-                if (itemBits != 0 && valueEnum.HasFlag(item))
+                int maxIndex = items
+                    .Select(e => (contrib: Helpers.PopCount(e.bits & valueBits & ~bits), item: e))
+                    .MaxIndex(
+                        (x, y) =>                                                                    // Select one that:
+                        (x.contrib != y.contrib) ? (x.contrib - y.contrib) :                         // Contributes most bits
+                        (x.item.bitCount != y.item.bitCount) ? (y.item.bitCount - x.item.bitCount) : // Has least amount of bits set
+                        (x.item.bits < y.item.bits) ? -1 : (x.item.bits > y.item.bits ? 1 : 0)       // With the highest integer value
+                    );
+
+                (Enum @enum, ulong bits, byte bitCount) item = items[maxIndex];
+
+                if ((valueBits & item.bits) == item.bits && (bits & item.bits) != item.bits)
                 {
-                    bits |= itemBits;
-                    if (sb.Length > 0)
-                        sb.Append(" | ");
-                    sb.Append(item);
+                    bits |= item.bits;
+                    items.RemoveAt(maxIndex);
+                    enums.Add(item.@enum);
                 }
             }
-            foreach (Enum item in Enum.GetValues(enumType))
-            {
-                ulong itemBits = Convert.ToUInt64(item);
-                if (Helpers.PopCount(itemBits) == 1)
-                    Add(item, itemBits);
-            }
-            foreach (Enum item in Enum.GetValues(enumType))
-            {
-                ulong itemBits = Convert.ToUInt64(item);
-                if (Helpers.PopCount(itemBits) > 1 && (bits & itemBits) != itemBits)
-                    Add(item, itemBits);
-            }
-            return sb.ToString();
+
+            enums.Sort();
+            return string.Join(" | ", enums);
         }
+
         return base.ConvertTo(context, culture, value, destinationType);
     }
 
@@ -63,13 +70,15 @@ internal class FlagsConverter : TypeConverter
         {
             Type t = context.PropertyDescriptor.PropertyType;
             ulong bits = 0;
-            var nameList = str.Split('|').Select(x => x.Trim());
-            foreach (var name in nameList)
+            IEnumerable<string> nameList = str.Split('|').Select(x => x.Trim());
+            foreach (string name in nameList)
             {
                 bits |= Convert.ToUInt64(Enum.Parse(t, name));
             }
+
             return Enum.ToObject(t, bits);
         }
+
         return base.ConvertFrom(context, culture, value);
     }
 }

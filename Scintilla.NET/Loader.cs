@@ -16,10 +16,10 @@ internal sealed class Loader : ILoader
         if (data != null)
         {
             length = Helpers.Clamp(length, 0, data.Length);
-            var bytes = Helpers.GetBytes(data, length, encoding, zeroTerminated: false);
+            byte[] bytes = Helpers.GetBytes(data, length, this.encoding, zeroTerminated: false);
             fixed (byte* bp = bytes)
             {
-                var status = (IntPtr.Size == 4 ? loader32.AddData(self, bp, bytes.Length) : loader64.AddData(self, bp, bytes.Length));
+                int status = IntPtr.Size == 4 ? this.loader32.AddData(this.self, bp, bytes.Length) : this.loader64.AddData(this.self, bp, bytes.Length);
                 if (status != NativeMethods.SC_STATUS_OK)
                     return false;
             }
@@ -30,14 +30,14 @@ internal sealed class Loader : ILoader
 
     public Document ConvertToDocument()
     {
-        var ptr = (IntPtr.Size == 4 ? loader32.ConvertToDocument(self) : loader64.ConvertToDocument(self));
+        IntPtr ptr = IntPtr.Size == 4 ? this.loader32.ConvertToDocument(this.self) : this.loader64.ConvertToDocument(this.self);
         var document = new Document { Value = ptr };
         return document;
     }
 
     public int Release()
     {
-        var count = (IntPtr.Size == 4 ? loader32.Release(self) : loader64.Release(self));
+        int count = IntPtr.Size == 4 ? this.loader32.Release(this.self) : this.loader64.Release(this.self);
         return count;
     }
 
@@ -59,9 +59,9 @@ internal sealed class Loader : ILoader
         // architecture, the function calling conventions can be different.
 
         IntPtr vfptr = *(IntPtr*)ptr;
-        if(IntPtr.Size == 4)
-            loader32 = (NativeMethods.ILoaderVTable32)Marshal.PtrToStructure(vfptr, typeof(NativeMethods.ILoaderVTable32));
+        if (IntPtr.Size == 4)
+            this.loader32 = (NativeMethods.ILoaderVTable32)Marshal.PtrToStructure(vfptr, typeof(NativeMethods.ILoaderVTable32));
         else
-            loader64 = (NativeMethods.ILoaderVTable64)Marshal.PtrToStructure(vfptr, typeof(NativeMethods.ILoaderVTable64));
+            this.loader64 = (NativeMethods.ILoaderVTable64)Marshal.PtrToStructure(vfptr, typeof(NativeMethods.ILoaderVTable64));
     }
 }

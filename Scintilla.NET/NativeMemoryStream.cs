@@ -11,7 +11,6 @@ internal sealed unsafe class NativeMemoryStream : Stream
 {
     #region Fields
 
-    private IntPtr ptr;
     private int capacity;
     private int position;
     private int length;
@@ -22,10 +21,10 @@ internal sealed unsafe class NativeMemoryStream : Stream
 
     protected override void Dispose(bool disposing)
     {
-        if (FreeOnDispose && ptr != IntPtr.Zero)
+        if (FreeOnDispose && Pointer != IntPtr.Zero)
         {
-            Marshal.FreeHGlobal(ptr);
-            ptr = IntPtr.Zero;
+            Marshal.FreeHGlobal(Pointer);
+            Pointer = IntPtr.Zero;
         }
 
         base.Dispose(disposing);
@@ -46,14 +45,14 @@ internal sealed unsafe class NativeMemoryStream : Stream
         switch (origin)
         {
             case SeekOrigin.Begin:
-                position = (int)offset;
+                this.position = (int)offset;
                 break;
 
             default:
                 throw new NotImplementedException();
         }
 
-        return position;
+        return this.position;
     }
 
     public override void SetLength(long value)
@@ -63,25 +62,25 @@ internal sealed unsafe class NativeMemoryStream : Stream
 
     public override void Write(byte[] buffer, int offset, int count)
     {
-        if ((position + count) > capacity)
+        if (this.position + count > this.capacity)
         {
             // Realloc buffer
-            var minCapacity = (position + count);
-            var newCapacity = (capacity * 2);
+            int minCapacity = this.position + count;
+            int newCapacity = this.capacity * 2;
             if (newCapacity < minCapacity)
                 newCapacity = minCapacity;
 
-            var newPtr = Marshal.AllocHGlobal(newCapacity);
-            NativeMethods.MoveMemory(newPtr, ptr, length);
-            Marshal.FreeHGlobal(ptr);
+            IntPtr newPtr = Marshal.AllocHGlobal(newCapacity);
+            NativeMethods.MoveMemory(newPtr, Pointer, this.length);
+            Marshal.FreeHGlobal(Pointer);
 
-            ptr = newPtr;
-            capacity = newCapacity;
+            Pointer = newPtr;
+            this.capacity = newCapacity;
         }
 
-        Marshal.Copy(buffer, offset, (IntPtr)((long)ptr + position), count);
-        position += count;
-        length = Math.Max(length, position);
+        Marshal.Copy(buffer, offset, (IntPtr)((long)Pointer + this.position), count);
+        this.position += count;
+        this.length = Math.Max(this.length, this.position);
     }
 
     #endregion Methods
@@ -115,23 +114,17 @@ internal sealed unsafe class NativeMemoryStream : Stream
     {
         get
         {
-            return length;
+            return this.length;
         }
     }
 
-    public IntPtr Pointer
-    {
-        get
-        {
-            return ptr;
-        }
-    }
+    public IntPtr Pointer { get; private set; }
 
     public override long Position
     {
         get
         {
-            return position;
+            return this.position;
         }
         set
         {
@@ -149,7 +142,7 @@ internal sealed unsafe class NativeMemoryStream : Stream
             capacity = 4;
 
         this.capacity = capacity;
-        this.ptr = Marshal.AllocHGlobal(capacity);
+        Pointer = Marshal.AllocHGlobal(capacity);
         FreeOnDispose = true;
     }
 

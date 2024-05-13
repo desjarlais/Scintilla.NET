@@ -18,18 +18,18 @@ public class Lexilla
     {
         const string win32Error = "The Scintilla module has no export for the '{0}' procedure.";
 
-        var lpProcName = nameof(NativeMethods.CreateLexer);
+        string lpProcName = nameof(NativeMethods.CreateLexer);
 
         // Get the Lexilla functions needed to define lexers and create managed callbacks...
 
-        var functionPointer = NativeMethods.GetProcAddress(new HandleRef(this, lexillaHandle), lpProcName);
+        IntPtr functionPointer = NativeMethods.GetProcAddress(new HandleRef(this, lexillaHandle), lpProcName);
         if (functionPointer == IntPtr.Zero)
         {
             throw new Win32Exception(string.Format(win32Error, lpProcName),
                 new Win32Exception()); // Calls GetLastError
         }
 
-        createLexer = (NativeMethods.CreateLexer) Marshal.GetDelegateForFunctionPointer(
+        createLexer = (NativeMethods.CreateLexer)Marshal.GetDelegateForFunctionPointer(
             functionPointer, typeof(NativeMethods.CreateLexer));
 
         lpProcName = nameof(NativeMethods.GetLexerName);
@@ -41,7 +41,7 @@ public class Lexilla
                 new Win32Exception()); // Calls GetLastError
         }
 
-        getLexerName = (NativeMethods.GetLexerName) Marshal.GetDelegateForFunctionPointer(
+        getLexerName = (NativeMethods.GetLexerName)Marshal.GetDelegateForFunctionPointer(
             functionPointer, typeof(NativeMethods.GetLexerName));
 
         lpProcName = nameof(NativeMethods.GetLexerCount);
@@ -53,9 +53,8 @@ public class Lexilla
                 new Win32Exception()); // Calls GetLastError
         }
 
-        getLexerCount = (NativeMethods.GetLexerCount) Marshal.GetDelegateForFunctionPointer(
+        getLexerCount = (NativeMethods.GetLexerCount)Marshal.GetDelegateForFunctionPointer(
             functionPointer, typeof(NativeMethods.GetLexerCount));
-
 
         lpProcName = nameof(NativeMethods.LexerNameFromID);
 
@@ -66,16 +65,16 @@ public class Lexilla
                 new Win32Exception()); // Calls GetLastError
         }
 
-        lexerNameFromId = (NativeMethods.LexerNameFromID) Marshal.GetDelegateForFunctionPointer(
+        lexerNameFromId = (NativeMethods.LexerNameFromID)Marshal.GetDelegateForFunctionPointer(
             functionPointer, typeof(NativeMethods.LexerNameFromID));
 
-        initialized = true;
+        //initialized = true;
     }
 
     #region Fields
 
-    private static bool initialized;
-        
+    //private static bool initialized;
+
     #endregion
 
     #region DllCalls
@@ -96,7 +95,7 @@ public class Lexilla
     /// <returns>Amount of lexers defined in the Lexilla library.</returns>
     public static int GetLexerCount()
     {
-        return (int) getLexerCount();
+        return (int)getLexerCount();
     }
 
     /// <summary>
@@ -116,10 +115,10 @@ public class Lexilla
     /// <returns>The name of the lexer if one was found with the specified index; <c>null</c> otherwise.</returns>
     public static string GetLexerName(int index)
     {
-        var pointer = Marshal.AllocHGlobal(1024);
+        IntPtr pointer = Marshal.AllocHGlobal(1024);
         try
         {
-            getLexerName((UIntPtr) index, pointer, new IntPtr(1024));
+            getLexerName((UIntPtr)index, pointer, new IntPtr(1024));
             return Marshal.PtrToStringAnsi(pointer);
         }
         finally
@@ -144,7 +143,7 @@ public class Lexilla
     /// <returns>An IEnumerable&lt;System.String&gt; value with the lexer names.</returns>
     public static IEnumerable<string> GetLexerNames()
     {
-        var count = GetLexerCount();
+        int count = GetLexerCount();
         for (int i = 0; i < count; i++)
         {
             yield return GetLexerName(i);

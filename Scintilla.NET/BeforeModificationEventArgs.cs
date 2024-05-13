@@ -23,8 +23,7 @@ public class BeforeModificationEventArgs : EventArgs
     {
         get
         {
-            if (CachedPosition == null)
-                CachedPosition = scintilla.Lines.ByteToCharPosition(bytePosition);
+            CachedPosition ??= this.scintilla.Lines.ByteToCharPosition(this.bytePosition);
 
             return (int)CachedPosition;
         }
@@ -42,7 +41,7 @@ public class BeforeModificationEventArgs : EventArgs
     /// <returns>
     /// The text about to be inserted or deleted.
     /// </returns>
-    public unsafe virtual string Text
+    public virtual unsafe string Text
     {
         get
         {
@@ -50,14 +49,14 @@ public class BeforeModificationEventArgs : EventArgs
             {
                 // For some reason the Scintilla overlords don't provide text in
                 // SC_MOD_BEFOREDELETE... but we can get it from the document.
-                if (textPtr == IntPtr.Zero)
+                if (this.textPtr == IntPtr.Zero)
                 {
-                    var ptr = scintilla.DirectMessage(NativeMethods.SCI_GETRANGEPOINTER, new IntPtr(bytePosition), new IntPtr(byteLength));
-                    CachedText = new string((sbyte*)ptr, 0, byteLength, scintilla.Encoding);
+                    IntPtr ptr = this.scintilla.DirectMessage(NativeMethods.SCI_GETRANGEPOINTER, new IntPtr(this.bytePosition), new IntPtr(this.byteLength));
+                    CachedText = new string((sbyte*)ptr, 0, this.byteLength, this.scintilla.Encoding);
                 }
                 else
                 {
-                    CachedText = Helpers.GetString(textPtr, byteLength, scintilla.Encoding);
+                    CachedText = Helpers.GetString(this.textPtr, this.byteLength, this.scintilla.Encoding);
                 }
             }
 

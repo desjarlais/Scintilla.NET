@@ -21,14 +21,14 @@ public class NeedShownEventArgs : EventArgs
     {
         get
         {
-            if (length == null)
+            if (this.length == null)
             {
-                var endBytePosition = (bytePosition + byteLength);
-                var endPosition = scintilla.Lines.ByteToCharPosition(endBytePosition);
-                length = (endPosition - Position);
+                int endBytePosition = this.bytePosition + this.byteLength;
+                int endPosition = this.scintilla.Lines.ByteToCharPosition(endBytePosition);
+                this.length = endPosition - Position;
             }
 
-            return (int)length;
+            return (int)this.length;
         }
     }
 
@@ -40,10 +40,9 @@ public class NeedShownEventArgs : EventArgs
     {
         get
         {
-            if (position == null)
-                position = scintilla.Lines.ByteToCharPosition(bytePosition);
+            this.position ??= this.scintilla.Lines.ByteToCharPosition(this.bytePosition);
 
-            return (int)position;
+            return (int)this.position;
         }
     }
 

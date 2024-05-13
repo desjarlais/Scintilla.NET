@@ -97,7 +97,7 @@ public class Style
     {
         get
         {
-            var color = scintilla.DirectMessage(NativeMethods.SCI_STYLEGETBACK, new IntPtr(Index), IntPtr.Zero).ToInt32();
+            int color = this.scintilla.DirectMessage(NativeMethods.SCI_STYLEGETBACK, new IntPtr(Index), IntPtr.Zero).ToInt32();
             return HelperMethods.FromWin32Color(color);
         }
         set
@@ -105,8 +105,8 @@ public class Style
             if (value.IsEmpty)
                 value = Color.White;
 
-            var color = HelperMethods.ToWin32Color(value);
-            scintilla.DirectMessage(NativeMethods.SCI_STYLESETBACK, new IntPtr(Index), new IntPtr(color));
+            int color = HelperMethods.ToWin32Color(value);
+            this.scintilla.DirectMessage(NativeMethods.SCI_STYLESETBACK, new IntPtr(Index), new IntPtr(color));
         }
     }
 
@@ -119,12 +119,12 @@ public class Style
     {
         get
         {
-            return scintilla.DirectMessage(NativeMethods.SCI_STYLEGETBOLD, new IntPtr(Index), IntPtr.Zero) != IntPtr.Zero;
+            return this.scintilla.DirectMessage(NativeMethods.SCI_STYLEGETBOLD, new IntPtr(Index), IntPtr.Zero) != IntPtr.Zero;
         }
         set
         {
-            var bold = (value ? new IntPtr(1) : IntPtr.Zero);
-            scintilla.DirectMessage(NativeMethods.SCI_STYLESETBOLD, new IntPtr(Index), bold);
+            IntPtr bold = value ? new IntPtr(1) : IntPtr.Zero;
+            this.scintilla.DirectMessage(NativeMethods.SCI_STYLESETBOLD, new IntPtr(Index), bold);
         }
     }
 
@@ -137,14 +137,14 @@ public class Style
     {
         get
         {
-            var @case = scintilla.DirectMessage(NativeMethods.SCI_STYLEGETCASE, new IntPtr(Index), IntPtr.Zero).ToInt32();
+            int @case = this.scintilla.DirectMessage(NativeMethods.SCI_STYLEGETCASE, new IntPtr(Index), IntPtr.Zero).ToInt32();
             return (StyleCase)@case;
         }
         set
         {
             // Just an excuse to use @... syntax
-            var @case = (int)value;
-            scintilla.DirectMessage(NativeMethods.SCI_STYLESETCASE, new IntPtr(Index), new IntPtr(@case));
+            int @case = (int)value;
+            this.scintilla.DirectMessage(NativeMethods.SCI_STYLESETCASE, new IntPtr(Index), new IntPtr(@case));
         }
     }
 
@@ -159,12 +159,12 @@ public class Style
     {
         get
         {
-            return scintilla.DirectMessage(NativeMethods.SCI_STYLEGETCHANGEABLE, new IntPtr(Index), IntPtr.Zero) != IntPtr.Zero;
+            return this.scintilla.DirectMessage(NativeMethods.SCI_STYLEGETCHANGEABLE, new IntPtr(Index), IntPtr.Zero) != IntPtr.Zero;
         }
         set
         {
-            var changeable = (value ? new IntPtr(1) : IntPtr.Zero);
-            scintilla.DirectMessage(NativeMethods.SCI_STYLESETCHANGEABLE, new IntPtr(Index), changeable);
+            IntPtr changeable = value ? new IntPtr(1) : IntPtr.Zero;
+            this.scintilla.DirectMessage(NativeMethods.SCI_STYLESETCHANGEABLE, new IntPtr(Index), changeable);
         }
     }
 
@@ -177,12 +177,12 @@ public class Style
     {
         get
         {
-            return scintilla.DirectMessage(NativeMethods.SCI_STYLEGETEOLFILLED, new IntPtr(Index), IntPtr.Zero) != IntPtr.Zero;
+            return this.scintilla.DirectMessage(NativeMethods.SCI_STYLEGETEOLFILLED, new IntPtr(Index), IntPtr.Zero) != IntPtr.Zero;
         }
         set
         {
-            var fillLine = (value ? new IntPtr(1) : IntPtr.Zero);
-            scintilla.DirectMessage(NativeMethods.SCI_STYLESETEOLFILLED, new IntPtr(Index), fillLine);
+            IntPtr fillLine = value ? new IntPtr(1) : IntPtr.Zero;
+            this.scintilla.DirectMessage(NativeMethods.SCI_STYLESETEOLFILLED, new IntPtr(Index), fillLine);
         }
     }
 
@@ -195,15 +195,15 @@ public class Style
     {
         get
         {
-            var length = scintilla.DirectMessage(NativeMethods.SCI_STYLEGETFONT, new IntPtr(Index), IntPtr.Zero).ToInt32();
-            var font = new byte[length];
+            int length = this.scintilla.DirectMessage(NativeMethods.SCI_STYLEGETFONT, new IntPtr(Index), IntPtr.Zero).ToInt32();
+            byte[] font = new byte[length];
             unsafe
             {
                 fixed (byte* bp = font)
-                    scintilla.DirectMessage(NativeMethods.SCI_STYLEGETFONT, new IntPtr(Index), new IntPtr(bp));
+                    this.scintilla.DirectMessage(NativeMethods.SCI_STYLEGETFONT, new IntPtr(Index), new IntPtr(bp));
             }
 
-            var name = Encoding.UTF8.GetString(font, 0, length);
+            string name = Encoding.UTF8.GetString(font, 0, length);
             return name;
         }
         set
@@ -212,11 +212,11 @@ public class Style
                 value = "Verdana";
 
             // Scintilla expects UTF-8
-            var font = Helpers.GetBytes(value, Encoding.UTF8, true);
+            byte[] font = Helpers.GetBytes(value, Encoding.UTF8, true);
             unsafe
             {
                 fixed (byte* bp = font)
-                    scintilla.DirectMessage(NativeMethods.SCI_STYLESETFONT, new IntPtr(Index), new IntPtr(bp));
+                    this.scintilla.DirectMessage(NativeMethods.SCI_STYLESETFONT, new IntPtr(Index), new IntPtr(bp));
             }
         }
     }
@@ -230,7 +230,7 @@ public class Style
     {
         get
         {
-            var color = scintilla.DirectMessage(NativeMethods.SCI_STYLEGETFORE, new IntPtr(Index), IntPtr.Zero).ToInt32();
+            int color = this.scintilla.DirectMessage(NativeMethods.SCI_STYLEGETFORE, new IntPtr(Index), IntPtr.Zero).ToInt32();
             return HelperMethods.FromWin32Color(color);
         }
         set
@@ -238,8 +238,8 @@ public class Style
             if (value.IsEmpty)
                 value = Color.Black;
 
-            var color = HelperMethods.ToWin32Color(value);
-            scintilla.DirectMessage(NativeMethods.SCI_STYLESETFORE, new IntPtr(Index), new IntPtr(color));
+            int color = HelperMethods.ToWin32Color(value);
+            this.scintilla.DirectMessage(NativeMethods.SCI_STYLESETFORE, new IntPtr(Index), new IntPtr(color));
         }
     }
 
@@ -251,12 +251,12 @@ public class Style
     {
         get
         {
-            return scintilla.DirectMessage(NativeMethods.SCI_STYLEGETHOTSPOT, new IntPtr(Index), IntPtr.Zero) != IntPtr.Zero;
+            return this.scintilla.DirectMessage(NativeMethods.SCI_STYLEGETHOTSPOT, new IntPtr(Index), IntPtr.Zero) != IntPtr.Zero;
         }
         set
         {
-            var hotspot = (value ? new IntPtr(1) : IntPtr.Zero);
-            scintilla.DirectMessage(NativeMethods.SCI_STYLESETHOTSPOT, new IntPtr(Index), hotspot);
+            IntPtr hotspot = value ? new IntPtr(1) : IntPtr.Zero;
+            this.scintilla.DirectMessage(NativeMethods.SCI_STYLESETHOTSPOT, new IntPtr(Index), hotspot);
         }
     }
 
@@ -274,12 +274,12 @@ public class Style
     {
         get
         {
-            return scintilla.DirectMessage(NativeMethods.SCI_STYLEGETITALIC, new IntPtr(Index), IntPtr.Zero) != IntPtr.Zero;
+            return this.scintilla.DirectMessage(NativeMethods.SCI_STYLEGETITALIC, new IntPtr(Index), IntPtr.Zero) != IntPtr.Zero;
         }
         set
         {
-            var italic = (value ? new IntPtr(1) : IntPtr.Zero);
-            scintilla.DirectMessage(NativeMethods.SCI_STYLESETITALIC, new IntPtr(Index), italic);
+            IntPtr italic = value ? new IntPtr(1) : IntPtr.Zero;
+            this.scintilla.DirectMessage(NativeMethods.SCI_STYLESETITALIC, new IntPtr(Index), italic);
         }
     }
 
@@ -291,11 +291,11 @@ public class Style
     {
         get
         {
-            return scintilla.DirectMessage(NativeMethods.SCI_STYLEGETSIZE, new IntPtr(Index), IntPtr.Zero).ToInt32();
+            return this.scintilla.DirectMessage(NativeMethods.SCI_STYLEGETSIZE, new IntPtr(Index), IntPtr.Zero).ToInt32();
         }
         set
         {
-            scintilla.DirectMessage(NativeMethods.SCI_STYLESETSIZE, new IntPtr(Index), new IntPtr(value));
+            this.scintilla.DirectMessage(NativeMethods.SCI_STYLESETSIZE, new IntPtr(Index), new IntPtr(value));
         }
     }
 
@@ -307,13 +307,13 @@ public class Style
     {
         get
         {
-            var fraction = scintilla.DirectMessage(NativeMethods.SCI_STYLEGETSIZEFRACTIONAL, new IntPtr(Index), IntPtr.Zero).ToInt32();
+            int fraction = this.scintilla.DirectMessage(NativeMethods.SCI_STYLEGETSIZEFRACTIONAL, new IntPtr(Index), IntPtr.Zero).ToInt32();
             return (float)fraction / NativeMethods.SC_FONT_SIZE_MULTIPLIER;
         }
         set
         {
-            var fraction = (int)(value * NativeMethods.SC_FONT_SIZE_MULTIPLIER);
-            scintilla.DirectMessage(NativeMethods.SCI_STYLESETSIZEFRACTIONAL, new IntPtr(Index), new IntPtr(fraction));
+            int fraction = (int)(value * NativeMethods.SC_FONT_SIZE_MULTIPLIER);
+            this.scintilla.DirectMessage(NativeMethods.SCI_STYLESETSIZEFRACTIONAL, new IntPtr(Index), new IntPtr(fraction));
         }
     }
 
@@ -325,12 +325,12 @@ public class Style
     {
         get
         {
-            return scintilla.DirectMessage(NativeMethods.SCI_STYLEGETUNDERLINE, new IntPtr(Index), IntPtr.Zero) != IntPtr.Zero;
+            return this.scintilla.DirectMessage(NativeMethods.SCI_STYLEGETUNDERLINE, new IntPtr(Index), IntPtr.Zero) != IntPtr.Zero;
         }
         set
         {
-            var underline = (value ? new IntPtr(1) : IntPtr.Zero);
-            scintilla.DirectMessage(NativeMethods.SCI_STYLESETUNDERLINE, new IntPtr(Index), underline);
+            IntPtr underline = value ? new IntPtr(1) : IntPtr.Zero;
+            this.scintilla.DirectMessage(NativeMethods.SCI_STYLESETUNDERLINE, new IntPtr(Index), underline);
         }
     }
 
@@ -342,12 +342,12 @@ public class Style
     {
         get
         {
-            return scintilla.DirectMessage(NativeMethods.SCI_STYLEGETVISIBLE, new IntPtr(Index), IntPtr.Zero) != IntPtr.Zero;
+            return this.scintilla.DirectMessage(NativeMethods.SCI_STYLEGETVISIBLE, new IntPtr(Index), IntPtr.Zero) != IntPtr.Zero;
         }
         set
         {
-            var visible = (value ? new IntPtr(1) : IntPtr.Zero);
-            scintilla.DirectMessage(NativeMethods.SCI_STYLESETVISIBLE, new IntPtr(Index), visible);
+            IntPtr visible = value ? new IntPtr(1) : IntPtr.Zero;
+            this.scintilla.DirectMessage(NativeMethods.SCI_STYLESETVISIBLE, new IntPtr(Index), visible);
         }
     }
 
@@ -360,11 +360,11 @@ public class Style
     {
         get
         {
-            return scintilla.DirectMessage(NativeMethods.SCI_STYLEGETWEIGHT, new IntPtr(Index), IntPtr.Zero).ToInt32();
+            return this.scintilla.DirectMessage(NativeMethods.SCI_STYLEGETWEIGHT, new IntPtr(Index), IntPtr.Zero).ToInt32();
         }
         set
         {
-            scintilla.DirectMessage(NativeMethods.SCI_STYLESETWEIGHT, new IntPtr(Index), new IntPtr(value));
+            this.scintilla.DirectMessage(NativeMethods.SCI_STYLESETWEIGHT, new IntPtr(Index), new IntPtr(value));
         }
     }
 
@@ -731,12 +731,12 @@ public class Style
         /// Attributes style index
         /// </summary>
         public const int Attributes = NativeMethods.SCE_CLW_ATTRIBUTE;
-            
+
         /// <summary>
         /// Built in procedures function style index.
         /// </summary>
         public const int BuiltInProceduresFunction = NativeMethods.SCE_CLW_BUILTIN_PROCEDURES_FUNCTION;
-            
+
         /// <summary>
         /// Comment style index.
         /// </summary>
@@ -751,27 +751,27 @@ public class Style
         /// Default (whitespace) style index.
         /// </summary>
         public const int Default = NativeMethods.SCE_CLW_DEFAULT;
-            
+
         /// <summary>
         /// Depreciated style index
         /// </summary>
         public const int Depreciated = NativeMethods.SCE_CLW_DEPRECATED;
-            
+
         /// <summary>
         /// Error style index
         /// </summary>
         public const int Error = NativeMethods.SCE_CLW_ERROR;
-            
+
         /// <summary>
         /// Integer Constant style index.
         /// </summary>
         public const int IntegerConstant = NativeMethods.SCE_CLW_INTEGER_CONSTANT;
-            
+
         /// <summary>
         /// Keyword style index
         /// </summary>
         public const int Keyword = NativeMethods.SCE_CLW_KEYWORD;
-            
+
         /// <summary>
         /// Label string style index.
         /// </summary>
@@ -781,7 +781,7 @@ public class Style
         /// Real Constant style index.
         /// </summary>
         public const int PictureString = NativeMethods.SCE_CLW_PICTURE_STRING;
-            
+
         /// <summary>
         /// Real Constant style index.
         /// </summary>
@@ -791,22 +791,22 @@ public class Style
         /// Runtime expressions style index
         /// </summary>
         public const int RuntimeExpressions = NativeMethods.SCE_CLW_RUNTIME_EXPRESSIONS;
-            
+
         /// <summary>
         /// Standard equates style index
         /// </summary>
         public const int StandardEquates = NativeMethods.SCE_CLW_STANDARD_EQUATE;
-            
+
         /// <summary>
         /// Single-quoted string style index.
         /// </summary>
         public const int String = NativeMethods.SCE_CLW_STRING;
-            
+
         /// <summary>
         /// Structure data type style index.
         /// </summary>
         public const int StructureDataTypes = NativeMethods.SCE_CLW_STRUCTURE_DATA_TYPE;
-            
+
         /// <summary>
         /// User Identifier style index.
         /// </summary>
@@ -964,7 +964,7 @@ public class Style
     }
 
     #endregion Cpp
-        
+
     #region Css
 
     /// <summary>

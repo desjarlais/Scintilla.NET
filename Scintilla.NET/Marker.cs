@@ -92,12 +92,12 @@ public class Marker
         if (image == null)
             return;
 
-        scintilla.DirectMessage(NativeMethods.SCI_RGBAIMAGESETWIDTH, new IntPtr(image.Width));
-        scintilla.DirectMessage(NativeMethods.SCI_RGBAIMAGESETHEIGHT, new IntPtr(image.Height));
+        this.scintilla.DirectMessage(NativeMethods.SCI_RGBAIMAGESETWIDTH, new IntPtr(image.Width));
+        this.scintilla.DirectMessage(NativeMethods.SCI_RGBAIMAGESETHEIGHT, new IntPtr(image.Height));
 
-        var bytes = Helpers.BitmapToArgb(image);
+        byte[] bytes = Helpers.BitmapToArgb(image);
         fixed (byte* bp = bytes)
-            scintilla.DirectMessage(NativeMethods.SCI_MARKERDEFINERGBAIMAGE, new IntPtr(Index), new IntPtr(bp));
+            this.scintilla.DirectMessage(NativeMethods.SCI_MARKERDEFINERGBAIMAGE, new IntPtr(Index), new IntPtr(bp));
     }
 
     /// <summary>
@@ -105,7 +105,7 @@ public class Marker
     /// </summary>
     public void DeleteAll()
     {
-        scintilla.MarkerDeleteAll(Index);
+        this.scintilla.MarkerDeleteAll(Index);
     }
 
     /// <summary>
@@ -117,7 +117,7 @@ public class Marker
     public void SetAlpha(int alpha)
     {
         alpha = Helpers.Clamp(alpha, 0, 255);
-        scintilla.DirectMessage(NativeMethods.SCI_MARKERSETALPHA, new IntPtr(Index), new IntPtr(alpha));
+        this.scintilla.DirectMessage(NativeMethods.SCI_MARKERSETALPHA, new IntPtr(Index), new IntPtr(alpha));
     }
 
     /// <summary>
@@ -131,8 +131,8 @@ public class Marker
     /// <seealso cref="SetAlpha" />
     public void SetBackColor(Color color)
     {
-        var colour = HelperMethods.ToWin32Color(color);
-        scintilla.DirectMessage(NativeMethods.SCI_MARKERSETBACKTRANSLUCENT, new IntPtr(Index), new IntPtr(colour));
+        int colour = HelperMethods.ToWin32Color(color);
+        this.scintilla.DirectMessage(NativeMethods.SCI_MARKERSETBACKTRANSLUCENT, new IntPtr(Index), new IntPtr(colour));
     }
 
     /// <summary>
@@ -141,8 +141,8 @@ public class Marker
     /// <param name="color">The <see cref="Marker" /> foreground Color. The default is Black.</param>
     public void SetForeColor(Color color)
     {
-        var colour = HelperMethods.ToWin32Color(color);
-        scintilla.DirectMessage(NativeMethods.SCI_MARKERSETFORETRANSLUCENT, new IntPtr(Index), new IntPtr(colour));
+        int colour = HelperMethods.ToWin32Color(color);
+        this.scintilla.DirectMessage(NativeMethods.SCI_MARKERSETFORETRANSLUCENT, new IntPtr(Index), new IntPtr(colour));
     }
 
     /// <summary>
@@ -162,12 +162,12 @@ public class Marker
     {
         get
         {
-            return (MarkerSymbol)scintilla.DirectMessage(NativeMethods.SCI_MARKERSYMBOLDEFINED, new IntPtr(Index));
+            return (MarkerSymbol)this.scintilla.DirectMessage(NativeMethods.SCI_MARKERSYMBOLDEFINED, new IntPtr(Index));
         }
         set
         {
-            var markerSymbol = (int)value;
-            scintilla.DirectMessage(NativeMethods.SCI_MARKERDEFINE, new IntPtr(Index), new IntPtr(markerSymbol));
+            int markerSymbol = (int)value;
+            this.scintilla.DirectMessage(NativeMethods.SCI_MARKERDEFINE, new IntPtr(Index), new IntPtr(markerSymbol));
         }
     }
 

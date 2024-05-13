@@ -8,7 +8,6 @@ using System.Globalization;
 using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Runtime.Versioning;
 using System.Text;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
@@ -23,7 +22,7 @@ namespace ScintillaNET
     {
         static Scintilla()
         {
-            List<string> searchedPathList = new List<string>();
+            List<string> searchedPathList = [];
             foreach (string path in EnumerateSatelliteLibrarySearchPaths())
             {
                 string scintillaDllPath = Path.Combine(path, "Scintilla.dll");
@@ -46,7 +45,9 @@ namespace ScintillaNET
                     }
                 }
                 else
+                {
                     searchedPathList.Add(path);
+                }
             }
 
             string searchedPaths = string.Join("\n", searchedPathList);
@@ -63,11 +64,15 @@ namespace ScintillaNET
             using var proc = Process.GetCurrentProcess();
             string procName = proc.ProcessName;
             return
-                procName == "devenv" || procName == "DesignToolsServer" || // WinForms app in VS IDE
-                procName == "xdesproc" || // WPF app in VS IDE/Blend
-                procName == "blend";
+                procName is "devenv" or "DesignToolsServer" or // WinForms app in VS IDE
+                "xdesproc" or // WPF app in VS IDE/Blend
+                "blend";
         }
 
+        /// <summary>
+        /// Enumerates a list of folder paths that the native satellite libraries
+        /// ('Scintilla.dll' &amp; 'Lexilla.dll') are searched in.
+        /// </summary>
         public static IEnumerable<string> EnumerateSatelliteLibrarySearchPaths()
         {
             // check run-time paths
@@ -110,39 +115,39 @@ namespace ScintillaNET
         private static Lexilla lexilla;
 
         // Events
-        private static readonly object scNotificationEventKey = new object();
-        private static readonly object insertCheckEventKey = new object();
-        private static readonly object beforeInsertEventKey = new object();
-        private static readonly object beforeDeleteEventKey = new object();
-        private static readonly object insertEventKey = new object();
-        private static readonly object deleteEventKey = new object();
-        private static readonly object updateUIEventKey = new object();
-        private static readonly object modifyAttemptEventKey = new object();
-        private static readonly object styleNeededEventKey = new object();
-        private static readonly object savePointReachedEventKey = new object();
-        private static readonly object savePointLeftEventKey = new object();
-        private static readonly object changeAnnotationEventKey = new object();
-        private static readonly object marginClickEventKey = new object();
-        private static readonly object marginRightClickEventKey = new object();
-        private static readonly object charAddedEventKey = new object();
-        private static readonly object autoCSelectionEventKey = new object();
-        private static readonly object autoCSelectionChangeEventKey = new object();
-        private static readonly object autoCCompletedEventKey = new object();
-        private static readonly object autoCCancelledEventKey = new object();
-        private static readonly object autoCCharDeletedEventKey = new object();
-        private static readonly object dwellStartEventKey = new object();
-        private static readonly object callTipClickEventKey = new object();
-        private static readonly object dwellEndEventKey = new object();
-        private static readonly object borderStyleChangedEventKey = new object();
-        private static readonly object doubleClickEventKey = new object();
-        private static readonly object paintedEventKey = new object();
-        private static readonly object needShownEventKey = new object();
-        private static readonly object hotspotClickEventKey = new object();
-        private static readonly object hotspotDoubleClickEventKey = new object();
-        private static readonly object hotspotReleaseClickEventKey = new object();
-        private static readonly object indicatorClickEventKey = new object();
-        private static readonly object indicatorReleaseEventKey = new object();
-        private static readonly object zoomChangedEventKey = new object();
+        private static readonly object scNotificationEventKey = new();
+        private static readonly object insertCheckEventKey = new();
+        private static readonly object beforeInsertEventKey = new();
+        private static readonly object beforeDeleteEventKey = new();
+        private static readonly object insertEventKey = new();
+        private static readonly object deleteEventKey = new();
+        private static readonly object updateUIEventKey = new();
+        private static readonly object modifyAttemptEventKey = new();
+        private static readonly object styleNeededEventKey = new();
+        private static readonly object savePointReachedEventKey = new();
+        private static readonly object savePointLeftEventKey = new();
+        private static readonly object changeAnnotationEventKey = new();
+        private static readonly object marginClickEventKey = new();
+        private static readonly object marginRightClickEventKey = new();
+        private static readonly object charAddedEventKey = new();
+        private static readonly object autoCSelectionEventKey = new();
+        private static readonly object autoCSelectionChangeEventKey = new();
+        private static readonly object autoCCompletedEventKey = new();
+        private static readonly object autoCCancelledEventKey = new();
+        private static readonly object autoCCharDeletedEventKey = new();
+        private static readonly object dwellStartEventKey = new();
+        private static readonly object callTipClickEventKey = new();
+        private static readonly object dwellEndEventKey = new();
+        private static readonly object borderStyleChangedEventKey = new();
+        private static readonly object doubleClickEventKey = new();
+        private static readonly object paintedEventKey = new();
+        private static readonly object needShownEventKey = new();
+        private static readonly object hotspotClickEventKey = new();
+        private static readonly object hotspotDoubleClickEventKey = new();
+        private static readonly object hotspotReleaseClickEventKey = new();
+        private static readonly object indicatorClickEventKey = new();
+        private static readonly object indicatorReleaseEventKey = new();
+        private static readonly object zoomChangedEventKey = new();
 
         // The goods
         private IntPtr sciPtr;
@@ -199,7 +204,7 @@ namespace ScintillaNET
                 return true;
             }
 
-            var ptr = Lexilla.CreateLexer(lexerName);
+            IntPtr ptr = Lexilla.CreateLexer(lexerName);
 
             if (ptr == IntPtr.Zero)
             {
@@ -217,7 +222,7 @@ namespace ScintillaNET
         /// <param name="document">The document reference count to increase.</param>
         public void AddRefDocument(Document document)
         {
-            var ptr = document.Value;
+            IntPtr ptr = document.Value;
             DirectMessage(NativeMethods.SCI_ADDREFDOCUMENT, IntPtr.Zero, ptr);
         }
 
@@ -229,7 +234,7 @@ namespace ScintillaNET
         /// <remarks>A main selection must first have been set by a call to <see cref="SetSelection" />.</remarks>
         public void AddSelection(int caret, int anchor)
         {
-            var textLength = TextLength;
+            int textLength = TextLength;
             caret = Helpers.Clamp(caret, 0, textLength);
             anchor = Helpers.Clamp(anchor, 0, textLength);
 
@@ -246,7 +251,7 @@ namespace ScintillaNET
         /// <remarks>The caret position is set to the end of the inserted text, but it is not scrolled into view.</remarks>
         public unsafe void AddText(string text)
         {
-            var bytes = Helpers.GetBytes(text ?? string.Empty, Encoding, zeroTerminated: false);
+            byte[] bytes = Helpers.GetBytes(text ?? string.Empty, Encoding, zeroTerminated: false);
             fixed (byte* bp = bytes)
                 DirectMessage(NativeMethods.SCI_ADDTEXT, new IntPtr(bytes.Length), new IntPtr(bp));
         }
@@ -259,7 +264,7 @@ namespace ScintillaNET
         /// <returns>Returns the first substyle number allocated.</returns>
         public int AllocateSubstyles(int styleBase, int numberStyles)
         {
-            return this.DirectMessage(NativeMethods.SCI_ALLOCATESUBSTYLES, new IntPtr(styleBase), new IntPtr(numberStyles)).ToInt32();
+            return DirectMessage(NativeMethods.SCI_ALLOCATESUBSTYLES, new IntPtr(styleBase), new IntPtr(numberStyles)).ToInt32();
         }
 
         /// <summary>
@@ -277,7 +282,7 @@ namespace ScintillaNET
         /// <remarks>The current selection is not changed and the new text is not scrolled into view.</remarks>
         public unsafe void AppendText(string text)
         {
-            var bytes = Helpers.GetBytes(text ?? string.Empty, Encoding, zeroTerminated: false);
+            byte[] bytes = Helpers.GetBytes(text ?? string.Empty, Encoding, zeroTerminated: false);
             fixed (byte* bp = bytes)
                 DirectMessage(NativeMethods.SCI_APPENDTEXT, new IntPtr(bytes.Length), new IntPtr(bp));
         }
@@ -289,7 +294,7 @@ namespace ScintillaNET
         /// <param name="sciCommand">The command to assign.</param>
         public void AssignCmdKey(Keys keyDefinition, Command sciCommand)
         {
-            var keys = Helpers.TranslateKeys(keyDefinition);
+            int keys = Helpers.TranslateKeys(keyDefinition);
             DirectMessage(NativeMethods.SCI_ASSIGNCMDKEY, new IntPtr(keys), new IntPtr((int)sciCommand));
         }
 
@@ -327,7 +332,7 @@ namespace ScintillaNET
         /// <seealso cref="AutoCIgnoreCase" />
         public unsafe void AutoCSelect(string select)
         {
-            var bytes = Helpers.GetBytes(select, Encoding, zeroTerminated: true);
+            byte[] bytes = Helpers.GetBytes(select, Encoding, zeroTerminated: true);
             fixed (byte* bp = bytes)
                 DirectMessage(NativeMethods.SCI_AUTOCSELECT, IntPtr.Zero, new IntPtr(bp));
         }
@@ -343,26 +348,25 @@ namespace ScintillaNET
             // That means we need to keep a copy of the string around for the life of the control AND put it
             // in a place where it won't get moved by the GC.
 
-            if (chars == null)
-                chars = string.Empty;
+            chars ??= string.Empty;
 
-            if (fillUpChars != IntPtr.Zero)
+            if (this.fillUpChars != IntPtr.Zero)
             {
-                Marshal.FreeHGlobal(fillUpChars);
-                fillUpChars = IntPtr.Zero;
+                Marshal.FreeHGlobal(this.fillUpChars);
+                this.fillUpChars = IntPtr.Zero;
             }
 
-            var count = (Encoding.GetByteCount(chars) + 1);
+            int count = Encoding.GetByteCount(chars) + 1;
             IntPtr newFillUpChars = Marshal.AllocHGlobal(count);
             fixed (char* ch = chars)
                 Encoding.GetBytes(ch, chars.Length, (byte*)newFillUpChars, count);
 
             ((byte*)newFillUpChars)[count - 1] = 0; // Null terminate
-            fillUpChars = newFillUpChars;
+            this.fillUpChars = newFillUpChars;
 
             // var str = new String((sbyte*)fillUpChars, 0, count, Encoding);
 
-            DirectMessage(NativeMethods.SCI_AUTOCSETFILLUPS, IntPtr.Zero, fillUpChars);
+            DirectMessage(NativeMethods.SCI_AUTOCSETFILLUPS, IntPtr.Zero, this.fillUpChars);
         }
 
         /// <summary>
@@ -379,15 +383,15 @@ namespace ScintillaNET
             if (lenEntered > 0)
             {
                 // Convert to bytes by counting back the specified number of characters
-                var endPos = DirectMessage(NativeMethods.SCI_GETCURRENTPOS).ToInt32();
-                var startPos = endPos;
+                int endPos = DirectMessage(NativeMethods.SCI_GETCURRENTPOS).ToInt32();
+                int startPos = endPos;
                 for (int i = 0; i < lenEntered; i++)
                     startPos = DirectMessage(NativeMethods.SCI_POSITIONRELATIVE, new IntPtr(startPos), new IntPtr(-1)).ToInt32();
 
-                lenEntered = (endPos - startPos);
+                lenEntered = endPos - startPos;
             }
 
-            var bytes = Helpers.GetBytes(list, Encoding, zeroTerminated: true);
+            byte[] bytes = Helpers.GetBytes(list, Encoding, zeroTerminated: true);
             fixed (byte* bp = bytes)
                 DirectMessage(NativeMethods.SCI_AUTOCSHOW, new IntPtr(lenEntered), new IntPtr(bp));
         }
@@ -399,7 +403,7 @@ namespace ScintillaNET
         /// <remarks>Characters specified should be limited to printable ASCII characters.</remarks>
         public unsafe void AutoCStops(string chars)
         {
-            var bytes = Helpers.GetBytes(chars ?? string.Empty, Encoding.ASCII, zeroTerminated: true);
+            byte[] bytes = Helpers.GetBytes(chars ?? string.Empty, Encoding.ASCII, zeroTerminated: true);
             fixed (byte* bp = bytes)
                 DirectMessage(NativeMethods.SCI_AUTOCSTOPS, IntPtr.Zero, new IntPtr(bp));
         }
@@ -436,7 +440,7 @@ namespace ScintillaNET
         /// <seealso cref="HighlightGuide" />
         public void BraceHighlight(int position1, int position2)
         {
-            var textLength = TextLength;
+            int textLength = TextLength;
 
             position1 = Helpers.Clamp(position1, -1, textLength);
             if (position1 > 0)
@@ -461,7 +465,7 @@ namespace ScintillaNET
             position = Helpers.Clamp(position, 0, TextLength);
             position = Lines.CharToBytePosition(position);
 
-            var match = DirectMessage(NativeMethods.SCI_BRACEMATCH, new IntPtr(position), IntPtr.Zero).ToInt32();
+            int match = DirectMessage(NativeMethods.SCI_BRACEMATCH, new IntPtr(position), IntPtr.Zero).ToInt32();
             if (match > 0)
                 match = Lines.ByteToCharPosition(match);
 
@@ -482,7 +486,7 @@ namespace ScintillaNET
         /// <param name="color">The new highlight text Color. The default is dark blue.</param>
         public void CallTipSetForeHlt(Color color)
         {
-            var colour = HelperMethods.ToWin32Color(color);
+            int colour = HelperMethods.ToWin32Color(color);
             DirectMessage(NativeMethods.SCI_CALLTIPSETFOREHLT, new IntPtr(colour));
         }
 
@@ -494,10 +498,10 @@ namespace ScintillaNET
         public unsafe void CallTipSetHlt(int hlStart, int hlEnd)
         {
             // To do the char->byte translation we need to use a cached copy of the last call tip
-            hlStart = Helpers.Clamp(hlStart, 0, lastCallTip.Length);
-            hlEnd = Helpers.Clamp(hlEnd, 0, lastCallTip.Length);
+            hlStart = Helpers.Clamp(hlStart, 0, this.lastCallTip.Length);
+            hlEnd = Helpers.Clamp(hlEnd, 0, this.lastCallTip.Length);
 
-            fixed (char* cp = lastCallTip)
+            fixed (char* cp = this.lastCallTip)
             {
                 hlEnd = Encoding.GetByteCount(cp + hlStart, hlEnd - hlStart);  // The bytes between start and end
                 hlStart = Encoding.GetByteCount(cp, hlStart);                  // The bytes between 0 and start
@@ -513,7 +517,7 @@ namespace ScintillaNET
         /// <param name="above">true to display above text; otherwise, false. The default is false.</param>
         public void CallTipSetPosition(bool above)
         {
-            var val = (above ? new IntPtr(1) : IntPtr.Zero);
+            IntPtr val = above ? new IntPtr(1) : IntPtr.Zero;
             DirectMessage(NativeMethods.SCI_CALLTIPSETPOSITION, val);
         }
 
@@ -532,9 +536,9 @@ namespace ScintillaNET
             if (definition == null)
                 return;
 
-            lastCallTip = definition;
+            this.lastCallTip = definition;
             posStart = Lines.CharToBytePosition(posStart);
-            var bytes = Helpers.GetBytes(definition, Encoding, zeroTerminated: true);
+            byte[] bytes = Helpers.GetBytes(definition, Encoding, zeroTerminated: true);
             fixed (byte* bp = bytes)
                 DirectMessage(NativeMethods.SCI_CALLTIPSHOW, new IntPtr(posStart), new IntPtr(bp));
         }
@@ -554,14 +558,14 @@ namespace ScintillaNET
         }
 
         /// <summary>
-        /// Indicates to the current <see cref="Lexer" /> that the internal lexer state has changed in the specified
+        /// Indicates to the current <see cref="LexerName">Lexer</see> that the internal lexer state has changed in the specified
         /// range and therefore may need to be redrawn.
         /// </summary>
         /// <param name="startPos">The zero-based document position at which the lexer state change starts.</param>
         /// <param name="endPos">The zero-based document position at which the lexer state change ends.</param>
         public void ChangeLexerState(int startPos, int endPos)
         {
-            var textLength = TextLength;
+            int textLength = TextLength;
             startPos = Helpers.Clamp(startPos, 0, textLength);
             endPos = Helpers.Clamp(endPos, 0, textLength);
 
@@ -579,7 +583,7 @@ namespace ScintillaNET
         /// <returns>The zero-based document position of the nearest character to the point specified.</returns>
         public int CharPositionFromPoint(int x, int y)
         {
-            var pos = DirectMessage(NativeMethods.SCI_CHARPOSITIONFROMPOINT, new IntPtr(x), new IntPtr(y)).ToInt32();
+            int pos = DirectMessage(NativeMethods.SCI_CHARPOSITIONFROMPOINT, new IntPtr(x), new IntPtr(y)).ToInt32();
             pos = Lines.ByteToCharPosition(pos);
 
             return pos;
@@ -594,7 +598,7 @@ namespace ScintillaNET
         /// <returns>The zero-based document position of the nearest character to the point specified when near a character; otherwise, -1.</returns>
         public int CharPositionFromPointClose(int x, int y)
         {
-            var pos = DirectMessage(NativeMethods.SCI_CHARPOSITIONFROMPOINTCLOSE, new IntPtr(x), new IntPtr(y)).ToInt32();
+            int pos = DirectMessage(NativeMethods.SCI_CHARPOSITIONFROMPOINTCLOSE, new IntPtr(x), new IntPtr(y)).ToInt32();
             if (pos >= 0)
                 pos = Lines.ByteToCharPosition(pos);
 
@@ -637,7 +641,7 @@ namespace ScintillaNET
         /// <remarks>This is equivalent to binding the keys to <see cref="Command.Null" />.</remarks>
         public void ClearCmdKey(Keys keyDefinition)
         {
-            var keys = Helpers.TranslateKeys(keyDefinition);
+            int keys = Helpers.TranslateKeys(keyDefinition);
             DirectMessage(NativeMethods.SCI_CLEARCMDKEY, new IntPtr(keys));
         }
 
@@ -681,7 +685,7 @@ namespace ScintillaNET
         /// <remarks>This will also cause fold levels in the range specified to be reset.</remarks>
         public void Colorize(int startPos, int endPos)
         {
-            var textLength = TextLength;
+            int textLength = TextLength;
             startPos = Helpers.Clamp(startPos, 0, textLength);
             endPos = Helpers.Clamp(endPos, 0, textLength);
 
@@ -697,7 +701,7 @@ namespace ScintillaNET
         /// <param name="eolMode">One of the <see cref="Eol" /> enumeration values.</param>
         public void ConvertEols(Eol eolMode)
         {
-            var eol = (int)eolMode;
+            int eol = (int)eolMode;
             DirectMessage(NativeMethods.SCI_CONVERTEOLS, new IntPtr(eol));
         }
 
@@ -752,7 +756,7 @@ namespace ScintillaNET
         /// <param name="end">The zero-based character position (exclusive) in the document to stop copying.</param>
         public void CopyRange(int start, int end)
         {
-            var textLength = TextLength;
+            int textLength = TextLength;
             start = Helpers.Clamp(start, 0, textLength);
             end = Helpers.Clamp(end, 0, textLength);
 
@@ -771,7 +775,7 @@ namespace ScintillaNET
         /// <param name="format">One of the <see cref="CopyFormat" /> enumeration values.</param>
         public void CopyRange(int start, int end, CopyFormat format)
         {
-            var textLength = TextLength;
+            int textLength = TextLength;
             start = Helpers.Clamp(start, 0, textLength);
             end = Helpers.Clamp(end, 0, textLength);
             if (start == end)
@@ -791,7 +795,7 @@ namespace ScintillaNET
         /// <remarks>You are responsible for ensuring the reference count eventually reaches 0 or memory leaks will occur.</remarks>
         public Document CreateDocument()
         {
-            var ptr = DirectMessage(NativeMethods.SCI_CREATEDOCUMENT);
+            IntPtr ptr = DirectMessage(NativeMethods.SCI_CREATEDOCUMENT);
             return new Document { Value = ptr };
         }
 
@@ -803,7 +807,7 @@ namespace ScintillaNET
         public ILoader CreateLoader(int length)
         {
             length = Helpers.ClampMin(length, 0);
-            var ptr = DirectMessage(NativeMethods.SCI_CREATELOADER, new IntPtr(length));
+            IntPtr ptr = DirectMessage(NativeMethods.SCI_CREATELOADER, new IntPtr(length));
             if (ptr == IntPtr.Zero)
                 return null;
 
@@ -825,13 +829,13 @@ namespace ScintillaNET
         /// <param name="length">The number of characters to delete.</param>
         public void DeleteRange(int position, int length)
         {
-            var textLength = TextLength;
+            int textLength = TextLength;
             position = Helpers.Clamp(position, 0, textLength);
             length = Helpers.Clamp(length, 0, textLength - position);
 
             // Convert to byte position/length
-            var byteStartPos = Lines.CharToBytePosition(position);
-            var byteEndPos = Lines.CharToBytePosition(position + length);
+            int byteStartPos = Lines.CharToBytePosition(position);
+            int byteEndPos = Lines.CharToBytePosition(position + length);
 
             DirectMessage(NativeMethods.SCI_DELETERANGE, new IntPtr(byteStartPos), new IntPtr(byteEndPos - byteStartPos));
         }
@@ -842,35 +846,35 @@ namespace ScintillaNET
         /// <returns>A String describing each keyword set separated by line breaks for the current lexer.</returns>
         public unsafe string DescribeKeywordSets()
         {
-            var length = DirectMessage(NativeMethods.SCI_DESCRIBEKEYWORDSETS).ToInt32();
-            var bytes = new byte[length + 1];
+            int length = DirectMessage(NativeMethods.SCI_DESCRIBEKEYWORDSETS).ToInt32();
+            byte[] bytes = new byte[length + 1];
 
             fixed (byte* bp = bytes)
                 DirectMessage(NativeMethods.SCI_DESCRIBEKEYWORDSETS, IntPtr.Zero, new IntPtr(bp));
 
-            var str = Encoding.ASCII.GetString(bytes, 0, length);
+            string str = Encoding.ASCII.GetString(bytes, 0, length);
             return str;
         }
 
         /// <summary>
-        /// Retrieves a brief description of the specified property name for the current <see cref="Lexer" />.
+        /// Retrieves a brief description of the specified property name for the current <see cref="LexerName">Lexer</see>.
         /// </summary>
-        /// <param name="name">A property name supported by the current <see cref="Lexer" />.</param>
+        /// <param name="name">A property name supported by the current <see cref="LexerName">Lexer</see>.</param>
         /// <returns>A String describing the lexer property name if found; otherwise, String.Empty.</returns>
-        /// <remarks>A list of supported property names for the current <see cref="Lexer" /> can be obtained by calling <see cref="PropertyNames" />.</remarks>
+        /// <remarks>A list of supported property names for the current <see cref="LexerName">Lexer</see> can be obtained by calling <see cref="PropertyNames" />.</remarks>
         public unsafe string DescribeProperty(string name)
         {
-            if (String.IsNullOrEmpty(name))
-                return String.Empty;
+            if (string.IsNullOrEmpty(name))
+                return string.Empty;
 
-            var nameBytes = Helpers.GetBytes(name, Encoding.ASCII, zeroTerminated: true);
+            byte[] nameBytes = Helpers.GetBytes(name, Encoding.ASCII, zeroTerminated: true);
             fixed (byte* nb = nameBytes)
             {
-                var length = DirectMessage(NativeMethods.SCI_DESCRIBEPROPERTY, new IntPtr(nb), IntPtr.Zero).ToInt32();
+                int length = DirectMessage(NativeMethods.SCI_DESCRIBEPROPERTY, new IntPtr(nb), IntPtr.Zero).ToInt32();
                 if (length == 0)
                     return string.Empty;
 
-                var descriptionBytes = new byte[length + 1];
+                byte[] descriptionBytes = new byte[length + 1];
                 fixed (byte* db = descriptionBytes)
                 {
                     DirectMessage(NativeMethods.SCI_DESCRIBEPROPERTY, new IntPtr(nb), new IntPtr(db));
@@ -902,14 +906,14 @@ namespace ScintillaNET
         public virtual IntPtr DirectMessage(int msg, IntPtr wParam, IntPtr lParam)
         {
             // If the control handle, ptr, direct function, etc... hasn't been created yet, it will be now.
-            var result = DirectMessage(SciPointer, msg, wParam, lParam);
+            IntPtr result = DirectMessage(SciPointer, msg, wParam, lParam);
             return result;
         }
 
         private static IntPtr DirectMessage(IntPtr sciPtr, int msg, IntPtr wParam, IntPtr lParam)
         {
             // Like Win32 SendMessage but directly to Scintilla
-            var result = directFunction(sciPtr, msg, wParam, lParam);
+            IntPtr result = directFunction(sciPtr, msg, wParam, lParam);
             return result;
         }
 
@@ -922,17 +926,17 @@ namespace ScintillaNET
             if (disposing)
             {
                 // WM_DESTROY workaround
-                if (reparent)
+                if (this.reparent)
                 {
-                    reparent = false;
+                    this.reparent = false;
                     if (IsHandleCreated)
                         DestroyHandle();
                 }
 
-                if (fillUpChars != IntPtr.Zero)
+                if (this.fillUpChars != IntPtr.Zero)
                 {
-                    Marshal.FreeHGlobal(fillUpChars);
-                    fillUpChars = IntPtr.Zero;
+                    Marshal.FreeHGlobal(this.fillUpChars);
+                    this.fillUpChars = IntPtr.Zero;
                 }
             }
 
@@ -986,7 +990,7 @@ namespace ScintillaNET
         /// <param name="sciCommand">The command to perform.</param>
         public void ExecuteCmd(Command sciCommand)
         {
-            var cmd = (int)sciCommand;
+            int cmd = (int)sciCommand;
             DirectMessage(cmd);
         }
 
@@ -1029,8 +1033,8 @@ namespace ScintillaNET
             position = Helpers.Clamp(position, 0, TextLength);
             position = Lines.CharToBytePosition(position);
 
-            var nextPosition = DirectMessage(NativeMethods.SCI_POSITIONRELATIVE, new IntPtr(position), new IntPtr(1)).ToInt32();
-            var length = (nextPosition - position);
+            int nextPosition = DirectMessage(NativeMethods.SCI_POSITIONRELATIVE, new IntPtr(position), new IntPtr(1)).ToInt32();
+            int length = nextPosition - position;
             if (length <= 1)
             {
                 // Position is at single-byte character
@@ -1038,7 +1042,7 @@ namespace ScintillaNET
             }
 
             // Position is at multibyte character
-            var bytes = new byte[length + 1];
+            byte[] bytes = new byte[length + 1];
             fixed (byte* bp = bytes)
             {
                 NativeMethods.Sci_TextRange* range = stackalloc NativeMethods.Sci_TextRange[1];
@@ -1047,7 +1051,7 @@ namespace ScintillaNET
                 range->lpstrText = new IntPtr(bp);
 
                 DirectMessage(NativeMethods.SCI_GETTEXTRANGE, IntPtr.Zero, new IntPtr(range));
-                var str = Helpers.GetString(new IntPtr(bp), length, Encoding);
+                string str = Helpers.GetString(new IntPtr(bp), length, Encoding);
                 return str[0];
             }
         }
@@ -1070,7 +1074,7 @@ namespace ScintillaNET
         /// <returns>The zero-based document position of the last styled character.</returns>
         public int GetEndStyled()
         {
-            var pos = DirectMessage(NativeMethods.SCI_GETENDSTYLED).ToInt32();
+            int pos = DirectMessage(NativeMethods.SCI_GETENDSTYLED).ToInt32();
             return Lines.ByteToCharPosition(pos);
         }
 
@@ -1098,7 +1102,7 @@ namespace ScintillaNET
         }
 
         /// <summary>
-        /// Lookup a property value for the current <see cref="Lexer" />.
+        /// Lookup a property value for the current <see cref="LexerName">Lexer</see>.
         /// </summary>
         /// <param name="name">The property name to lookup.</param>
         /// <returns>
@@ -1108,17 +1112,17 @@ namespace ScintillaNET
         /// <seealso cref="GetPropertyExpanded" />
         public unsafe string GetProperty(string name)
         {
-            if (String.IsNullOrEmpty(name))
-                return String.Empty;
+            if (string.IsNullOrEmpty(name))
+                return string.Empty;
 
-            var nameBytes = Helpers.GetBytes(name, Encoding.ASCII, zeroTerminated: true);
+            byte[] nameBytes = Helpers.GetBytes(name, Encoding.ASCII, zeroTerminated: true);
             fixed (byte* nb = nameBytes)
             {
-                var length = DirectMessage(NativeMethods.SCI_GETPROPERTY, new IntPtr(nb)).ToInt32();
+                int length = DirectMessage(NativeMethods.SCI_GETPROPERTY, new IntPtr(nb)).ToInt32();
                 if (length == 0)
-                    return String.Empty;
+                    return string.Empty;
 
-                var valueBytes = new byte[length + 1];
+                byte[] valueBytes = new byte[length + 1];
                 fixed (byte* vb = valueBytes)
                 {
                     DirectMessage(NativeMethods.SCI_GETPROPERTY, new IntPtr(nb), new IntPtr(vb));
@@ -1128,7 +1132,7 @@ namespace ScintillaNET
         }
 
         /// <summary>
-        /// Lookup a property value for the current <see cref="Lexer" /> and expand any embedded property macros.
+        /// Lookup a property value for the current <see cref="LexerName">Lexer</see> and expand any embedded property macros.
         /// </summary>
         /// <param name="name">The property name to lookup.</param>
         /// <returns>
@@ -1138,17 +1142,17 @@ namespace ScintillaNET
         /// <seealso cref="GetProperty" />
         public unsafe string GetPropertyExpanded(string name)
         {
-            if (String.IsNullOrEmpty(name))
-                return String.Empty;
+            if (string.IsNullOrEmpty(name))
+                return string.Empty;
 
-            var nameBytes = Helpers.GetBytes(name, Encoding.ASCII, zeroTerminated: true);
+            byte[] nameBytes = Helpers.GetBytes(name, Encoding.ASCII, zeroTerminated: true);
             fixed (byte* nb = nameBytes)
             {
-                var length = DirectMessage(NativeMethods.SCI_GETPROPERTYEXPANDED, new IntPtr(nb)).ToInt32();
+                int length = DirectMessage(NativeMethods.SCI_GETPROPERTYEXPANDED, new IntPtr(nb)).ToInt32();
                 if (length == 0)
-                    return String.Empty;
+                    return string.Empty;
 
-                var valueBytes = new byte[length + 1];
+                byte[] valueBytes = new byte[length + 1];
                 fixed (byte* vb = valueBytes)
                 {
                     DirectMessage(NativeMethods.SCI_GETPROPERTYEXPANDED, new IntPtr(nb), new IntPtr(vb));
@@ -1158,7 +1162,7 @@ namespace ScintillaNET
         }
 
         /// <summary>
-        /// Lookup a property value for the current <see cref="Lexer" /> and convert it to an integer.
+        /// Lookup a property value for the current <see cref="LexerName">Lexer</see> and convert it to an integer.
         /// </summary>
         /// <param name="name">The property name to lookup.</param>
         /// <param name="defaultValue">A default value to return if the property name is not found or has no value.</param>
@@ -1169,10 +1173,10 @@ namespace ScintillaNET
         /// </returns>
         public unsafe int GetPropertyInt(string name, int defaultValue)
         {
-            if (String.IsNullOrEmpty(name))
+            if (string.IsNullOrEmpty(name))
                 return defaultValue;
 
-            var bytes = Helpers.GetBytes(name, Encoding.ASCII, zeroTerminated: true);
+            byte[] bytes = Helpers.GetBytes(name, Encoding.ASCII, zeroTerminated: true);
             fixed (byte* bp = bytes)
                 return DirectMessage(NativeMethods.SCI_GETPROPERTYINT, new IntPtr(bp), new IntPtr(defaultValue)).ToInt32();
         }
@@ -1229,11 +1233,11 @@ namespace ScintillaNET
         public unsafe string GetTag(int tagNumber)
         {
             tagNumber = Helpers.Clamp(tagNumber, 1, 9);
-            var length = DirectMessage(NativeMethods.SCI_GETTAG, new IntPtr(tagNumber), IntPtr.Zero).ToInt32();
+            int length = DirectMessage(NativeMethods.SCI_GETTAG, new IntPtr(tagNumber), IntPtr.Zero).ToInt32();
             if (length <= 0)
                 return string.Empty;
 
-            var bytes = new byte[length + 1];
+            byte[] bytes = new byte[length + 1];
             fixed (byte* bp = bytes)
             {
                 DirectMessage(NativeMethods.SCI_GETTAG, new IntPtr(tagNumber), new IntPtr(bp));
@@ -1249,19 +1253,19 @@ namespace ScintillaNET
         /// <returns>A string representing the text range.</returns>
         public unsafe string GetWideTextRange(int position, int length)
         {
-            var textLength = TextLength;
+            int textLength = TextLength;
             position = Helpers.Clamp(position, 0, textLength);
             length = Helpers.Clamp(length, 0, textLength - position);
 
             // Convert to byte position/length
-            var byteStartPos = Lines.CharToWideBytePosition(position);
-            var byteEndPos = Lines.CharToWideBytePosition(position + length);
+            int byteStartPos = Lines.CharToWideBytePosition(position);
+            int byteEndPos = Lines.CharToWideBytePosition(position + length);
 
-            var ptr = DirectMessage(NativeMethods.SCI_GETRANGEPOINTER, new IntPtr(byteStartPos), new IntPtr(byteEndPos - byteStartPos));
+            IntPtr ptr = DirectMessage(NativeMethods.SCI_GETRANGEPOINTER, new IntPtr(byteStartPos), new IntPtr(byteEndPos - byteStartPos));
             if (ptr == IntPtr.Zero)
                 return string.Empty;
 
-            return Helpers.GetString(ptr, (byteEndPos - byteStartPos), Encoding);
+            return Helpers.GetString(ptr, byteEndPos - byteStartPos, Encoding);
         }
 
         /// <summary>
@@ -1272,19 +1276,19 @@ namespace ScintillaNET
         /// <returns>A string representing the text range.</returns>
         public unsafe string GetTextRange(int position, int length)
         {
-            var textLength = TextLength;
+            int textLength = TextLength;
             position = Helpers.Clamp(position, 0, textLength);
             length = Helpers.Clamp(length, 0, textLength - position);
 
             // Convert to byte position/length
-            var byteStartPos = Lines.CharToBytePosition(position);
-            var byteEndPos = Lines.CharToBytePosition(position + length);
+            int byteStartPos = Lines.CharToBytePosition(position);
+            int byteEndPos = Lines.CharToBytePosition(position + length);
 
-            var ptr = DirectMessage(NativeMethods.SCI_GETRANGEPOINTER, new IntPtr(byteStartPos), new IntPtr(byteEndPos - byteStartPos));
+            IntPtr ptr = DirectMessage(NativeMethods.SCI_GETRANGEPOINTER, new IntPtr(byteStartPos), new IntPtr(byteEndPos - byteStartPos));
             if (ptr == IntPtr.Zero)
                 return string.Empty;
 
-            return Helpers.GetString(ptr, (byteEndPos - byteStartPos), Encoding);
+            return Helpers.GetString(ptr, byteEndPos - byteStartPos, Encoding);
         }
 
         /// <summary>
@@ -1295,12 +1299,12 @@ namespace ScintillaNET
         /// <returns>A string representing the text range formatted as HTML.</returns>
         public string GetTextRangeAsHtml(int position, int length)
         {
-            var textLength = TextLength;
+            int textLength = TextLength;
             position = Helpers.Clamp(position, 0, textLength);
             length = Helpers.Clamp(length, 0, textLength - position);
 
-            var startBytePos = Lines.CharToBytePosition(position);
-            var endBytePos = Lines.CharToBytePosition(position + length);
+            int startBytePos = Lines.CharToBytePosition(position);
+            int endBytePos = Lines.CharToBytePosition(position + length);
 
             return Helpers.GetHtml(this, startBytePos, endBytePos);
         }
@@ -1365,7 +1369,7 @@ namespace ScintillaNET
             position = Helpers.Clamp(position, 0, TextLength);
             position = Lines.CharToBytePosition(position);
 
-            var bitmap = DirectMessage(NativeMethods.SCI_INDICATORALLONFOR, new IntPtr(position)).ToInt32();
+            int bitmap = DirectMessage(NativeMethods.SCI_INDICATORALLONFOR, new IntPtr(position)).ToInt32();
             return unchecked((uint)bitmap);
         }
 
@@ -1376,12 +1380,12 @@ namespace ScintillaNET
         /// <param name="length">The number of characters to clear.</param>
         public void IndicatorClearRange(int position, int length)
         {
-            var textLength = TextLength;
+            int textLength = TextLength;
             position = Helpers.Clamp(position, 0, textLength);
             length = Helpers.Clamp(length, 0, textLength - position);
 
-            var startPos = Lines.CharToBytePosition(position);
-            var endPos = Lines.CharToBytePosition(position + length);
+            int startPos = Lines.CharToBytePosition(position);
+            int endPos = Lines.CharToBytePosition(position + length);
 
             DirectMessage(NativeMethods.SCI_INDICATORCLEARRANGE, new IntPtr(startPos), new IntPtr(endPos - startPos));
         }
@@ -1393,12 +1397,12 @@ namespace ScintillaNET
         /// <param name="length">The number of characters to fill.</param>
         public void IndicatorFillRange(int position, int length)
         {
-            var textLength = TextLength;
+            int textLength = TextLength;
             position = Helpers.Clamp(position, 0, textLength);
             length = Helpers.Clamp(length, 0, textLength - position);
 
-            var startPos = Lines.CharToBytePosition(position);
-            var endPos = Lines.CharToBytePosition(position + length);
+            int startPos = Lines.CharToBytePosition(position);
+            int endPos = Lines.CharToBytePosition(position + length);
 
             DirectMessage(NativeMethods.SCI_INDICATORFILLRANGE, new IntPtr(startPos), new IntPtr(endPos - startPos));
         }
@@ -1437,7 +1441,7 @@ namespace ScintillaNET
             WordChars = "abcdefghijklmnopqrstuvwxyz_ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
             // Hide all default margins
-            foreach (var margin in Margins)
+            foreach (Margin margin in Margins)
             {
                 margin.Width = 0;
             }
@@ -1460,7 +1464,7 @@ namespace ScintillaNET
 
             if (position != -1)
             {
-                var textLength = TextLength;
+                int textLength = TextLength;
                 if (position > textLength)
                     throw new ArgumentOutOfRangeException("position", "Position cannot exceed document length.");
 
@@ -1487,14 +1491,14 @@ namespace ScintillaNET
         /// </remarks>
         public bool IsRangeWord(int start, int end)
         {
-            var textLength = TextLength;
+            int textLength = TextLength;
             start = Helpers.Clamp(start, 0, textLength);
             end = Helpers.Clamp(end, 0, textLength);
 
             start = Lines.CharToBytePosition(start);
             end = Lines.CharToBytePosition(end);
 
-            return (DirectMessage(NativeMethods.SCI_ISRANGEWORD, new IntPtr(start), new IntPtr(end)) != IntPtr.Zero);
+            return DirectMessage(NativeMethods.SCI_ISRANGEWORD, new IntPtr(start), new IntPtr(end)) != IntPtr.Zero;
         }
 
         /// <summary>
@@ -1528,10 +1532,10 @@ namespace ScintillaNET
         /// <param name="path">The path to the external lexer DLL.</param>
         public unsafe void LoadLexerLibrary(string path)
         {
-            if (String.IsNullOrEmpty(path))
+            if (string.IsNullOrEmpty(path))
                 return;
 
-            var bytes = Helpers.GetBytes(path, Encoding.Default, zeroTerminated: true);
+            byte[] bytes = Helpers.GetBytes(path, Encoding.Default, zeroTerminated: true);
             fixed (byte* bp = bytes)
                 DirectMessage(NativeMethods.SCI_LOADLEXERLIBRARY, IntPtr.Zero, new IntPtr(bp));
         }
@@ -1561,7 +1565,7 @@ namespace ScintillaNET
         /// <param name="enabled">true to highlight the current folding block; otherwise, false.</param>
         public void MarkerEnableHighlight(bool enabled)
         {
-            var val = (enabled ? new IntPtr(1) : IntPtr.Zero);
+            IntPtr val = enabled ? new IntPtr(1) : IntPtr.Zero;
             DirectMessage(NativeMethods.SCI_MARKERENABLEHIGHLIGHT, val);
         }
 
@@ -1585,7 +1589,7 @@ namespace ScintillaNET
         public void MultiEdgeAddLine(int column, Color edgeColor)
         {
             column = Helpers.ClampMin(column, 0);
-            var colour = HelperMethods.ToWin32Color(edgeColor);
+            int colour = HelperMethods.ToWin32Color(edgeColor);
 
             DirectMessage(NativeMethods.SCI_MULTIEDGEADDLINE, new IntPtr(column), new IntPtr(colour));
         }
@@ -1633,8 +1637,7 @@ namespace ScintillaNET
         /// <param name="e">An EventArgs that contains the event data.</param>
         protected virtual void OnAutoCCancelled(EventArgs e)
         {
-            var handler = Events[autoCCancelledEventKey] as EventHandler<EventArgs>;
-            if (handler != null)
+            if (Events[autoCCancelledEventKey] is EventHandler<EventArgs> handler)
                 handler(this, e);
         }
 
@@ -1644,8 +1647,7 @@ namespace ScintillaNET
         /// <param name="e">An EventArgs that contains the event data.</param>
         protected virtual void OnAutoCCharDeleted(EventArgs e)
         {
-            var handler = Events[autoCCharDeletedEventKey] as EventHandler<EventArgs>;
-            if (handler != null)
+            if (Events[autoCCharDeletedEventKey] is EventHandler<EventArgs> handler)
                 handler(this, e);
         }
 
@@ -1655,8 +1657,7 @@ namespace ScintillaNET
         /// <param name="e">An <see cref="AutoCSelectionEventArgs" /> that contains the event data.</param>
         protected virtual void OnAutoCCompleted(AutoCSelectionEventArgs e)
         {
-            var handler = Events[autoCCompletedEventKey] as EventHandler<AutoCSelectionEventArgs>;
-            if (handler != null)
+            if (Events[autoCCompletedEventKey] is EventHandler<AutoCSelectionEventArgs> handler)
                 handler(this, e);
         }
 
@@ -1666,8 +1667,7 @@ namespace ScintillaNET
         /// <param name="e">An <see cref="AutoCSelectionEventArgs" /> that contains the event data.</param>
         protected virtual void OnAutoCSelection(AutoCSelectionEventArgs e)
         {
-            var handler = Events[autoCSelectionEventKey] as EventHandler<AutoCSelectionEventArgs>;
-            if (handler != null)
+            if (Events[autoCSelectionEventKey] is EventHandler<AutoCSelectionEventArgs> handler)
                 handler(this, e);
         }
 
@@ -1677,8 +1677,7 @@ namespace ScintillaNET
         /// <param name="e">An <see cref="AutoCSelectionChangeEventArgs" /> that contains the event data.</param>
         protected virtual void OnAutoCSelectionChange(AutoCSelectionChangeEventArgs e)
         {
-            var handler = Events[autoCSelectionChangeEventKey] as EventHandler<AutoCSelectionChangeEventArgs>;
-            if (handler != null)
+            if (Events[autoCSelectionChangeEventKey] is EventHandler<AutoCSelectionChangeEventArgs> handler)
                 handler(this, e);
         }
 
@@ -1688,8 +1687,7 @@ namespace ScintillaNET
         /// <param name="e">A <see cref="BeforeModificationEventArgs" /> that contains the event data.</param>
         protected virtual void OnBeforeDelete(BeforeModificationEventArgs e)
         {
-            var handler = Events[beforeDeleteEventKey] as EventHandler<BeforeModificationEventArgs>;
-            if (handler != null)
+            if (Events[beforeDeleteEventKey] is EventHandler<BeforeModificationEventArgs> handler)
                 handler(this, e);
         }
 
@@ -1699,8 +1697,7 @@ namespace ScintillaNET
         /// <param name="e">A <see cref="BeforeModificationEventArgs" /> that contains the event data.</param>
         protected virtual void OnBeforeInsert(BeforeModificationEventArgs e)
         {
-            var handler = Events[beforeInsertEventKey] as EventHandler<BeforeModificationEventArgs>;
-            if (handler != null)
+            if (Events[beforeInsertEventKey] is EventHandler<BeforeModificationEventArgs> handler)
                 handler(this, e);
         }
 
@@ -1710,8 +1707,7 @@ namespace ScintillaNET
         /// <param name="e">An EventArgs that contains the event data.</param>
         protected virtual void OnBorderStyleChanged(EventArgs e)
         {
-            var handler = Events[borderStyleChangedEventKey] as EventHandler;
-            if (handler != null)
+            if (Events[borderStyleChangedEventKey] is EventHandler handler)
                 handler(this, e);
         }
 
@@ -1721,8 +1717,7 @@ namespace ScintillaNET
         /// <param name="e">A <see cref="ChangeAnnotationEventArgs" /> that contains the event data.</param>
         protected virtual void OnChangeAnnotation(ChangeAnnotationEventArgs e)
         {
-            var handler = Events[changeAnnotationEventKey] as EventHandler<ChangeAnnotationEventArgs>;
-            if (handler != null)
+            if (Events[changeAnnotationEventKey] is EventHandler<ChangeAnnotationEventArgs> handler)
                 handler(this, e);
         }
 
@@ -1732,8 +1727,7 @@ namespace ScintillaNET
         /// <param name="e">A <see cref="CharAddedEventArgs" /> that contains the event data.</param>
         protected virtual void OnCharAdded(CharAddedEventArgs e)
         {
-            var handler = Events[charAddedEventKey] as EventHandler<CharAddedEventArgs>;
-            if (handler != null)
+            if (Events[charAddedEventKey] is EventHandler<CharAddedEventArgs> handler)
                 handler(this, e);
         }
 
@@ -1743,8 +1737,7 @@ namespace ScintillaNET
         /// <param name="e">A <see cref="ModificationEventArgs" /> that contains the event data.</param>
         protected virtual void OnDelete(ModificationEventArgs e)
         {
-            var handler = Events[deleteEventKey] as EventHandler<ModificationEventArgs>;
-            if (handler != null)
+            if (Events[deleteEventKey] is EventHandler<ModificationEventArgs> handler)
                 handler(this, e);
         }
 
@@ -1754,8 +1747,7 @@ namespace ScintillaNET
         /// <param name="e">A <see cref="DoubleClickEventArgs" /> that contains the event data.</param>
         protected virtual void OnDoubleClick(DoubleClickEventArgs e)
         {
-            var handler = Events[doubleClickEventKey] as EventHandler<DoubleClickEventArgs>;
-            if (handler != null)
+            if (Events[doubleClickEventKey] is EventHandler<DoubleClickEventArgs> handler)
                 handler(this, e);
         }
 
@@ -1765,8 +1757,7 @@ namespace ScintillaNET
         /// <param name="e">A <see cref="DwellEventArgs" /> that contains the event data.</param>
         protected virtual void OnDwellEnd(DwellEventArgs e)
         {
-            var handler = Events[dwellEndEventKey] as EventHandler<DwellEventArgs>;
-            if (handler != null)
+            if (Events[dwellEndEventKey] is EventHandler<DwellEventArgs> handler)
                 handler(this, e);
         }
 
@@ -1776,8 +1767,7 @@ namespace ScintillaNET
         /// <param name="e">A <see cref="DwellEventArgs" /> that contains the event data.</param>
         protected virtual void OnDwellStart(DwellEventArgs e)
         {
-            var handler = Events[dwellStartEventKey] as EventHandler<DwellEventArgs>;
-            if (handler != null)
+            if (Events[dwellStartEventKey] is EventHandler<DwellEventArgs> handler)
                 handler(this, e);
         }
 
@@ -1787,8 +1777,7 @@ namespace ScintillaNET
         /// <param name="e">A <see cref="CallTipClickEventArgs" /> that contains the event data.</param>
         protected virtual void OnCallTipClick(CallTipClickEventArgs e)
         {
-            var handler = Events[callTipClickEventKey] as EventHandler<CallTipClickEventArgs>;
-            if (handler != null)
+            if (Events[callTipClickEventKey] is EventHandler<CallTipClickEventArgs> handler)
                 handler(this, e);
         }
 
@@ -1810,8 +1799,8 @@ namespace ScintillaNET
             // ways to solve this, but my favorite is to revoke drag and drop from the
             // native Scintilla control before base.OnHandleCreated does the standard
             // processing of AllowDrop.
-            if (!this._ScintillaManagedDragDrop)
-                NativeMethods.RevokeDragDrop(this.Handle);
+            if (!_ScintillaManagedDragDrop)
+                NativeMethods.RevokeDragDrop(Handle);
 
             base.OnHandleCreated(e);
         }
@@ -1822,8 +1811,7 @@ namespace ScintillaNET
         /// <param name="e">A <see cref="HotspotClickEventArgs" /> that contains the event data.</param>
         protected virtual void OnHotspotClick(HotspotClickEventArgs e)
         {
-            var handler = Events[hotspotClickEventKey] as EventHandler<HotspotClickEventArgs>;
-            if (handler != null)
+            if (Events[hotspotClickEventKey] is EventHandler<HotspotClickEventArgs> handler)
                 handler(this, e);
         }
 
@@ -1833,8 +1821,7 @@ namespace ScintillaNET
         /// <param name="e">A <see cref="HotspotClickEventArgs" /> that contains the event data.</param>
         protected virtual void OnHotspotDoubleClick(HotspotClickEventArgs e)
         {
-            var handler = Events[hotspotDoubleClickEventKey] as EventHandler<HotspotClickEventArgs>;
-            if (handler != null)
+            if (Events[hotspotDoubleClickEventKey] is EventHandler<HotspotClickEventArgs> handler)
                 handler(this, e);
         }
 
@@ -1844,8 +1831,7 @@ namespace ScintillaNET
         /// <param name="e">A <see cref="HotspotClickEventArgs" /> that contains the event data.</param>
         protected virtual void OnHotspotReleaseClick(HotspotClickEventArgs e)
         {
-            var handler = Events[hotspotReleaseClickEventKey] as EventHandler<HotspotClickEventArgs>;
-            if (handler != null)
+            if (Events[hotspotReleaseClickEventKey] is EventHandler<HotspotClickEventArgs> handler)
                 handler(this, e);
         }
 
@@ -1855,8 +1841,7 @@ namespace ScintillaNET
         /// <param name="e">An <see cref="IndicatorClickEventArgs" /> that contains the event data.</param>
         protected virtual void OnIndicatorClick(IndicatorClickEventArgs e)
         {
-            var handler = Events[indicatorClickEventKey] as EventHandler<IndicatorClickEventArgs>;
-            if (handler != null)
+            if (Events[indicatorClickEventKey] is EventHandler<IndicatorClickEventArgs> handler)
                 handler(this, e);
         }
 
@@ -1866,8 +1851,7 @@ namespace ScintillaNET
         /// <param name="e">An <see cref="IndicatorReleaseEventArgs" /> that contains the event data.</param>
         protected virtual void OnIndicatorRelease(IndicatorReleaseEventArgs e)
         {
-            var handler = Events[indicatorReleaseEventKey] as EventHandler<IndicatorReleaseEventArgs>;
-            if (handler != null)
+            if (Events[indicatorReleaseEventKey] is EventHandler<IndicatorReleaseEventArgs> handler)
                 handler(this, e);
         }
 
@@ -1877,8 +1861,7 @@ namespace ScintillaNET
         /// <param name="e">A <see cref="ModificationEventArgs" /> that contains the event data.</param>
         protected virtual void OnInsert(ModificationEventArgs e)
         {
-            var handler = Events[insertEventKey] as EventHandler<ModificationEventArgs>;
-            if (handler != null)
+            if (Events[insertEventKey] is EventHandler<ModificationEventArgs> handler)
                 handler(this, e);
         }
 
@@ -1888,8 +1871,7 @@ namespace ScintillaNET
         /// <param name="e">An <see cref="InsertCheckEventArgs" /> that contains the event data.</param>
         protected virtual void OnInsertCheck(InsertCheckEventArgs e)
         {
-            var handler = Events[insertCheckEventKey] as EventHandler<InsertCheckEventArgs>;
-            if (handler != null)
+            if (Events[insertCheckEventKey] is EventHandler<InsertCheckEventArgs> handler)
                 handler(this, e);
         }
 
@@ -1899,8 +1881,7 @@ namespace ScintillaNET
         /// <param name="e">A <see cref="MarginClickEventArgs" /> that contains the event data.</param>
         protected virtual void OnMarginClick(MarginClickEventArgs e)
         {
-            var handler = Events[marginClickEventKey] as EventHandler<MarginClickEventArgs>;
-            if (handler != null)
+            if (Events[marginClickEventKey] is EventHandler<MarginClickEventArgs> handler)
                 handler(this, e);
         }
 
@@ -1910,8 +1891,7 @@ namespace ScintillaNET
         /// <param name="e">A <see cref="MarginClickEventArgs" /> that contains the event data.</param>
         protected virtual void OnMarginRightClick(MarginClickEventArgs e)
         {
-            var handler = Events[marginRightClickEventKey] as EventHandler<MarginClickEventArgs>;
-            if (handler != null)
+            if (Events[marginRightClickEventKey] is EventHandler<MarginClickEventArgs> handler)
                 handler(this, e);
         }
 
@@ -1921,8 +1901,7 @@ namespace ScintillaNET
         /// <param name="e">An EventArgs that contains the event data.</param>
         protected virtual void OnModifyAttempt(EventArgs e)
         {
-            var handler = Events[modifyAttemptEventKey] as EventHandler<EventArgs>;
-            if (handler != null)
+            if (Events[modifyAttemptEventKey] is EventHandler<EventArgs> handler)
                 handler(this, e);
         }
 
@@ -1933,7 +1912,7 @@ namespace ScintillaNET
         protected override void OnMouseUp(MouseEventArgs e)
         {
             // Borrowed this from TextBoxBase.OnMouseUp
-            if (!doubleClick)
+            if (!this.doubleClick)
             {
                 OnClick(e);
                 OnMouseClick(e);
@@ -1943,7 +1922,7 @@ namespace ScintillaNET
                 var doubleE = new MouseEventArgs(e.Button, 2, e.X, e.Y, e.Delta);
                 OnDoubleClick(doubleE);
                 OnMouseDoubleClick(doubleE);
-                doubleClick = false;
+                this.doubleClick = false;
             }
 
             base.OnMouseUp(e);
@@ -1955,8 +1934,7 @@ namespace ScintillaNET
         /// <param name="e">A <see cref="NeedShownEventArgs" /> that contains the event data.</param>
         protected virtual void OnNeedShown(NeedShownEventArgs e)
         {
-            var handler = Events[needShownEventKey] as EventHandler<NeedShownEventArgs>;
-            if (handler != null)
+            if (Events[needShownEventKey] is EventHandler<NeedShownEventArgs> handler)
                 handler(this, e);
         }
 
@@ -1966,8 +1944,7 @@ namespace ScintillaNET
         /// <param name="e">An EventArgs that contains the event data.</param>
         protected virtual void OnPainted(EventArgs e)
         {
-            var handler = Events[paintedEventKey] as EventHandler<EventArgs>;
-            if (handler != null)
+            if (Events[paintedEventKey] is EventHandler<EventArgs> handler)
                 handler(this, e);
         }
 
@@ -1977,8 +1954,7 @@ namespace ScintillaNET
         /// <param name="e">An EventArgs that contains the event data.</param>
         protected virtual void OnSavePointLeft(EventArgs e)
         {
-            var handler = Events[savePointLeftEventKey] as EventHandler<EventArgs>;
-            if (handler != null)
+            if (Events[savePointLeftEventKey] is EventHandler<EventArgs> handler)
                 handler(this, e);
         }
 
@@ -1988,8 +1964,7 @@ namespace ScintillaNET
         /// <param name="e">An EventArgs that contains the event data.</param>
         protected virtual void OnSavePointReached(EventArgs e)
         {
-            var handler = Events[savePointReachedEventKey] as EventHandler<EventArgs>;
-            if (handler != null)
+            if (Events[savePointReachedEventKey] is EventHandler<EventArgs> handler)
                 handler(this, e);
         }
 
@@ -1999,8 +1974,7 @@ namespace ScintillaNET
         /// <param name="e">A <see cref="StyleNeededEventArgs" /> that contains the event data.</param>
         protected virtual void OnStyleNeeded(StyleNeededEventArgs e)
         {
-            var handler = Events[styleNeededEventKey] as EventHandler<StyleNeededEventArgs>;
-            if (handler != null)
+            if (Events[styleNeededEventKey] is EventHandler<StyleNeededEventArgs> handler)
                 handler(this, e);
         }
 
@@ -2010,8 +1984,7 @@ namespace ScintillaNET
         /// <param name="e">An <see cref="UpdateUIEventArgs" /> that contains the event data.</param>
         protected virtual void OnUpdateUI(UpdateUIEventArgs e)
         {
-            EventHandler<UpdateUIEventArgs> handler = Events[updateUIEventKey] as EventHandler<UpdateUIEventArgs>;
-            if (handler != null)
+            if (Events[updateUIEventKey] is EventHandler<UpdateUIEventArgs> handler)
                 handler(this, e);
         }
 
@@ -2021,8 +1994,7 @@ namespace ScintillaNET
         /// <param name="e">An EventArgs that contains the event data.</param>
         protected virtual void OnZoomChanged(EventArgs e)
         {
-            var handler = Events[zoomChangedEventKey] as EventHandler<EventArgs>;
-            if (handler != null)
+            if (Events[zoomChangedEventKey] is EventHandler<EventArgs> handler)
                 handler(this, e);
         }
 
@@ -2059,16 +2031,16 @@ namespace ScintillaNET
         }
 
         /// <summary>
-        /// Retrieves a list of property names that can be set for the current <see cref="Lexer" />.
+        /// Retrieves a list of property names that can be set for the current <see cref="LexerName">Lexer</see>.
         /// </summary>
         /// <returns>A String of property names separated by line breaks.</returns>
         public unsafe string PropertyNames()
         {
-            var length = DirectMessage(NativeMethods.SCI_PROPERTYNAMES).ToInt32();
+            int length = DirectMessage(NativeMethods.SCI_PROPERTYNAMES).ToInt32();
             if (length == 0)
                 return string.Empty;
 
-            var bytes = new byte[length + 1];
+            byte[] bytes = new byte[length + 1];
             fixed (byte* bp = bytes)
             {
                 DirectMessage(NativeMethods.SCI_PROPERTYNAMES, IntPtr.Zero, new IntPtr(bp));
@@ -2077,17 +2049,17 @@ namespace ScintillaNET
         }
 
         /// <summary>
-        /// Retrieves the data type of the specified property name for the current <see cref="Lexer" />.
+        /// Retrieves the data type of the specified property name for the current <see cref="LexerName">Lexer</see>.
         /// </summary>
-        /// <param name="name">A property name supported by the current <see cref="Lexer" />.</param>
+        /// <param name="name">A property name supported by the current <see cref="LexerName">Lexer</see>.</param>
         /// <returns>One of the <see cref="PropertyType" /> enumeration values. The default is <see cref="ScintillaNET.PropertyType.Boolean" />.</returns>
-        /// <remarks>A list of supported property names for the current <see cref="Lexer" /> can be obtained by calling <see cref="PropertyNames" />.</remarks>
+        /// <remarks>A list of supported property names for the current <see cref="LexerName">Lexer</see> can be obtained by calling <see cref="PropertyNames" />.</remarks>
         public unsafe PropertyType PropertyType(string name)
         {
-            if (String.IsNullOrEmpty(name))
+            if (string.IsNullOrEmpty(name))
                 return ScintillaNET.PropertyType.Boolean;
 
-            var bytes = Helpers.GetBytes(name, Encoding.ASCII, zeroTerminated: true);
+            byte[] bytes = Helpers.GetBytes(name, Encoding.ASCII, zeroTerminated: true);
             fixed (byte* bp = bytes)
                 return (PropertyType)DirectMessage(NativeMethods.SCI_PROPERTYTYPE, new IntPtr(bp));
         }
@@ -2120,7 +2092,7 @@ namespace ScintillaNET
             DirectMessage(NativeMethods.SCI_RGBAIMAGESETWIDTH, new IntPtr(image.Width));
             DirectMessage(NativeMethods.SCI_RGBAIMAGESETHEIGHT, new IntPtr(image.Height));
 
-            var bytes = Helpers.BitmapToArgb(image);
+            byte[] bytes = Helpers.BitmapToArgb(image);
             fixed (byte* bp = bytes)
                 DirectMessage(NativeMethods.SCI_REGISTERRGBAIMAGE, new IntPtr(type), new IntPtr(bp));
         }
@@ -2134,7 +2106,7 @@ namespace ScintillaNET
         /// </param>
         public void ReleaseDocument(Document document)
         {
-            var ptr = document.Value;
+            IntPtr ptr = document.Value;
             DirectMessage(NativeMethods.SCI_RELEASEDOCUMENT, IntPtr.Zero, ptr);
         }
 
@@ -2163,12 +2135,11 @@ namespace ScintillaNET
         /// </remarks>
         public unsafe int ReplaceTarget(string text)
         {
-            if (text == null)
-                text = string.Empty;
+            text ??= string.Empty;
 
-            var bytes = Helpers.GetBytes(text, Encoding, false);
+            byte[] bytes = Helpers.GetBytes(text, Encoding, false);
             // Scintilla asserts that lParam is not null, so make sure it isn't
-            var length = bytes.Length;
+            int length = bytes.Length;
             if (length == 0)
                 bytes = new byte[] { 0 };
             fixed (byte* bp = bytes)
@@ -2190,9 +2161,9 @@ namespace ScintillaNET
         /// <seealso cref="GetTag" />
         public unsafe int ReplaceTargetRe(string text)
         {
-            var bytes = Helpers.GetBytes(text ?? string.Empty, Encoding, false);
+            byte[] bytes = Helpers.GetBytes(text ?? string.Empty, Encoding, false);
             // Scintilla asserts that lParam is not null, so make sure it isn't
-            var length = bytes.Length;
+            int length = bytes.Length;
             if (length == 0)
                 bytes = new byte[] { 0 };
             fixed (byte* bp = bytes)
@@ -2216,14 +2187,14 @@ namespace ScintillaNET
 
         private void ScnDoubleClick(ref NativeMethods.SCNotification scn)
         {
-            var keys = Keys.Modifiers & (Keys)(scn.modifiers << 16);
+            Keys keys = Keys.Modifiers & (Keys)(scn.modifiers << 16);
             var eventArgs = new DoubleClickEventArgs(this, keys, scn.position.ToInt32(), scn.line.ToInt32());
             OnDoubleClick(eventArgs);
         }
 
         private void ScnHotspotClick(ref NativeMethods.SCNotification scn)
         {
-            var keys = Keys.Modifiers & (Keys)(scn.modifiers << 16);
+            Keys keys = Keys.Modifiers & (Keys)(scn.modifiers << 16);
             var eventArgs = new HotspotClickEventArgs(this, keys, scn.position.ToInt32());
             switch (scn.nmhdr.code)
             {
@@ -2246,7 +2217,7 @@ namespace ScintillaNET
             switch (scn.nmhdr.code)
             {
                 case NativeMethods.SCN_INDICATORCLICK:
-                    var keys = Keys.Modifiers & (Keys)(scn.modifiers << 16);
+                    Keys keys = Keys.Modifiers & (Keys)(scn.modifiers << 16);
                     OnIndicatorClick(new IndicatorClickEventArgs(this, keys, scn.position.ToInt32()));
                     break;
 
@@ -2258,7 +2229,7 @@ namespace ScintillaNET
 
         private void ScnMarginClick(ref NativeMethods.SCNotification scn)
         {
-            var keys = Keys.Modifiers & (Keys)(scn.modifiers << 16);
+            Keys keys = Keys.Modifiers & (Keys)(scn.modifiers << 16);
             var eventArgs = new MarginClickEventArgs(this, keys, scn.position.ToInt32(), scn.margin);
 
             if (scn.nmhdr.code == NativeMethods.SCN_MARGINCLICK)
@@ -2278,19 +2249,19 @@ namespace ScintillaNET
                 var eventArgs = new InsertCheckEventArgs(this, scn.position.ToInt32(), scn.length.ToInt32(), scn.text);
                 OnInsertCheck(eventArgs);
 
-                cachedPosition = eventArgs.CachedPosition;
-                cachedText = eventArgs.CachedText;
+                this.cachedPosition = eventArgs.CachedPosition;
+                this.cachedText = eventArgs.CachedText;
             }
 
-            const int sourceMask = (NativeMethods.SC_PERFORMED_USER | NativeMethods.SC_PERFORMED_UNDO | NativeMethods.SC_PERFORMED_REDO);
+            const int sourceMask = NativeMethods.SC_PERFORMED_USER | NativeMethods.SC_PERFORMED_UNDO | NativeMethods.SC_PERFORMED_REDO;
 
             if ((scn.modificationType & (NativeMethods.SC_MOD_BEFOREDELETE | NativeMethods.SC_MOD_BEFOREINSERT)) > 0)
             {
                 var source = (ModificationSource)(scn.modificationType & sourceMask);
-                var eventArgs = new BeforeModificationEventArgs(this, source, scn.position.ToInt32(), scn.length.ToInt32(), scn.text);
-
-                eventArgs.CachedPosition = cachedPosition;
-                eventArgs.CachedText = cachedText;
+                var eventArgs = new BeforeModificationEventArgs(this, source, scn.position.ToInt32(), scn.length.ToInt32(), scn.text) {
+                    CachedPosition = this.cachedPosition,
+                    CachedText = this.cachedText
+                };
 
                 if ((scn.modificationType & NativeMethods.SC_MOD_BEFOREINSERT) > 0)
                 {
@@ -2301,17 +2272,17 @@ namespace ScintillaNET
                     OnBeforeDelete(eventArgs);
                 }
 
-                cachedPosition = eventArgs.CachedPosition;
-                cachedText = eventArgs.CachedText;
+                this.cachedPosition = eventArgs.CachedPosition;
+                this.cachedText = eventArgs.CachedText;
             }
 
             if ((scn.modificationType & (NativeMethods.SC_MOD_DELETETEXT | NativeMethods.SC_MOD_INSERTTEXT)) > 0)
             {
                 var source = (ModificationSource)(scn.modificationType & sourceMask);
-                var eventArgs = new ModificationEventArgs(this, source, scn.position.ToInt32(), scn.length.ToInt32(), scn.text, scn.linesAdded.ToInt32());
-
-                eventArgs.CachedPosition = cachedPosition;
-                eventArgs.CachedText = cachedText;
+                var eventArgs = new ModificationEventArgs(this, source, scn.position.ToInt32(), scn.length.ToInt32(), scn.text, scn.linesAdded.ToInt32()) {
+                    CachedPosition = this.cachedPosition,
+                    CachedText = this.cachedText
+                };
 
                 if ((scn.modificationType & NativeMethods.SC_MOD_INSERTTEXT) > 0)
                 {
@@ -2323,8 +2294,8 @@ namespace ScintillaNET
                 }
 
                 // Always clear the cache
-                cachedPosition = null;
-                cachedText = null;
+                this.cachedPosition = null;
+                this.cachedText = null;
 
                 // For backward compatibility.... Of course this means that we'll raise two
                 // TextChanged events for replace (insert/delete) operations, but that's life.
@@ -2357,7 +2328,7 @@ namespace ScintillaNET
         /// <remarks>This may be used to make a search match visible.</remarks>
         public void ScrollRange(int start, int end)
         {
-            var textLength = TextLength;
+            int textLength = TextLength;
             start = Helpers.Clamp(start, 0, textLength);
             end = Helpers.Clamp(end, 0, textLength);
 
@@ -2382,9 +2353,9 @@ namespace ScintillaNET
         public unsafe int SearchInTarget(string text)
         {
             int bytePos = 0;
-            var bytes = Helpers.GetBytes(text ?? string.Empty, Encoding, zeroTerminated: false);
+            byte[] bytes = Helpers.GetBytes(text ?? string.Empty, Encoding, zeroTerminated: false);
             // Scintilla asserts that lParam is not null, so make sure it isn't
-            var length = bytes.Length;
+            int length = bytes.Length;
             if (length == 0)
                 bytes = new byte[] { 0 };
             fixed (byte* bp = bytes)
@@ -2413,7 +2384,7 @@ namespace ScintillaNET
         [Obsolete("Superseded by SelectionAdditionalBackColor property.")]
         public void SetAdditionalSelBack(Color color)
         {
-            var colour = HelperMethods.ToWin32Color(color);
+            int colour = HelperMethods.ToWin32Color(color);
             DirectMessage(NativeMethods.SCI_SETADDITIONALSELBACK, new IntPtr(colour));
         }
 
@@ -2425,7 +2396,7 @@ namespace ScintillaNET
         [Obsolete("Superseded by SelectionAdditionalTextColor property.")]
         public void SetAdditionalSelFore(Color color)
         {
-            var colour = HelperMethods.ToWin32Color(color);
+            int colour = HelperMethods.ToWin32Color(color);
             DirectMessage(NativeMethods.SCI_SETADDITIONALSELFORE, new IntPtr(colour));
         }
 
@@ -2458,8 +2429,8 @@ namespace ScintillaNET
         /// <seealso cref="SetFoldMarginHighlightColor" />
         public void SetFoldMarginColor(bool use, Color color)
         {
-            var colour = HelperMethods.ToWin32Color(color);
-            var useFoldMarginColour = (use ? new IntPtr(1) : IntPtr.Zero);
+            int colour = HelperMethods.ToWin32Color(color);
+            IntPtr useFoldMarginColour = use ? new IntPtr(1) : IntPtr.Zero;
 
             DirectMessage(NativeMethods.SCI_SETFOLDMARGINCOLOUR, useFoldMarginColour, new IntPtr(colour));
         }
@@ -2472,8 +2443,8 @@ namespace ScintillaNET
         /// <seealso cref="SetFoldMarginColor" />
         public void SetFoldMarginHighlightColor(bool use, Color color)
         {
-            var colour = HelperMethods.ToWin32Color(color);
-            var useFoldMarginHighlightColour = (use ? new IntPtr(1) : IntPtr.Zero);
+            int colour = HelperMethods.ToWin32Color(color);
+            IntPtr useFoldMarginHighlightColour = use ? new IntPtr(1) : IntPtr.Zero;
 
             DirectMessage(NativeMethods.SCI_SETFOLDMARGINHICOLOUR, useFoldMarginHighlightColour, new IntPtr(colour));
         }
@@ -2485,31 +2456,31 @@ namespace ScintillaNET
         /// <param name="identifiers">A list of words separated by whitespace (space, tab, '\n', '\r') characters.</param>
         public unsafe void SetIdentifiers(int style, string identifiers)
         {
-            var baseStyle = GetStyleFromSubstyle(style);
-            var min = GetSubstylesStart(baseStyle);
-            var length = GetSubstylesLength(baseStyle);
-            var max = (length > 0) ? min + length - 1 : min;
+            int baseStyle = GetStyleFromSubstyle(style);
+            int min = GetSubstylesStart(baseStyle);
+            int length = GetSubstylesLength(baseStyle);
+            int max = (length > 0) ? min + length - 1 : min;
 
             style = Helpers.Clamp(style, min, max);
-            var bytes = Helpers.GetBytes(identifiers ?? string.Empty, Encoding.ASCII, zeroTerminated: true);
+            byte[] bytes = Helpers.GetBytes(identifiers ?? string.Empty, Encoding.ASCII, zeroTerminated: true);
 
             fixed (byte* bp = bytes)
                 DirectMessage(NativeMethods.SCI_SETIDENTIFIERS, new IntPtr(style), new IntPtr(bp));
         }
 
         /// <summary>
-        /// Updates a keyword set used by the current <see cref="Lexer" />.
+        /// Updates a keyword set used by the current <see cref="LexerName">Lexer</see>.
         /// </summary>
         /// <param name="set">The zero-based index of the keyword set to update.</param>
         /// <param name="keywords">
-        /// A list of keywords pertaining to the current <see cref="Lexer" /> separated by whitespace (space, tab, '\n', '\r') characters.
+        /// A list of keywords pertaining to the current <see cref="LexerName">Lexer</see> separated by whitespace (space, tab, '\n', '\r') characters.
         /// </param>
-        /// <remarks>The keywords specified will be styled according to the current <see cref="Lexer" />.</remarks>
+        /// <remarks>The keywords specified will be styled according to the current <see cref="LexerName">Lexer</see>.</remarks>
         /// <seealso cref="DescribeKeywordSets" />
         public unsafe void SetKeywords(int set, string keywords)
         {
             set = Helpers.Clamp(set, 0, NativeMethods.KEYWORDSET_MAX);
-            var bytes = Helpers.GetBytes(keywords ?? string.Empty, Encoding.ASCII, zeroTerminated: true);
+            byte[] bytes = Helpers.GetBytes(keywords ?? string.Empty, Encoding.ASCII, zeroTerminated: true);
 
             fixed (byte* bp = bytes)
                 DirectMessage(NativeMethods.SCI_SETKEYWORDS, new IntPtr(set), new IntPtr(bp));
@@ -2526,29 +2497,26 @@ namespace ScintillaNET
         public static void SetDestroyHandleBehavior(bool reparent)
         {
             // WM_DESTROY workaround
-            if (Scintilla.reparentAll == null)
-            {
-                Scintilla.reparentAll = reparent;
-            }
+            Scintilla.reparentAll ??= reparent;
         }
 
         /// <summary>
-        /// Passes the specified property name-value pair to the current <see cref="Lexer" />.
+        /// Passes the specified property name-value pair to the current <see cref="LexerName">Lexer</see>.
         /// </summary>
         /// <param name="name">The property name to set.</param>
         /// <param name="value">
         /// The property value. Values can refer to other property names using the syntax $(name), where 'name' is another property
-        /// name for the current <see cref="Lexer" />. When the property value is retrieved by a call to <see cref="GetPropertyExpanded" />
+        /// name for the current <see cref="LexerName">Lexer</see>. When the property value is retrieved by a call to <see cref="GetPropertyExpanded" />
         /// the embedded property name macro will be replaced (expanded) with that current property value.
         /// </param>
         /// <remarks>Property names are case-sensitive.</remarks>
         public unsafe void SetProperty(string name, string value)
         {
-            if (String.IsNullOrEmpty(name))
+            if (string.IsNullOrEmpty(name))
                 return;
 
-            var nameBytes = Helpers.GetBytes(name, Encoding.ASCII, zeroTerminated: true);
-            var valueBytes = Helpers.GetBytes(value ?? string.Empty, Encoding.ASCII, zeroTerminated: true);
+            byte[] nameBytes = Helpers.GetBytes(name, Encoding.ASCII, zeroTerminated: true);
+            byte[] valueBytes = Helpers.GetBytes(value ?? string.Empty, Encoding.ASCII, zeroTerminated: true);
 
             fixed (byte* nb = nameBytes)
             fixed (byte* vb = valueBytes)
@@ -2565,10 +2533,10 @@ namespace ScintillaNET
             if (!VisualStyleRenderer.IsElementDefined(element))
                 return false;
 
-            if (renderer == null)
-                renderer = new VisualStyleRenderer(element);
+            if (this.renderer == null)
+                this.renderer = new VisualStyleRenderer(element);
             else
-                renderer.SetParameters(element);
+                this.renderer.SetParameters(element);
 
             return true;
         }
@@ -2602,7 +2570,7 @@ namespace ScintillaNET
                 anchorPos = -1;
             }
 
-            var textLength = TextLength;
+            int textLength = TextLength;
 
             if (anchorPos >= 0)
             {
@@ -2626,7 +2594,7 @@ namespace ScintillaNET
         /// <param name="anchor">The zero-based document position to start the selection.</param>
         public void SetSelection(int caret, int anchor)
         {
-            var textLength = TextLength;
+            int textLength = TextLength;
 
             caret = Helpers.Clamp(caret, 0, textLength);
             anchor = Helpers.Clamp(anchor, 0, textLength);
@@ -2646,8 +2614,8 @@ namespace ScintillaNET
         [Obsolete("Superseded by SelectionBackColor property.")]
         public void SetSelectionBackColor(bool use, Color color)
         {
-            var colour = HelperMethods.ToWin32Color(color);
-            var useSelectionForeColour = (use ? new IntPtr(1) : IntPtr.Zero);
+            int colour = HelperMethods.ToWin32Color(color);
+            IntPtr useSelectionForeColour = use ? new IntPtr(1) : IntPtr.Zero;
 
             DirectMessage(NativeMethods.SCI_SETSELBACK, useSelectionForeColour, new IntPtr(colour));
         }
@@ -2661,8 +2629,8 @@ namespace ScintillaNET
         [Obsolete("Superseded by SelectionTextColor property.")]
         public void SetSelectionForeColor(bool use, Color color)
         {
-            var colour = HelperMethods.ToWin32Color(color);
-            var useSelectionForeColour = (use ? new IntPtr(1) : IntPtr.Zero);
+            int colour = HelperMethods.ToWin32Color(color);
+            IntPtr useSelectionForeColour = use ? new IntPtr(1) : IntPtr.Zero;
 
             DirectMessage(NativeMethods.SCI_SETSELFORE, useSelectionForeColour, new IntPtr(colour));
         }
@@ -2703,22 +2671,22 @@ namespace ScintillaNET
         /// <seealso cref="StartStyling" />
         public void SetStyling(int length, int style)
         {
-            var textLength = TextLength;
+            int textLength = TextLength;
 
             if (length < 0)
                 throw new ArgumentOutOfRangeException("length", "Length cannot be less than zero.");
-            if (stylingPosition + length > textLength)
+            if (this.stylingPosition + length > textLength)
                 throw new ArgumentOutOfRangeException("length", "Position and length must refer to a range within the document.");
             if (style < 0 || style >= Styles.Count)
                 throw new ArgumentOutOfRangeException("style", "Style must be non-negative and less than the size of the collection.");
 
-            var endPos = stylingPosition + length;
-            var endBytePos = Lines.CharToBytePosition(endPos);
-            DirectMessage(NativeMethods.SCI_SETSTYLING, new IntPtr(endBytePos - stylingBytePosition), new IntPtr(style));
+            int endPos = this.stylingPosition + length;
+            int endBytePos = Lines.CharToBytePosition(endPos);
+            DirectMessage(NativeMethods.SCI_SETSTYLING, new IntPtr(endBytePos - this.stylingBytePosition), new IntPtr(style));
 
             // Track this for the next call
-            stylingPosition = endPos;
-            stylingBytePosition = endBytePos;
+            this.stylingPosition = endPos;
+            this.stylingBytePosition = endBytePos;
         }
 
         /// <summary>
@@ -2730,7 +2698,7 @@ namespace ScintillaNET
         /// <seealso cref="TargetEnd" />
         public void SetTargetRange(int start, int end)
         {
-            var textLength = TextLength;
+            int textLength = TextLength;
             start = Helpers.Clamp(start, 0, textLength);
             end = Helpers.Clamp(end, 0, textLength);
 
@@ -2751,8 +2719,8 @@ namespace ScintillaNET
         [Obsolete("Superseded by WhitespaceBackColor property.")]
         public void SetWhitespaceBackColor(bool use, Color color)
         {
-            var colour = HelperMethods.ToWin32Color(color);
-            var useWhitespaceBackColour = (use ? new IntPtr(1) : IntPtr.Zero);
+            int colour = HelperMethods.ToWin32Color(color);
+            IntPtr useWhitespaceBackColour = use ? new IntPtr(1) : IntPtr.Zero;
 
             DirectMessage(NativeMethods.SCI_SETWHITESPACEBACK, useWhitespaceBackColour, new IntPtr(colour));
         }
@@ -2768,8 +2736,8 @@ namespace ScintillaNET
         [Obsolete("Superseded by WhitespaceTextColor property.")]
         public void SetWhitespaceForeColor(bool use, Color color)
         {
-            var colour = HelperMethods.ToWin32Color(color);
-            var useWhitespaceForeColour = (use ? new IntPtr(1) : IntPtr.Zero);
+            int colour = HelperMethods.ToWin32Color(color);
+            IntPtr useWhitespaceForeColour = use ? new IntPtr(1) : IntPtr.Zero;
 
             DirectMessage(NativeMethods.SCI_SETWHITESPACEFORE, useWhitespaceForeColour, new IntPtr(colour));
         }
@@ -2826,12 +2794,12 @@ namespace ScintillaNET
         public void StartStyling(int position)
         {
             position = Helpers.Clamp(position, 0, TextLength);
-            var pos = Lines.CharToBytePosition(position);
+            int pos = Lines.CharToBytePosition(position);
             DirectMessage(NativeMethods.SCI_STARTSTYLING, new IntPtr(pos));
 
             // Track this so we can validate calls to SetStyling
-            stylingPosition = position;
-            stylingBytePosition = pos;
+            this.stylingPosition = position;
+            this.stylingBytePosition = pos;
         }
 
         /// <summary>
@@ -2887,7 +2855,7 @@ namespace ScintillaNET
         public unsafe int TextWidth(int style, string text)
         {
             style = Helpers.Clamp(style, 0, Styles.Count - 1);
-            var bytes = Helpers.GetBytes(text ?? string.Empty, Encoding, zeroTerminated: true);
+            byte[] bytes = Helpers.GetBytes(text ?? string.Empty, Encoding, zeroTerminated: true);
 
             fixed (byte* bp = bytes)
             {
@@ -2911,7 +2879,7 @@ namespace ScintillaNET
         public void UsePopup(bool enablePopup)
         {
             // NOTE: The behavior of UsePopup has changed in v3.7.1, however, this approach is still valid
-            var bEnablePopup = (enablePopup ? new IntPtr(1) : IntPtr.Zero);
+            IntPtr bEnablePopup = enablePopup ? new IntPtr(1) : IntPtr.Zero;
             DirectMessage(NativeMethods.SCI_USEPOPUP, bEnablePopup);
         }
 
@@ -2927,7 +2895,7 @@ namespace ScintillaNET
         private void WmDestroy(ref Message m)
         {
             // WM_DESTROY workaround
-            if (reparent && IsHandleCreated)
+            if (this.reparent && IsHandleCreated)
             {
                 // In some circumstances it's possible for the control's window handle to be destroyed
                 // and recreated during the life of the control. I have no idea why Windows Forms was coded
@@ -2973,23 +2941,20 @@ namespace ScintillaNET
                 return;
             }
 
-            NativeMethods.RECT windowRect;
-            NativeMethods.GetWindowRect(m.HWnd, out windowRect);
+            NativeMethods.GetWindowRect(m.HWnd, out NativeMethods.RECT windowRect);
             Size borderSize = SystemInformation.Border3DSize;
             IntPtr hDC = NativeMethods.GetWindowDC(m.HWnd);
             try
             {
-                using (Graphics graphics = Graphics.FromHdc(hDC))
-                {
-                    // Clip everything except the border
-                    Rectangle bounds = new Rectangle(0, 0, windowRect.right - windowRect.left, windowRect.bottom - windowRect.top);
-                    graphics.ExcludeClip(Rectangle.Inflate(bounds, -borderSize.Width, -borderSize.Height));
+                using var graphics = Graphics.FromHdc(hDC);
+                // Clip everything except the border
+                var bounds = new Rectangle(0, 0, windowRect.right - windowRect.left, windowRect.bottom - windowRect.top);
+                graphics.ExcludeClip(Rectangle.Inflate(bounds, -borderSize.Width, -borderSize.Height));
 
-                    // Paint the theme border
-                    if (renderer.IsBackgroundPartiallyTransparent())
-                        renderer.DrawParentBackground(graphics, bounds, this);
-                    renderer.DrawBackground(graphics, bounds);
-                }
+                // Paint the theme border
+                if (this.renderer.IsBackgroundPartiallyTransparent())
+                    this.renderer.DrawParentBackground(graphics, bounds, this);
+                this.renderer.DrawBackground(graphics, bounds);
             }
             finally
             {
@@ -3015,11 +2980,10 @@ namespace ScintillaNET
         private void WmReflectNotify(ref Message m)
         {
             // A standard Windows notification and a Scintilla notification header are compatible
-            NativeMethods.SCNotification scn = (NativeMethods.SCNotification)Marshal.PtrToStructure(m.LParam, typeof(NativeMethods.SCNotification));
-            if (scn.nmhdr.code >= NativeMethods.SCN_STYLENEEDED && scn.nmhdr.code <= NativeMethods.SCN_AUTOCSELECTIONCHANGE)
+            var scn = (NativeMethods.SCNotification)Marshal.PtrToStructure(m.LParam, typeof(NativeMethods.SCNotification));
+            if (scn.nmhdr.code is >= NativeMethods.SCN_STYLENEEDED and <= NativeMethods.SCN_AUTOCSELECTIONCHANGE)
             {
-                var handler = Events[scNotificationEventKey] as EventHandler<SCNotificationEventArgs>;
-                if (handler != null)
+                if (Events[scNotificationEventKey] is EventHandler<SCNotificationEventArgs> handler)
                     handler(this, new SCNotificationEventArgs(scn));
 
                 switch (scn.nmhdr.code)
@@ -3115,7 +3079,7 @@ namespace ScintillaNET
                     case NativeMethods.SCN_CALLTIPCLICK:
                         OnCallTipClick(new CallTipClickEventArgs(this, (CallTipClickType)scn.position.ToInt32()));
                         // scn.position: 1 = Up Arrow, 2 = DownArrow: 0 = Elsewhere
-                    break;
+                        break;
 
                     default:
                         // Not our notification
@@ -3133,7 +3097,7 @@ namespace ScintillaNET
         {
             switch (m.Msg)
             {
-                case (NativeMethods.WM_REFLECT + NativeMethods.WM_NOTIFY):
+                case NativeMethods.WM_REFLECT + NativeMethods.WM_NOTIFY:
                     WmReflectNotify(ref m);
                     break;
 
@@ -3149,7 +3113,7 @@ namespace ScintillaNET
                 case NativeMethods.WM_RBUTTONDBLCLK:
                 case NativeMethods.WM_MBUTTONDBLCLK:
                 case NativeMethods.WM_XBUTTONDBLCLK:
-                    doubleClick = true;
+                    this.doubleClick = true;
                     goto default;
 
                 case NativeMethods.WM_DESTROY:
@@ -3174,7 +3138,7 @@ namespace ScintillaNET
         /// <seealso cref="WordStartPosition" />
         public int WordEndPosition(int position, bool onlyWordCharacters)
         {
-            var onlyWordChars = (onlyWordCharacters ? new IntPtr(1) : IntPtr.Zero);
+            IntPtr onlyWordChars = onlyWordCharacters ? new IntPtr(1) : IntPtr.Zero;
             position = Helpers.Clamp(position, 0, TextLength);
             position = Lines.CharToBytePosition(position);
             position = DirectMessage(NativeMethods.SCI_WORDENDPOSITION, new IntPtr(position), onlyWordChars).ToInt32();
@@ -3193,7 +3157,7 @@ namespace ScintillaNET
         /// <seealso cref="WordEndPosition" />
         public int WordStartPosition(int position, bool onlyWordCharacters)
         {
-            var onlyWordChars = (onlyWordCharacters ? new IntPtr(1) : IntPtr.Zero);
+            IntPtr onlyWordChars = onlyWordCharacters ? new IntPtr(1) : IntPtr.Zero;
             position = Helpers.Clamp(position, 0, TextLength);
             position = Lines.CharToBytePosition(position);
             position = DirectMessage(NativeMethods.SCI_WORDSTARTPOSITION, new IntPtr(position), onlyWordChars).ToInt32();
@@ -3226,8 +3190,8 @@ namespace ScintillaNET
         /// <remarks>The <see cref="ViewWhitespace"/> must be set to <see cref="WhitespaceMode.VisibleAlways"/> for this to work.</remarks>
         public unsafe void SetRepresentation(string encodedString, string representationString)
         {
-            var bytesEncoded = Helpers.GetBytes(encodedString, Encoding, zeroTerminated: true);
-            var bytesRepresentation = Helpers.GetBytes(representationString, Encoding, zeroTerminated: true);
+            byte[] bytesEncoded = Helpers.GetBytes(encodedString, Encoding, zeroTerminated: true);
+            byte[] bytesRepresentation = Helpers.GetBytes(representationString, Encoding, zeroTerminated: true);
             fixed (byte* bpEncoded = bytesEncoded)
             {
                 fixed (byte* bpRepresentation = bytesRepresentation)
@@ -3244,13 +3208,13 @@ namespace ScintillaNET
         /// <returns>The representation string for the <paramref name="encodedString"/>. I.e. "OHM".</returns>
         public unsafe string GetRepresentation(string encodedString)
         {
-            var bytesEncoded = Helpers.GetBytes(encodedString, Encoding, zeroTerminated: true);
+            byte[] bytesEncoded = Helpers.GetBytes(encodedString, Encoding, zeroTerminated: true);
 
             fixed (byte* bpEncoded = bytesEncoded)
             {
-                var length = DirectMessage(NativeMethods.SCI_GETREPRESENTATION, new IntPtr(bpEncoded), IntPtr.Zero)
+                int length = DirectMessage(NativeMethods.SCI_GETREPRESENTATION, new IntPtr(bpEncoded), IntPtr.Zero)
                     .ToInt32();
-                var bytesRepresentation = new byte[length + 1];
+                byte[] bytesRepresentation = new byte[length + 1];
                 fixed (byte* bpRepresentation = bytesRepresentation)
                 {
                     DirectMessage(NativeMethods.SCI_GETREPRESENTATION, new IntPtr(bpEncoded), new IntPtr(bpRepresentation));
@@ -3265,7 +3229,7 @@ namespace ScintillaNET
         /// <param name="encodedString">The encoded string. I.e. the Ohm character: Ω = \u2126.</param>
         public unsafe void ClearRepresentation(string encodedString)
         {
-            var bytesEncoded = Helpers.GetBytes(encodedString, Encoding, zeroTerminated: true);
+            byte[] bytesEncoded = Helpers.GetBytes(encodedString, Encoding, zeroTerminated: true);
             fixed (byte* bpEncoded = bytesEncoded)
             {
                 DirectMessage(NativeMethods.SCI_CLEARREPRESENTATION, new IntPtr(bpEncoded), IntPtr.Zero);
@@ -3279,9 +3243,9 @@ namespace ScintillaNET
         public void ClearChangeHistory()
         {
             EmptyUndoBuffer();
-            var ch = this.ChangeHistory;
-            this.ChangeHistory = ChangeHistory.Disabled;
-            this.ChangeHistory = ch;
+            ChangeHistory ch = ChangeHistory;
+            ChangeHistory = ChangeHistory.Disabled;
+            ChangeHistory = ch;
         }
         #endregion Methods
 
@@ -3309,13 +3273,13 @@ namespace ScintillaNET
         [Description("The bi-directionality of the Scintilla control.")]
         public BiDirectionalDisplayType BiDirectionality
         {
-            get => (BiDirectionalDisplayType) DirectMessage(NativeMethods.SCI_GETBIDIRECTIONAL).ToInt32();
+            get => (BiDirectionalDisplayType)DirectMessage(NativeMethods.SCI_GETBIDIRECTIONAL).ToInt32();
 
             set
             {
                 if (value != BiDirectionalDisplayType.Disabled)
                 {
-                    var technology = DirectMessage(NativeMethods.SCI_GETTECHNOLOGY).ToInt32();
+                    int technology = DirectMessage(NativeMethods.SCI_GETTECHNOLOGY).ToInt32();
                     if (technology == NativeMethods.SC_TECHNOLOGY_DEFAULT)
                     {
                         DirectMessage(NativeMethods.SCI_SETTECHNOLOGY, new IntPtr(NativeMethods.SC_TECHNOLOGY_DIRECTWRITE));
@@ -3343,7 +3307,7 @@ namespace ScintillaNET
                 }
 
                 long exStyle = Handle.GetWindowLongPtr(WinApiHelpers.GWL_EXSTYLE).ToInt64();
-                
+
                 return exStyle == (exStyle | WinApiHelpers.WS_EX_LAYOUTRTL);
             }
             set
@@ -3357,7 +3321,7 @@ namespace ScintillaNET
 
                 if (value)
                 {
-                    var technology = DirectMessage(NativeMethods.SCI_GETTECHNOLOGY).ToInt32();
+                    int technology = DirectMessage(NativeMethods.SCI_GETTECHNOLOGY).ToInt32();
                     if (technology != NativeMethods.SC_TECHNOLOGY_DEFAULT)
                     {
                         DirectMessage(NativeMethods.SCI_SETTECHNOLOGY, new IntPtr(NativeMethods.SC_TECHNOLOGY_DEFAULT));
@@ -3369,10 +3333,11 @@ namespace ScintillaNET
                 {
                     exStyle &= ~WinApiHelpers.WS_EX_LAYOUTRTL;
                 }
+
                 Handle.SetWindowLongPtr(WinApiHelpers.GWL_EXSTYLE, new IntPtr(exStyle));
 
                 // Workaround Scintilla mirrored rendering issue:
-                var wrapMode = WrapMode;
+                WrapMode wrapMode = WrapMode;
                 WrapMode = wrapMode == WrapMode.None ? WrapMode.Word : WrapMode.None;
                 WrapMode = wrapMode;
             }
@@ -3413,7 +3378,7 @@ namespace ScintillaNET
             }
             set
             {
-                var additionalCaretsBlink = (value ? new IntPtr(1) : IntPtr.Zero);
+                IntPtr additionalCaretsBlink = value ? new IntPtr(1) : IntPtr.Zero;
                 DirectMessage(NativeMethods.SCI_SETADDITIONALCARETSBLINK, additionalCaretsBlink);
             }
         }
@@ -3433,7 +3398,7 @@ namespace ScintillaNET
             }
             set
             {
-                var additionalCaretsBlink = (value ? new IntPtr(1) : IntPtr.Zero);
+                IntPtr additionalCaretsBlink = value ? new IntPtr(1) : IntPtr.Zero;
                 DirectMessage(NativeMethods.SCI_SETADDITIONALCARETSVISIBLE, additionalCaretsBlink);
             }
         }
@@ -3479,7 +3444,7 @@ namespace ScintillaNET
             }
             set
             {
-                var additionalSelectionTyping = (value ? new IntPtr(1) : IntPtr.Zero);
+                IntPtr additionalSelectionTyping = value ? new IntPtr(1) : IntPtr.Zero;
                 DirectMessage(NativeMethods.SCI_SETADDITIONALSELECTIONTYPING, additionalSelectionTyping);
             }
         }
@@ -3499,13 +3464,13 @@ namespace ScintillaNET
         {
             get
             {
-                var bytePos = DirectMessage(NativeMethods.SCI_GETANCHOR).ToInt32();
+                int bytePos = DirectMessage(NativeMethods.SCI_GETANCHOR).ToInt32();
                 return Lines.ByteToCharPosition(bytePos);
             }
             set
             {
                 value = Helpers.Clamp(value, 0, TextLength);
-                var bytePos = Lines.CharToBytePosition(value);
+                int bytePos = Lines.CharToBytePosition(value);
                 DirectMessage(NativeMethods.SCI_SETANCHOR, new IntPtr(bytePos));
             }
         }
@@ -3525,7 +3490,7 @@ namespace ScintillaNET
             }
             set
             {
-                var visible = (int)value;
+                int visible = (int)value;
                 DirectMessage(NativeMethods.SCI_ANNOTATIONSETVISIBLE, new IntPtr(visible));
             }
         }
@@ -3642,7 +3607,7 @@ namespace ScintillaNET
             }
             set
             {
-                var autoHide = (value ? new IntPtr(1) : IntPtr.Zero);
+                IntPtr autoHide = value ? new IntPtr(1) : IntPtr.Zero;
                 DirectMessage(NativeMethods.SCI_AUTOCSETAUTOHIDE, autoHide);
             }
         }
@@ -3666,7 +3631,7 @@ namespace ScintillaNET
             }
             set
             {
-                var cancel = (value ? new IntPtr(1) : IntPtr.Zero);
+                IntPtr cancel = value ? new IntPtr(1) : IntPtr.Zero;
                 DirectMessage(NativeMethods.SCI_AUTOCSETCANCELATSTART, cancel);
             }
         }
@@ -3703,7 +3668,7 @@ namespace ScintillaNET
             }
             set
             {
-                var chooseSingle = (value ? new IntPtr(1) : IntPtr.Zero);
+                IntPtr chooseSingle = value ? new IntPtr(1) : IntPtr.Zero;
                 DirectMessage(NativeMethods.SCI_AUTOCSETCHOOSESINGLE, chooseSingle);
             }
         }
@@ -3725,7 +3690,7 @@ namespace ScintillaNET
             }
             set
             {
-                var dropRestOfWord = (value ? new IntPtr(1) : IntPtr.Zero);
+                IntPtr dropRestOfWord = value ? new IntPtr(1) : IntPtr.Zero;
                 DirectMessage(NativeMethods.SCI_AUTOCSETDROPRESTOFWORD, dropRestOfWord);
             }
         }
@@ -3745,7 +3710,7 @@ namespace ScintillaNET
             }
             set
             {
-                var ignoreCase = (value ? new IntPtr(1) : IntPtr.Zero);
+                IntPtr ignoreCase = value ? new IntPtr(1) : IntPtr.Zero;
                 DirectMessage(NativeMethods.SCI_AUTOCSETIGNORECASE, ignoreCase);
             }
         }
@@ -3810,7 +3775,7 @@ namespace ScintillaNET
             }
             set
             {
-                var order = (int)value;
+                int order = (int)value;
                 DirectMessage(NativeMethods.SCI_AUTOCSETORDER, new IntPtr(order));
             }
         }
@@ -3826,7 +3791,7 @@ namespace ScintillaNET
         {
             get
             {
-                var pos = DirectMessage(NativeMethods.SCI_AUTOCPOSSTART).ToInt32();
+                int pos = DirectMessage(NativeMethods.SCI_AUTOCPOSSTART).ToInt32();
                 pos = Lines.ByteToCharPosition(pos);
 
                 return pos;
@@ -3841,12 +3806,12 @@ namespace ScintillaNET
         [DefaultValue(' ')]
         [Category("Autocompletion")]
         [Description("The autocompletion list word delimiter. The default is a space character.")]
-        public Char AutoCSeparator
+        public char AutoCSeparator
         {
             get
             {
-                var separator = DirectMessage(NativeMethods.SCI_AUTOCGETSEPARATOR).ToInt32();
-                return (Char)separator;
+                int separator = DirectMessage(NativeMethods.SCI_AUTOCGETSEPARATOR).ToInt32();
+                return (char)separator;
             }
             set
             {
@@ -3854,7 +3819,7 @@ namespace ScintillaNET
                 // not a character. Thus it's possible for a user to supply a character that does
                 // not fit within a single byte. The likelyhood of this, however, seems so remote that
                 // I'm willing to risk a possible conversion error to provide a better user experience.
-                var separator = (byte)value;
+                byte separator = (byte)value;
                 DirectMessage(NativeMethods.SCI_AUTOCSETSEPARATOR, new IntPtr(separator));
             }
         }
@@ -3867,12 +3832,12 @@ namespace ScintillaNET
         [DefaultValue('?')]
         [Category("Autocompletion")]
         [Description("The autocompletion list image type delimiter.")]
-        public Char AutoCTypeSeparator
+        public char AutoCTypeSeparator
         {
             get
             {
-                var separatorCharacter = DirectMessage(NativeMethods.SCI_AUTOCGETTYPESEPARATOR).ToInt32();
-                return (Char)separatorCharacter;
+                int separatorCharacter = DirectMessage(NativeMethods.SCI_AUTOCGETTYPESEPARATOR).ToInt32();
+                return (char)separatorCharacter;
             }
             set
             {
@@ -3880,7 +3845,7 @@ namespace ScintillaNET
                 // not a character. Thus it's possible for a user to supply a character that does
                 // not fit within a single byte. The likelyhood of this, however, seems so remote that
                 // I'm willing to risk a possible conversion error to provide a better user experience.
-                var separatorCharacter = (byte)value;
+                byte separatorCharacter = (byte)value;
                 DirectMessage(NativeMethods.SCI_AUTOCSETTYPESEPARATOR, new IntPtr(separatorCharacter));
             }
         }
@@ -3905,7 +3870,7 @@ namespace ScintillaNET
             }
             set
             {
-                var automaticFold = (int)value;
+                int automaticFold = (int)value;
                 DirectMessage(NativeMethods.SCI_SETAUTOMATICFOLD, new IntPtr(automaticFold));
             }
         }
@@ -3972,11 +3937,11 @@ namespace ScintillaNET
         {
             get
             {
-                return (DirectMessage(NativeMethods.SCI_GETBACKSPACEUNINDENTS) != IntPtr.Zero);
+                return DirectMessage(NativeMethods.SCI_GETBACKSPACEUNINDENTS) != IntPtr.Zero;
             }
             set
             {
-                var ptr = (value ? new IntPtr(1) : IntPtr.Zero);
+                IntPtr ptr = value ? new IntPtr(1) : IntPtr.Zero;
                 DirectMessage(NativeMethods.SCI_SETBACKSPACEUNINDENTS, ptr);
             }
         }
@@ -3993,16 +3958,16 @@ namespace ScintillaNET
         {
             get
             {
-                return borderStyle;
+                return this.borderStyle;
             }
             set
             {
-                if (borderStyle != value)
+                if (this.borderStyle != value)
                 {
                     if (!Enum.IsDefined(typeof(BorderStyle), value))
                         throw new InvalidEnumArgumentException("value", (int)value, typeof(BorderStyle));
 
-                    borderStyle = value;
+                    this.borderStyle = value;
                     UpdateStyles();
                     OnBorderStyleChanged(EventArgs.Empty);
                 }
@@ -4024,11 +3989,11 @@ namespace ScintillaNET
         {
             get
             {
-                return (DirectMessage(NativeMethods.SCI_GETBUFFEREDDRAW) != IntPtr.Zero);
+                return DirectMessage(NativeMethods.SCI_GETBUFFEREDDRAW) != IntPtr.Zero;
             }
             set
             {
-                var isBuffered = (value ? new IntPtr(1) : IntPtr.Zero);
+                IntPtr isBuffered = value ? new IntPtr(1) : IntPtr.Zero;
                 DirectMessage(NativeMethods.SCI_SETBUFFEREDDRAW, isBuffered);
             }
         }
@@ -4084,7 +4049,7 @@ namespace ScintillaNET
         {
             get
             {
-                return (DirectMessage(NativeMethods.SCI_CANPASTE) != IntPtr.Zero);
+                return DirectMessage(NativeMethods.SCI_CANPASTE) != IntPtr.Zero;
             }
         }
 
@@ -4098,7 +4063,7 @@ namespace ScintillaNET
         {
             get
             {
-                return (DirectMessage(NativeMethods.SCI_CANREDO) != IntPtr.Zero);
+                return DirectMessage(NativeMethods.SCI_CANREDO) != IntPtr.Zero;
             }
         }
 
@@ -4112,7 +4077,7 @@ namespace ScintillaNET
         {
             get
             {
-                return (DirectMessage(NativeMethods.SCI_CANUNDO) != IntPtr.Zero);
+                return DirectMessage(NativeMethods.SCI_CANUNDO) != IntPtr.Zero;
             }
         }
 
@@ -4222,7 +4187,7 @@ namespace ScintillaNET
             }
             set
             {
-                var visible = (value ? new IntPtr(1) : IntPtr.Zero);
+                IntPtr visible = value ? new IntPtr(1) : IntPtr.Zero;
                 DirectMessage(NativeMethods.SCI_SETCARETLINEVISIBLE, visible);
             }
         }
@@ -4238,11 +4203,11 @@ namespace ScintillaNET
         {
             get
             {
-                return (DirectMessage(NativeMethods.SCI_GETCARETLINEVISIBLEALWAYS) != IntPtr.Zero);
+                return DirectMessage(NativeMethods.SCI_GETCARETLINEVISIBLEALWAYS) != IntPtr.Zero;
             }
             set
             {
-                var visibleAlways = (value ? new IntPtr(1) : IntPtr.Zero);
+                IntPtr visibleAlways = value ? new IntPtr(1) : IntPtr.Zero;
                 DirectMessage(NativeMethods.SCI_SETCARETLINEVISIBLEALWAYS, visibleAlways);
             }
         }
@@ -4305,7 +4270,7 @@ namespace ScintillaNET
             }
             set
             {
-                var style = (int)value;
+                int style = (int)value;
                 DirectMessage(NativeMethods.SCI_SETCARETSTYLE, new IntPtr(style));
             }
         }
@@ -4370,26 +4335,26 @@ namespace ScintillaNET
 
                     if (moduleHandle == IntPtr.Zero)
                     {
-                        var message = string.Format(CultureInfo.InvariantCulture, "Could not load the Scintilla module at the path '{0}'.", modulePathScintilla);
+                        string message = string.Format(CultureInfo.InvariantCulture, "Could not load the Scintilla module at the path '{0}'.", modulePathScintilla);
                         throw new Win32Exception(message, new Win32Exception()); // Calls GetLastError
                     }
 
                     // For some reason the 32-bit DLL has weird export names.
-                    var is32Bit = IntPtr.Size == 4;
+                    bool is32Bit = IntPtr.Size == 4;
 
                     // Self-compiled DLLs required this:
                     //var exportName = is32Bit
                     //    ? "_Scintilla_DirectFunction@16"
                     //    : nameof(NativeMethods.Scintilla_DirectFunction);
-                    
+
                     // Native DLL:
-                    var exportName = nameof(NativeMethods.Scintilla_DirectFunction);
+                    string exportName = nameof(NativeMethods.Scintilla_DirectFunction);
 
                     // Get the native Scintilla direct function -- the only function the library exports
-                    var directFunctionPointer = NativeMethods.GetProcAddress(new HandleRef(this, moduleHandle), exportName);
+                    IntPtr directFunctionPointer = NativeMethods.GetProcAddress(new HandleRef(this, moduleHandle), exportName);
                     if (directFunctionPointer == IntPtr.Zero)
                     {
-                        var message = "The Scintilla module has no export for the 'Scintilla_DirectFunction' procedure.";
+                        string message = "The Scintilla module has no export for the 'Scintilla_DirectFunction' procedure.";
                         throw new Win32Exception(message, new Win32Exception()); // Calls GetLastError
                     }
 
@@ -4406,9 +4371,9 @@ namespace ScintillaNET
                 cp.ClassName = "Scintilla";
 
                 // The border effect is achieved through a native Windows style
-                cp.ExStyle &= (~NativeMethods.WS_EX_CLIENTEDGE);
-                cp.Style &= (~NativeMethods.WS_BORDER);
-                switch (borderStyle)
+                cp.ExStyle &= ~NativeMethods.WS_EX_CLIENTEDGE;
+                cp.Style &= ~NativeMethods.WS_BORDER;
+                switch (this.borderStyle)
                 {
                     case BorderStyle.Fixed3D:
                     case BorderStyle.Fixed3DVisualStyles:
@@ -4433,8 +4398,8 @@ namespace ScintillaNET
         {
             get
             {
-                var currentPos = DirectMessage(NativeMethods.SCI_GETCURRENTPOS).ToInt32();
-                var line = DirectMessage(NativeMethods.SCI_LINEFROMPOSITION, new IntPtr(currentPos)).ToInt32();
+                int currentPos = DirectMessage(NativeMethods.SCI_GETCURRENTPOS).ToInt32();
+                int line = DirectMessage(NativeMethods.SCI_LINEFROMPOSITION, new IntPtr(currentPos)).ToInt32();
                 return line;
             }
         }
@@ -4454,13 +4419,13 @@ namespace ScintillaNET
         {
             get
             {
-                var bytePos = DirectMessage(NativeMethods.SCI_GETCURRENTPOS).ToInt32();
+                int bytePos = DirectMessage(NativeMethods.SCI_GETCURRENTPOS).ToInt32();
                 return Lines.ByteToCharPosition(bytePos);
             }
             set
             {
                 value = Helpers.Clamp(value, 0, TextLength);
-                var bytePos = Lines.CharToBytePosition(value);
+                int bytePos = Lines.CharToBytePosition(value);
                 DirectMessage(NativeMethods.SCI_SETCURRENTPOS, new IntPtr(bytePos));
             }
         }
@@ -4541,17 +4506,17 @@ namespace ScintillaNET
         {
             get
             {
-                var ptr = DirectMessage(NativeMethods.SCI_GETDOCPOINTER);
+                IntPtr ptr = DirectMessage(NativeMethods.SCI_GETDOCPOINTER);
                 return new Document { Value = ptr };
             }
             set
             {
-                var eolMode = EolMode;
-                var useTabs = UseTabs;
-                var tabWidth = TabWidth;
-                var indentWidth = IndentWidth;
+                Eol eolMode = EolMode;
+                bool useTabs = UseTabs;
+                int tabWidth = TabWidth;
+                int indentWidth = IndentWidth;
 
-                var ptr = value.Value;
+                IntPtr ptr = value.Value;
                 DirectMessage(NativeMethods.SCI_SETDOCPOINTER, IntPtr.Zero, ptr);
 
                 // Carry over properties to new document
@@ -4574,12 +4539,12 @@ namespace ScintillaNET
         {
             get
             {
-                var color = DirectMessage(NativeMethods.SCI_GETEDGECOLOUR).ToInt32();
+                int color = DirectMessage(NativeMethods.SCI_GETEDGECOLOUR).ToInt32();
                 return HelperMethods.FromWin32Color(color);
             }
             set
             {
-                var color = HelperMethods.ToWin32Color(value);
+                int color = HelperMethods.ToWin32Color(value);
                 DirectMessage(NativeMethods.SCI_SETEDGECOLOUR, new IntPtr(color));
             }
         }
@@ -4626,7 +4591,7 @@ namespace ScintillaNET
             }
             set
             {
-                var edgeMode = (int)value;
+                int edgeMode = (int)value;
                 DirectMessage(NativeMethods.SCI_SETEDGEMODE, new IntPtr(edgeMode));
             }
         }
@@ -4637,7 +4602,7 @@ namespace ScintillaNET
             {
                 // Should always be UTF-8 unless someone has done an end run around us
                 int codePage = (int)DirectMessage(NativeMethods.SCI_GETCODEPAGE);
-                return (codePage == 0 ? Encoding.Default : Encoding.GetEncoding(codePage));
+                return codePage == 0 ? Encoding.Default : Encoding.GetEncoding(codePage);
             }
         }
 
@@ -4652,11 +4617,11 @@ namespace ScintillaNET
         {
             get
             {
-                return (DirectMessage(NativeMethods.SCI_GETENDATLASTLINE) != IntPtr.Zero);
+                return DirectMessage(NativeMethods.SCI_GETENDATLASTLINE) != IntPtr.Zero;
             }
             set
             {
-                var endAtLastLine = (value ? new IntPtr(1) : IntPtr.Zero);
+                IntPtr endAtLastLine = value ? new IntPtr(1) : IntPtr.Zero;
                 DirectMessage(NativeMethods.SCI_SETENDATLASTLINE, endAtLastLine);
             }
         }
@@ -4677,7 +4642,7 @@ namespace ScintillaNET
             }
             set
             {
-                var eolMode = (int)value;
+                int eolMode = (int)value;
                 DirectMessage(NativeMethods.SCI_SETEOLMODE, new IntPtr(eolMode));
             }
         }
@@ -4746,7 +4711,7 @@ namespace ScintillaNET
         /// <returns>The <see cref="T:System.Drawing.Font" /> to apply to the text displayed by the control. The default is the value of the <see cref="P:System.Windows.Forms.Control.DefaultFont" /> property.</returns>
         [Category("Appearance")]
         [Description("The font of the text displayed by the control.")]
-		public override Font Font
+        public override Font Font
         {
             get
             {
@@ -4755,9 +4720,9 @@ namespace ScintillaNET
                     return base.Font;
                 }
 
-                var defaultFontStyle = Styles[Style.Default];
+                Style defaultFontStyle = Styles[Style.Default];
 
-                var fontStyle = defaultFontStyle.Bold ? FontStyle.Bold : FontStyle.Regular;
+                FontStyle fontStyle = defaultFontStyle.Bold ? FontStyle.Bold : FontStyle.Regular;
 
                 if (defaultFontStyle.Italic)
                 {
@@ -4774,8 +4739,8 @@ namespace ScintillaNET
 
             set
             {
-                var defaultFontStyle = Styles[Style.Default];
-                value = value ?? Parent?.Font ?? Control.DefaultFont;
+                Style defaultFontStyle = Styles[Style.Default];
+                value ??= Parent?.Font ?? Control.DefaultFont;
                 defaultFontStyle.Font = value.Name;
                 defaultFontStyle.SizeF = value.Size;
                 defaultFontStyle.Bold = value.Bold;
@@ -4803,7 +4768,7 @@ namespace ScintillaNET
             }
             set
             {
-                var fontQuality = (int)value;
+                int fontQuality = (int)value;
                 DirectMessage(NativeMethods.SCI_SETFONTQUALITY, new IntPtr(fontQuality));
             }
         }
@@ -4856,11 +4821,11 @@ namespace ScintillaNET
         {
             get
             {
-                return (DirectMessage(NativeMethods.SCI_GETHSCROLLBAR) != IntPtr.Zero);
+                return DirectMessage(NativeMethods.SCI_GETHSCROLLBAR) != IntPtr.Zero;
             }
             set
             {
-                var visible = (value ? new IntPtr(1) : IntPtr.Zero);
+                IntPtr visible = value ? new IntPtr(1) : IntPtr.Zero;
                 DirectMessage(NativeMethods.SCI_SETHSCROLLBAR, visible);
             }
         }
@@ -4883,7 +4848,7 @@ namespace ScintillaNET
             }
             set
             {
-                var idleStyling = (int)value;
+                int idleStyling = (int)value;
                 DirectMessage(NativeMethods.SCI_SETIDLESTYLING, new IntPtr(idleStyling));
             }
         }
@@ -4925,7 +4890,7 @@ namespace ScintillaNET
             }
             set
             {
-                var indentView = (int)value;
+                int indentView = (int)value;
                 DirectMessage(NativeMethods.SCI_SETINDENTATIONGUIDES, new IntPtr(indentView));
             }
         }
@@ -4985,11 +4950,11 @@ namespace ScintillaNET
         {
             get
             {
-                return (DirectMessage(NativeMethods.SCI_GETFOCUS) != IntPtr.Zero);
+                return DirectMessage(NativeMethods.SCI_GETFOCUS) != IntPtr.Zero;
             }
             set
             {
-                var focus = (value ? new IntPtr(1) : IntPtr.Zero);
+                IntPtr focus = value ? new IntPtr(1) : IntPtr.Zero;
                 DirectMessage(NativeMethods.SCI_SETFOCUS, focus);
             }
         }
@@ -5004,13 +4969,13 @@ namespace ScintillaNET
         [Category("Lexing")]
         public string LexerName
         {
-            get => lexerName;
+            get => this.lexerName;
 
             set
             {
                 if (string.IsNullOrWhiteSpace(value) && value != string.Empty)
                 {
-                    lexerName = value;
+                    this.lexerName = value;
 
                     return;
                 }
@@ -5020,7 +4985,7 @@ namespace ScintillaNET
                     throw new InvalidOperationException(@$"Lexer with the name of '{value}' was not found.");
                 }
 
-                lexerName = value;
+                this.lexerName = value;
             }
         }
 
@@ -5035,11 +5000,11 @@ namespace ScintillaNET
         {
             get
             {
-                var length = DirectMessage(NativeMethods.SCI_GETLEXERLANGUAGE).ToInt32();
+                int length = DirectMessage(NativeMethods.SCI_GETLEXERLANGUAGE).ToInt32();
                 if (length == 0)
                     return string.Empty;
 
-                var bytes = new byte[length + 1];
+                byte[] bytes = new byte[length + 1];
                 fixed (byte* bp = bytes)
                 {
                     DirectMessage(NativeMethods.SCI_GETLEXERLANGUAGE, IntPtr.Zero, new IntPtr(bp));
@@ -5054,7 +5019,7 @@ namespace ScintillaNET
                 }
                 else
                 {
-                    var bytes = Helpers.GetBytes(value, Encoding.ASCII, zeroTerminated: true);
+                    byte[] bytes = Helpers.GetBytes(value, Encoding.ASCII, zeroTerminated: true);
                     fixed (byte* bp = bytes)
                         DirectMessage(NativeMethods.SCI_SETLEXERLANGUAGE, IntPtr.Zero, new IntPtr(bp));
                 }
@@ -5097,7 +5062,7 @@ namespace ScintillaNET
             }
             set
             {
-                var lineEndBitsSet = (int)value;
+                int lineEndBitsSet = (int)value;
                 DirectMessage(NativeMethods.SCI_SETLINEENDTYPESALLOWED, new IntPtr(lineEndBitsSet));
             }
         }
@@ -5189,7 +5154,7 @@ namespace ScintillaNET
         {
             get
             {
-                return (DirectMessage(NativeMethods.SCI_GETMODIFY) != IntPtr.Zero);
+                return DirectMessage(NativeMethods.SCI_GETMODIFY) != IntPtr.Zero;
             }
         }
 
@@ -5234,7 +5199,7 @@ namespace ScintillaNET
             }
             set
             {
-                var mouseSelectionRectangularSwitch = (value ? new IntPtr(1) : IntPtr.Zero);
+                IntPtr mouseSelectionRectangularSwitch = value ? new IntPtr(1) : IntPtr.Zero;
                 DirectMessage(NativeMethods.SCI_SETMOUSESELECTIONRECTANGULARSWITCH, mouseSelectionRectangularSwitch);
             }
         }
@@ -5286,7 +5251,7 @@ namespace ScintillaNET
             }
             set
             {
-                var multipleSelection = (value ? new IntPtr(1) : IntPtr.Zero);
+                IntPtr multipleSelection = value ? new IntPtr(1) : IntPtr.Zero;
                 DirectMessage(NativeMethods.SCI_SETMULTIPLESELECTION, multipleSelection);
             }
         }
@@ -5306,7 +5271,7 @@ namespace ScintillaNET
             }
             set
             {
-                var multiPaste = (int)value;
+                int multiPaste = (int)value;
                 DirectMessage(NativeMethods.SCI_SETMULTIPASTE, new IntPtr(multiPaste));
             }
         }
@@ -5322,11 +5287,11 @@ namespace ScintillaNET
         {
             get
             {
-                return (DirectMessage(NativeMethods.SCI_GETOVERTYPE) != IntPtr.Zero);
+                return DirectMessage(NativeMethods.SCI_GETOVERTYPE) != IntPtr.Zero;
             }
             set
             {
-                var overtype = (value ? new IntPtr(1) : IntPtr.Zero);
+                IntPtr overtype = value ? new IntPtr(1) : IntPtr.Zero;
                 DirectMessage(NativeMethods.SCI_SETOVERTYPE, overtype);
             }
         }
@@ -5359,11 +5324,11 @@ namespace ScintillaNET
         {
             get
             {
-                return (DirectMessage(NativeMethods.SCI_GETPASTECONVERTENDINGS) != IntPtr.Zero);
+                return DirectMessage(NativeMethods.SCI_GETPASTECONVERTENDINGS) != IntPtr.Zero;
             }
             set
             {
-                var convert = (value ? new IntPtr(1) : IntPtr.Zero);
+                IntPtr convert = value ? new IntPtr(1) : IntPtr.Zero;
                 DirectMessage(NativeMethods.SCI_SETPASTECONVERTENDINGS, convert);
             }
         }
@@ -5383,7 +5348,7 @@ namespace ScintillaNET
             }
             set
             {
-                var phases = (int)value;
+                int phases = (int)value;
                 DirectMessage(NativeMethods.SCI_SETPHASESDRAW, new IntPtr(phases));
             }
         }
@@ -5400,11 +5365,11 @@ namespace ScintillaNET
         {
             get
             {
-                return (DirectMessage(NativeMethods.SCI_GETREADONLY) != IntPtr.Zero);
+                return DirectMessage(NativeMethods.SCI_GETREADONLY) != IntPtr.Zero;
             }
             set
             {
-                var readOnly = (value ? new IntPtr(1) : IntPtr.Zero);
+                IntPtr readOnly = value ? new IntPtr(1) : IntPtr.Zero;
                 DirectMessage(NativeMethods.SCI_SETREADONLY, readOnly);
             }
         }
@@ -5419,7 +5384,7 @@ namespace ScintillaNET
         {
             get
             {
-                var pos = DirectMessage(NativeMethods.SCI_GETRECTANGULARSELECTIONANCHOR).ToInt32();
+                int pos = DirectMessage(NativeMethods.SCI_GETRECTANGULARSELECTIONANCHOR).ToInt32();
                 if (pos <= 0)
                     return pos;
 
@@ -5462,7 +5427,7 @@ namespace ScintillaNET
         {
             get
             {
-                var pos = DirectMessage(NativeMethods.SCI_GETRECTANGULARSELECTIONCARET).ToInt32();
+                int pos = DirectMessage(NativeMethods.SCI_GETRECTANGULARSELECTIONCARET).ToInt32();
                 if (pos <= 0)
                     return 0;
 
@@ -5506,14 +5471,14 @@ namespace ScintillaNET
                     throw new InvalidOperationException(message);
                 }
 
-                if (sciPtr == IntPtr.Zero)
+                if (this.sciPtr == IntPtr.Zero)
                 {
                     // Get a pointer to the native Scintilla object (i.e. C++ 'this') to use with the
                     // direct function. This will happen for each Scintilla control instance.
-                    sciPtr = NativeMethods.SendMessage(new HandleRef(this, Handle), NativeMethods.SCI_GETDIRECTPOINTER, IntPtr.Zero, IntPtr.Zero);
+                    this.sciPtr = NativeMethods.SendMessage(new HandleRef(this, Handle), NativeMethods.SCI_GETDIRECTPOINTER, IntPtr.Zero, IntPtr.Zero);
                 }
 
-                return sciPtr;
+                return this.sciPtr;
             }
         }
 
@@ -5551,11 +5516,11 @@ namespace ScintillaNET
         {
             get
             {
-                return (DirectMessage(NativeMethods.SCI_GETSCROLLWIDTHTRACKING) != IntPtr.Zero);
+                return DirectMessage(NativeMethods.SCI_GETSCROLLWIDTHTRACKING) != IntPtr.Zero;
             }
             set
             {
-                var tracking = (value ? new IntPtr(1) : IntPtr.Zero);
+                IntPtr tracking = value ? new IntPtr(1) : IntPtr.Zero;
                 DirectMessage(NativeMethods.SCI_SETSCROLLWIDTHTRACKING, tracking);
             }
         }
@@ -5575,7 +5540,7 @@ namespace ScintillaNET
             }
             set
             {
-                var searchFlags = (int)value;
+                int searchFlags = (int)value;
                 DirectMessage(NativeMethods.SCI_SETSEARCHFLAGS, new IntPtr(searchFlags));
             }
         }
@@ -5591,12 +5556,12 @@ namespace ScintillaNET
             get
             {
                 // NOTE: For some reason the length returned by this API includes the terminating NULL
-                var length = DirectMessage(NativeMethods.SCI_GETSELTEXT).ToInt32();
+                int length = DirectMessage(NativeMethods.SCI_GETSELTEXT).ToInt32();
 
                 if (length <= 0)
                     return string.Empty;
 
-                var bytes = new byte[length + 1];
+                byte[] bytes = new byte[length + 1];
                 fixed (byte* bp = bytes)
                 {
                     DirectMessage(NativeMethods.SCI_GETSELTEXT, IntPtr.Zero, new IntPtr(bp));
@@ -5621,7 +5586,7 @@ namespace ScintillaNET
         {
             get
             {
-                var pos = DirectMessage(NativeMethods.SCI_GETSELECTIONEND).ToInt32();
+                int pos = DirectMessage(NativeMethods.SCI_GETSELECTIONEND).ToInt32();
                 return Lines.ByteToCharPosition(pos);
             }
             set
@@ -5643,11 +5608,11 @@ namespace ScintillaNET
         {
             get
             {
-                return (DirectMessage(NativeMethods.SCI_GETSELEOLFILLED) != IntPtr.Zero);
+                return DirectMessage(NativeMethods.SCI_GETSELEOLFILLED) != IntPtr.Zero;
             }
             set
             {
-                var eolFilled = (value ? new IntPtr(1) : IntPtr.Zero);
+                IntPtr eolFilled = value ? new IntPtr(1) : IntPtr.Zero;
                 DirectMessage(NativeMethods.SCI_SETSELEOLFILLED, eolFilled);
             }
         }
@@ -5996,7 +5961,7 @@ namespace ScintillaNET
         {
             get
             {
-                var pos = DirectMessage(NativeMethods.SCI_GETSELECTIONSTART).ToInt32();
+                int pos = DirectMessage(NativeMethods.SCI_GETSELECTIONSTART).ToInt32();
                 return Lines.ByteToCharPosition(pos);
             }
             set
@@ -6025,7 +5990,7 @@ namespace ScintillaNET
             }
             set
             {
-                var status = (int)value;
+                int status = (int)value;
                 DirectMessage(NativeMethods.SCI_SETSTATUS, new IntPtr(status));
             }
         }
@@ -6057,7 +6022,7 @@ namespace ScintillaNET
             }
             set
             {
-                var tabDrawMode = (int)value;
+                int tabDrawMode = (int)value;
                 DirectMessage(NativeMethods.SCI_SETTABDRAWMODE, new IntPtr(tabDrawMode));
             }
         }
@@ -6073,11 +6038,11 @@ namespace ScintillaNET
         {
             get
             {
-                return (DirectMessage(NativeMethods.SCI_GETTABINDENTS) != IntPtr.Zero);
+                return DirectMessage(NativeMethods.SCI_GETTABINDENTS) != IntPtr.Zero;
             }
             set
             {
-                var ptr = (value ? new IntPtr(1) : IntPtr.Zero);
+                IntPtr ptr = value ? new IntPtr(1) : IntPtr.Zero;
                 DirectMessage(NativeMethods.SCI_SETTABINDENTS, ptr);
             }
         }
@@ -6115,7 +6080,7 @@ namespace ScintillaNET
             get
             {
                 // The position can become stale and point to a place outside of the document so we must clamp it
-                var bytePos = Helpers.Clamp(DirectMessage(NativeMethods.SCI_GETTARGETEND).ToInt32(), 0, DirectMessage(NativeMethods.SCI_GETTEXTLENGTH).ToInt32());
+                int bytePos = Helpers.Clamp(DirectMessage(NativeMethods.SCI_GETTARGETEND).ToInt32(), 0, DirectMessage(NativeMethods.SCI_GETTEXTLENGTH).ToInt32());
                 return Lines.ByteToCharPosition(bytePos);
             }
             set
@@ -6140,7 +6105,7 @@ namespace ScintillaNET
             get
             {
                 // The position can become stale and point to a place outside of the document so we must clamp it
-                var bytePos = Helpers.Clamp(DirectMessage(NativeMethods.SCI_GETTARGETSTART).ToInt32(), 0, DirectMessage(NativeMethods.SCI_GETTEXTLENGTH).ToInt32());
+                int bytePos = Helpers.Clamp(DirectMessage(NativeMethods.SCI_GETTARGETSTART).ToInt32(), 0, DirectMessage(NativeMethods.SCI_GETTEXTLENGTH).ToInt32());
                 return Lines.ByteToCharPosition(bytePos);
             }
             set
@@ -6164,11 +6129,11 @@ namespace ScintillaNET
         {
             get
             {
-                var length = DirectMessage(NativeMethods.SCI_GETTARGETTEXT).ToInt32();
+                int length = DirectMessage(NativeMethods.SCI_GETTARGETTEXT).ToInt32();
                 if (length == 0)
                     return string.Empty;
 
-                var bytes = new byte[length + 1];
+                byte[] bytes = new byte[length + 1];
                 fixed (byte* bp = bytes)
                 {
                     DirectMessage(NativeMethods.SCI_GETTARGETTEXT, IntPtr.Zero, new IntPtr(bp));
@@ -6187,18 +6152,18 @@ namespace ScintillaNET
         [DefaultValue(Technology.Default)]
         [Category("Misc")]
         [Description("The rendering technology used to draw text.")]
-    public Technology Technology
-    {
-        get
+        public Technology Technology
         {
-            return (Technology)DirectMessage(NativeMethods.SCI_GETTECHNOLOGY);
+            get
+            {
+                return (Technology)DirectMessage(NativeMethods.SCI_GETTECHNOLOGY);
+            }
+            set
+            {
+                int technology = (int)value;
+                DirectMessage(NativeMethods.SCI_SETTECHNOLOGY, new IntPtr(technology));
+            }
         }
-        set
-        {
-            var technology = (int)value;
-            DirectMessage(NativeMethods.SCI_SETTECHNOLOGY, new IntPtr(technology));
-        }
-    }
 
         /// <summary>
         /// Gets or sets the current document text in the <see cref="Scintilla" /> control.
@@ -6212,8 +6177,8 @@ namespace ScintillaNET
         {
             get
             {
-                var length = DirectMessage(NativeMethods.SCI_GETTEXTLENGTH).ToInt32();
-                var ptr = DirectMessage(NativeMethods.SCI_GETRANGEPOINTER, new IntPtr(0), new IntPtr(length));
+                int length = DirectMessage(NativeMethods.SCI_GETTEXTLENGTH).ToInt32();
+                IntPtr ptr = DirectMessage(NativeMethods.SCI_GETRANGEPOINTER, new IntPtr(0), new IntPtr(length));
                 if (ptr == IntPtr.Zero)
                 {
                     return string.Empty;
@@ -6221,12 +6186,12 @@ namespace ScintillaNET
 
                 // Assumption is that moving the gap will always be equal to or less expensive
                 // than using one of the APIs which requires an intermediate buffer.
-                var text = new string((sbyte*)ptr, 0, length, Encoding);
+                string text = new((sbyte*)ptr, 0, length, Encoding);
                 return text;
             }
             set
             {
-                var previousReadOnly = DesignMode ? ReadOnly : false;
+                bool previousReadOnly = DesignMode && ReadOnly;
 
                 // Allow Text property change in read-only mode when the designer is active.
                 if (previousReadOnly && DesignMode)
@@ -6245,7 +6210,7 @@ namespace ScintillaNET
                 }
                 else
                 {
-                    fixed (byte* bp = Helpers.GetBytes(value, Encoding, zeroTerminated: true)) 
+                    fixed (byte* bp = Helpers.GetBytes(value, Encoding, zeroTerminated: true))
                         DirectMessage(NativeMethods.SCI_SETTEXT, IntPtr.Zero, new IntPtr(bp));
                 }
 
@@ -6276,11 +6241,11 @@ namespace ScintillaNET
         {
             get
             {
-                return (DirectMessage(NativeMethods.SCI_GETUSETABS) != IntPtr.Zero);
+                return DirectMessage(NativeMethods.SCI_GETUSETABS) != IntPtr.Zero;
             }
             set
             {
-                var useTabs = (value ? new IntPtr(1) : IntPtr.Zero);
+                IntPtr useTabs = value ? new IntPtr(1) : IntPtr.Zero;
                 DirectMessage(NativeMethods.SCI_SETUSETABS, useTabs);
             }
         }
@@ -6298,7 +6263,7 @@ namespace ScintillaNET
             set
             {
                 base.UseWaitCursor = value;
-                var cursor = (value ? NativeMethods.SC_CURSORWAIT : NativeMethods.SC_CURSORNORMAL);
+                int cursor = value ? NativeMethods.SC_CURSORWAIT : NativeMethods.SC_CURSORNORMAL;
                 DirectMessage(NativeMethods.SCI_SETCURSOR, new IntPtr(cursor));
             }
         }
@@ -6318,7 +6283,7 @@ namespace ScintillaNET
             }
             set
             {
-                var visible = (value ? new IntPtr(1) : IntPtr.Zero);
+                IntPtr visible = value ? new IntPtr(1) : IntPtr.Zero;
                 DirectMessage(NativeMethods.SCI_SETVIEWEOL, visible);
             }
         }
@@ -6340,7 +6305,7 @@ namespace ScintillaNET
             }
             set
             {
-                var wsMode = (int)value;
+                int wsMode = (int)value;
                 DirectMessage(NativeMethods.SCI_SETVIEWWS, new IntPtr(wsMode));
             }
         }
@@ -6365,7 +6330,7 @@ namespace ScintillaNET
             }
             set
             {
-                var virtualSpace = (int)value;
+                int virtualSpace = (int)value;
                 DirectMessage(NativeMethods.SCI_SETVIRTUALSPACEOPTIONS, new IntPtr(virtualSpace));
             }
         }
@@ -6381,11 +6346,11 @@ namespace ScintillaNET
         {
             get
             {
-                return (DirectMessage(NativeMethods.SCI_GETVSCROLLBAR) != IntPtr.Zero);
+                return DirectMessage(NativeMethods.SCI_GETVSCROLLBAR) != IntPtr.Zero;
             }
             set
             {
-                var visible = (value ? new IntPtr(1) : IntPtr.Zero);
+                IntPtr visible = value ? new IntPtr(1) : IntPtr.Zero;
                 DirectMessage(NativeMethods.SCI_SETVSCROLLBAR, visible);
             }
         }
@@ -6405,9 +6370,9 @@ namespace ScintillaNET
                 int count = 0;
                 for (int i = 0; i < Lines.Count; i++)
                 {
-                    if (allLinesVisible || this.Lines[i].Visible)
+                    if (allLinesVisible || Lines[i].Visible)
                     {
-                        count += wordWrapDisabled ? 1 : this.Lines[i].WrapCount;
+                        count += wordWrapDisabled ? 1 : Lines[i].WrapCount;
                     }
                 }
 
@@ -6426,8 +6391,8 @@ namespace ScintillaNET
         {
             get
             {
-                var length = DirectMessage(NativeMethods.SCI_GETWHITESPACECHARS, IntPtr.Zero, IntPtr.Zero).ToInt32();
-                var bytes = new byte[length + 1];
+                int length = DirectMessage(NativeMethods.SCI_GETWHITESPACECHARS, IntPtr.Zero, IntPtr.Zero).ToInt32();
+                byte[] bytes = new byte[length + 1];
                 fixed (byte* bp = bytes)
                 {
                     DirectMessage(NativeMethods.SCI_GETWHITESPACECHARS, IntPtr.Zero, new IntPtr(bp));
@@ -6444,7 +6409,7 @@ namespace ScintillaNET
 
                 // Scintilla stores each of the characters specified in a char array which it then
                 // uses as a lookup for word matching logic. Thus, any multibyte chars wouldn't work.
-                var bytes = Helpers.GetBytes(value, Encoding.ASCII, zeroTerminated: true);
+                byte[] bytes = Helpers.GetBytes(value, Encoding.ASCII, zeroTerminated: true);
                 fixed (byte* bp = bytes)
                     DirectMessage(NativeMethods.SCI_SETWHITESPACECHARS, IntPtr.Zero, new IntPtr(bp));
             }
@@ -6480,8 +6445,8 @@ namespace ScintillaNET
         {
             get
             {
-                var length = DirectMessage(NativeMethods.SCI_GETWORDCHARS, IntPtr.Zero, IntPtr.Zero).ToInt32();
-                var bytes = new byte[length + 1];
+                int length = DirectMessage(NativeMethods.SCI_GETWORDCHARS, IntPtr.Zero, IntPtr.Zero).ToInt32();
+                byte[] bytes = new byte[length + 1];
                 fixed (byte* bp = bytes)
                 {
                     DirectMessage(NativeMethods.SCI_GETWORDCHARS, IntPtr.Zero, new IntPtr(bp));
@@ -6498,7 +6463,7 @@ namespace ScintillaNET
 
                 // Scintilla stores each of the characters specified in a char array which it then
                 // uses as a lookup for word matching logic. Thus, any multibyte chars wouldn't work.
-                var bytes = Helpers.GetBytes(value, Encoding.ASCII, zeroTerminated: true);
+                byte[] bytes = Helpers.GetBytes(value, Encoding.ASCII, zeroTerminated: true);
                 fixed (byte* bp = bytes)
                     DirectMessage(NativeMethods.SCI_SETWORDCHARS, IntPtr.Zero, new IntPtr(bp));
             }
@@ -6522,7 +6487,7 @@ namespace ScintillaNET
             }
             set
             {
-                var wrapIndentMode = (int)value;
+                int wrapIndentMode = (int)value;
                 DirectMessage(NativeMethods.SCI_SETWRAPINDENTMODE, new IntPtr(wrapIndentMode));
             }
         }
@@ -6545,7 +6510,7 @@ namespace ScintillaNET
             }
             set
             {
-                var wrapMode = (int)value;
+                int wrapMode = (int)value;
                 DirectMessage(NativeMethods.SCI_SETWRAPMODE, new IntPtr(wrapMode));
             }
         }
@@ -6617,7 +6582,7 @@ namespace ScintillaNET
             }
             set
             {
-                var location = (int)value;
+                int location = (int)value;
                 DirectMessage(NativeMethods.SCI_SETWRAPVISUALFLAGSLOCATION, new IntPtr(location));
             }
         }
@@ -6974,7 +6939,6 @@ namespace ScintillaNET
             }
         }
 
-
         /// <summary>
         /// Occurs when the mouse is kept in one position (hovers) for the <see cref="MouseDwellTime" />.
         /// </summary>
@@ -7162,7 +7126,6 @@ namespace ScintillaNET
                 Events.RemoveHandler(marginClickEventKey, value);
             }
         }
-
 
         // TODO This isn't working in my tests. Could be Windows Forms interfering.
         /// <summary>
@@ -7374,7 +7337,7 @@ namespace ScintillaNET
         {
             // WM_DESTROY workaround
             if (Scintilla.reparentAll == null || (bool)Scintilla.reparentAll)
-                reparent = true;
+                this.reparent = true;
 
             // We don't want .NET to use GetWindowText because we manage ('cache') our own text
             base.SetStyle(ControlStyles.CacheText, true);

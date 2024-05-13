@@ -25,7 +25,7 @@ public struct Document
     /// <returns>true if <paramref name="obj" /> is an instance of <see cref="Document" /> and equals the value of this instance; otherwise, false.</returns>
     public override bool Equals(object obj)
     {
-        return (obj is IntPtr) && Value == ((Document)obj).Value;
+        return obj is IntPtr && this.Value == ((Document)obj).Value;
     }
 
     /// <summary>
@@ -34,7 +34,7 @@ public struct Document
     /// <returns>A 32-bit signed integer hash code.</returns>
     public override int GetHashCode()
     {
-        return Value.GetHashCode();
+        return this.Value.GetHashCode();
     }
 
     /// <summary>

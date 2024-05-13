@@ -23,8 +23,7 @@ public class InsertCheckEventArgs : EventArgs
     {
         get
         {
-            if (CachedPosition == null)
-                CachedPosition = scintilla.Lines.ByteToCharPosition(bytePosition);
+            CachedPosition ??= this.scintilla.Lines.ByteToCharPosition(this.bytePosition);
 
             return (int)CachedPosition;
         }
@@ -38,8 +37,7 @@ public class InsertCheckEventArgs : EventArgs
     {
         get
         {
-            if (CachedText == null)
-                CachedText = Helpers.GetString(textPtr, byteLength, scintilla.Encoding);
+            CachedText ??= Helpers.GetString(this.textPtr, this.byteLength, this.scintilla.Encoding);
 
             return CachedText;
         }
@@ -47,9 +45,9 @@ public class InsertCheckEventArgs : EventArgs
         {
             CachedText = value ?? string.Empty;
 
-            var bytes = Helpers.GetBytes(CachedText, scintilla.Encoding, zeroTerminated: false);
+            byte[] bytes = Helpers.GetBytes(CachedText, this.scintilla.Encoding, zeroTerminated: false);
             fixed (byte* bp = bytes)
-                scintilla.DirectMessage(NativeMethods.SCI_CHANGEINSERTION, new IntPtr(bytes.Length), new IntPtr(bp));
+                this.scintilla.DirectMessage(NativeMethods.SCI_CHANGEINSERTION, new IntPtr(bytes.Length), new IntPtr(bp));
         }
     }
 

@@ -16,13 +16,15 @@ internal class FlagsEditor : UITypeEditor
     {
         if (value is Enum e && context.PropertyDescriptor.Attributes.OfType<FlagsAttribute>().Any())
         {
-            IWindowsFormsEditorService svc = (IWindowsFormsEditorService)provider.GetService(typeof(IWindowsFormsEditorService));
+            var svc = (IWindowsFormsEditorService)provider.GetService(typeof(IWindowsFormsEditorService));
 
             var control = new FlagsEditorControl(svc, e);
             svc.DropDownControl(control);
             return control.Value;
         }
         else
+        {
             return base.EditValue(context, provider, value);
+        }
     }
 }

@@ -35,10 +35,9 @@ public class DoubleClickEventArgs : EventArgs
     {
         get
         {
-            if (position == null)
-                position = scintilla.Lines.ByteToCharPosition(bytePosition);
+            this.position ??= this.scintilla.Lines.ByteToCharPosition(this.bytePosition);
 
-            return (int)position;
+            return (int)this.position;
         }
     }
 
@@ -57,6 +56,6 @@ public class DoubleClickEventArgs : EventArgs
         Line = line;
 
         if (bytePosition == -1)
-            position = -1;
+            this.position = -1;
     }
 }

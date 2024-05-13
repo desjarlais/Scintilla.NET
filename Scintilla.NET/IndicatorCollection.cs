@@ -26,7 +26,7 @@ public class IndicatorCollection : IEnumerable<Indicator>
 
     IEnumerator IEnumerable.GetEnumerator()
     {
-        return this.GetEnumerator();
+        return GetEnumerator();
     }
 
     /// <summary>
@@ -59,7 +59,7 @@ public class IndicatorCollection : IEnumerable<Indicator>
         get
         {
             index = Helpers.Clamp(index, 0, Count - 1);
-            return new Indicator(scintilla, index);
+            return new Indicator(this.scintilla, index);
         }
     }
 

@@ -4,6 +4,8 @@ using System.Runtime.InteropServices;
 
 namespace ScintillaNET;
 
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
+
 public static class NativeMethods
 {
     #region Constants
@@ -56,8 +58,8 @@ public static class NativeMethods
     public const int SCI_CTRL = SCMOD_CTRL;
     public const int SCI_ALT = SCMOD_ALT;
     public const int SCI_META = SCMOD_META;
-    public const int SCI_CSHIFT = (SCI_CTRL | SCI_SHIFT);
-    public const int SCI_ASHIFT = (SCI_ALT | SCI_SHIFT);
+    public const int SCI_CSHIFT = SCI_CTRL | SCI_SHIFT;
+    public const int SCI_ASHIFT = SCI_ALT | SCI_SHIFT;
 
     // Caret policy flags
     public const int CARET_SLOP = 0x01;
@@ -77,7 +79,7 @@ public static class NativeMethods
     public const int EDGE_MULTILINE = 3;
 
     // Message-only window
-    public const int HWND_MESSAGE = (-3);
+    public const int HWND_MESSAGE = -3;
 
     // Indicator styles
     public const int INDIC_PLAIN = 0;
@@ -202,7 +204,7 @@ public static class NativeMethods
     // Line end type
     public const int SC_LINE_END_TYPE_DEFAULT = 0;
     public const int SC_LINE_END_TYPE_UNICODE = 1;
-    
+
     //Line layers
     public const int SC_LAYER_BASE = 0;
     public const int SC_LAYER_UNDER_TEXT = 1;
@@ -403,7 +405,7 @@ public static class NativeMethods
     public const int SCI_MARKERSETFORE = 2041;
     public const int SCI_MARKERSETBACK = 2042;
     public const int SCI_MARKERSETFORETRANSLUCENT = 2294;
-    public const int SCI_MARKERSETBACKTRANSLUCENT  = 2295;
+    public const int SCI_MARKERSETBACKTRANSLUCENT = 2295;
     public const int SCI_MARKERSETBACKSELECTED = 2292;
     public const int SCI_MARKERENABLEHIGHLIGHT = 2293;
     public const int SCI_MARKERADD = 2043;
@@ -1219,7 +1221,7 @@ public static class NativeMethods
     #region Lexer Constants
 
     // Map the constant language names
-    public static readonly Dictionary<int, string> NameConstantMap = new Dictionary<int, string>() {
+    public static readonly Dictionary<int, string> NameConstantMap = new() {
             { SCLEX_CONTAINER, "" },
             { SCLEX_NULL, "null" },
             { SCLEX_PYTHON, "python" },
@@ -1486,7 +1488,7 @@ public static class NativeMethods
     public const int SCLEX_HOLLYWOOD = 130;
     public const int SCLEX_RAKU = 131;
     public const int SCLEX_FSHARP = 132;
-    public const int SCLEX_JULIA = 133;        
+    public const int SCLEX_JULIA = 133;
     public const int SCLEX_AUTOMATIC = 1000;
 
     // Ada
@@ -1529,7 +1531,7 @@ public static class NativeMethods
     public const int SCE_BAT_HIDE = 4;
     public const int SCE_BAT_COMMAND = 5;
     public const int SCE_BAT_IDENTIFIER = 6;
-    public const int SCE_BAT_OPERATOR =  7;
+    public const int SCE_BAT_OPERATOR = 7;
 
     // CPP
     public const int SCE_C_DEFAULT = 0;
@@ -1560,7 +1562,6 @@ public static class NativeMethods
     public const int SCE_C_USERLITERAL = 25;
     public const int SCE_C_TASKMARKER = 26;
     public const int SCE_C_ESCAPESEQUENCE = 27;
-
 
     //CLW
     public const int SCE_CLW_DEFAULT = 0;
@@ -1648,19 +1649,19 @@ public static class NativeMethods
     public const int SCE_H_XCCOMMENT = 20;
 
     // JavaScript
-    public const int SCE_HJ_START        = 40;
-    public const int SCE_HJ_DEFAULT      = 41;
-    public const int SCE_HJ_COMMENT      = 42;
-    public const int SCE_HJ_COMMENTLINE  = 43;
-    public const int SCE_HJ_COMMENTDOC   = 44;
-    public const int SCE_HJ_NUMBER       = 45;
-    public const int SCE_HJ_WORD         = 46;
-    public const int SCE_HJ_KEYWORD      = 47;
+    public const int SCE_HJ_START = 40;
+    public const int SCE_HJ_DEFAULT = 41;
+    public const int SCE_HJ_COMMENT = 42;
+    public const int SCE_HJ_COMMENTLINE = 43;
+    public const int SCE_HJ_COMMENTDOC = 44;
+    public const int SCE_HJ_NUMBER = 45;
+    public const int SCE_HJ_WORD = 46;
+    public const int SCE_HJ_KEYWORD = 47;
     public const int SCE_HJ_DOUBLESTRING = 48;
     public const int SCE_HJ_SINGLESTRING = 49;
-    public const int SCE_HJ_SYMBOLS      = 50;
-    public const int SCE_HJ_STRINGEOL    = 51;
-    public const int SCE_HJ_REGEX        = 52;
+    public const int SCE_HJ_SYMBOLS = 50;
+    public const int SCE_HJ_STRINGEOL = 51;
+    public const int SCE_HJ_REGEX = 52;
 
     // JSON
     public const int SCE_JSON_DEFAULT = 0;
@@ -1926,7 +1927,7 @@ public static class NativeMethods
     public const int SCE_ST_ASSIGN = 14;
     public const int SCE_ST_CHARACTER = 15;
     public const int SCE_ST_SPEC_SEL = 16;
-        
+
     // Basic / VB
     public const int SCE_B_DEFAULT = 0;
     public const int SCE_B_COMMENT = 1;
@@ -2189,3 +2190,5 @@ public static class NativeMethods
 
     #endregion Structures
 }
+
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member

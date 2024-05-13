@@ -26,7 +26,7 @@ public class SelectionCollection : IEnumerable<Selection>
 
     IEnumerator IEnumerable.GetEnumerator()
     {
-        return this.GetEnumerator();
+        return GetEnumerator();
     }
 
     /// <summary>
@@ -37,7 +37,7 @@ public class SelectionCollection : IEnumerable<Selection>
     {
         get
         {
-            return scintilla.DirectMessage(NativeMethods.SCI_GETSELECTIONS).ToInt32();
+            return this.scintilla.DirectMessage(NativeMethods.SCI_GETSELECTIONS).ToInt32();
         }
     }
 
@@ -49,7 +49,7 @@ public class SelectionCollection : IEnumerable<Selection>
     {
         get
         {
-            return scintilla.DirectMessage(NativeMethods.SCI_GETSELECTIONEMPTY) != IntPtr.Zero;
+            return this.scintilla.DirectMessage(NativeMethods.SCI_GETSELECTIONEMPTY) != IntPtr.Zero;
         }
     }
 
@@ -63,7 +63,7 @@ public class SelectionCollection : IEnumerable<Selection>
         get
         {
             index = Helpers.Clamp(index, 0, Count - 1);
-            return new Selection(scintilla, index);
+            return new Selection(this.scintilla, index);
         }
     }
 

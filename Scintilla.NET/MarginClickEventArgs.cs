@@ -32,10 +32,9 @@ public class MarginClickEventArgs : EventArgs
     {
         get
         {
-            if (position == null)
-                position = scintilla.Lines.ByteToCharPosition(bytePosition);
+            this.position ??= this.scintilla.Lines.ByteToCharPosition(this.bytePosition);
 
-            return (int)position;
+            return (int)this.position;
         }
     }
 
