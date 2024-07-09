@@ -32,14 +32,14 @@ internal class FlagsConverter : TypeConverter
             ulong bits = 0;
             List<Enum> enums = [];
             var items = Enum.GetValues(enumType).Cast<Enum>()
-                .Select(e => (@enum: e, bits: Convert.ToUInt64(e), bitCount: Helpers.PopCount(Convert.ToUInt64(e))))
+                .Select(e => new { @enum = e, bits = Convert.ToUInt64(e), bitCount = Helpers.PopCount(Convert.ToUInt64(e))})
                 .Where(e => e.bits != 0 && e.bitCount > 0)
                 .ToList();
             int maxIterations = items.Count;
             for (int i = 0; i < maxIterations && bits != valueBits && items.Count > 0; i++)
             {
                 int maxIndex = items
-                    .Select(e => (contrib: Helpers.PopCount(e.bits & valueBits & ~bits), item: e))
+                    .Select(e => new { contrib = Helpers.PopCount(e.bits & valueBits & ~bits), item = e})
                     .MaxIndex(
                         (x, y) =>                                                                    // Select one that:
                         (x.contrib != y.contrib) ? (x.contrib - y.contrib) :                         // Contributes most bits
@@ -47,7 +47,7 @@ internal class FlagsConverter : TypeConverter
                         (x.item.bits < y.item.bits) ? -1 : (x.item.bits > y.item.bits ? 1 : 0)       // With the highest integer value
                     );
 
-                (Enum @enum, ulong bits, byte bitCount) item = items[maxIndex];
+                var item = items[maxIndex];
 
                 if ((valueBits & item.bits) == item.bits && (bits & item.bits) != item.bits)
                 {
