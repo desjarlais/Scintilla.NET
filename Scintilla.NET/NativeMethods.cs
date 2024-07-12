@@ -316,6 +316,7 @@ public static class NativeMethods
     public const int SC_TYPE_STRING = 2;
 
     // Search flags
+    public const int SCFIND_NONE = 0x0;
     public const int SCFIND_WHOLEWORD = 0x2;
     public const int SCFIND_MATCHCASE = 0x4;
     public const int SCFIND_WORDSTART = 0x00100000;
@@ -610,6 +611,7 @@ public static class NativeMethods
     public const int SCI_GETTARGETEND = 2193;
     public const int SCI_REPLACETARGET = 2194;
     public const int SCI_REPLACETARGETRE = 2195;
+    public const int SCI_FINDTEXTFULL = 2196;
     public const int SCI_SEARCHINTARGET = 2197;
     public const int SCI_SETSEARCHFLAGS = 2198;
     public const int SCI_GETSEARCHFLAGS = 2199;
@@ -2147,6 +2149,13 @@ public static class NativeMethods
     }
 
     [StructLayout(LayoutKind.Sequential)]
+    public struct Sci_CharacterRangeFull
+    {
+        public nint cpMin;
+        public nint cpMax;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
     public struct Sci_NotifyHeader
     {
         public IntPtr hwndFrom;
@@ -2159,6 +2168,29 @@ public static class NativeMethods
     {
         public Sci_CharacterRange chrg;
         public IntPtr lpstrText;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct Sci_TextRangeFull
+    {
+        public Sci_CharacterRangeFull chrg;
+        public IntPtr lpstrText;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct Sci_TextToFind
+    {
+        public Sci_CharacterRange chrg;
+        public IntPtr lpstrText;
+        public Sci_CharacterRange chrgText;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct Sci_TextToFindFull
+    {
+        public Sci_CharacterRangeFull chrg;
+        public IntPtr lpstrText;
+        public Sci_CharacterRangeFull chrgText;
     }
 
     [StructLayout(LayoutKind.Sequential)]
