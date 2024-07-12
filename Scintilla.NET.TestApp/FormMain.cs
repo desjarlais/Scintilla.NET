@@ -37,6 +37,8 @@ public partial class FormMain : Form
 
         baseTitle = this.Text;
 
+        scintilla.AssignCmdKey(Keys.Control | Keys.Shift | Keys.Z, Command.Redo);
+
         scintilla.LexerName = "cpp";
 
         SetScintillaStyles(scintilla);
@@ -219,16 +221,6 @@ public partial class FormMain : Form
     private void describeKeywordSetsToolStripMenuItem_Click(object sender, EventArgs e)
     {
         scintilla.ReplaceSelection(scintilla.DescribeKeywordSets());
-    }
-
-    private void scintilla_KeyDown(object sender, KeyEventArgs e)
-    {
-        if (e.KeyData == (Keys.Control | Keys.Shift | Keys.Z))
-        {
-            scintilla.Redo();
-            e.Handled = true;
-            e.SuppressKeyPress = true;
-        }
     }
 
     private void scintilla_TextChanged(object sender, EventArgs e)
