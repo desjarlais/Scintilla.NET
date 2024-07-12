@@ -237,4 +237,48 @@ public partial class FormMain : Form
     {
         Text = BaseTitle;
     }
+
+    private void toolStripMenuItem_Find_Click(object sender, EventArgs e)
+    {
+        Search(toolStripTextBox_Find.Text);
+    }
+
+    private void Search(string text, bool reverse = false)
+    {
+        if (string.IsNullOrEmpty(text))
+            return;
+
+        int start = reverse ? scintilla.AnchorPosition : scintilla.CurrentPosition;
+        int end = reverse ? 0 : scintilla.TextLength;
+        int pos = scintilla.FindText(SearchFlags.None, text, start, end);
+        if (pos == -1)
+        {
+            start = reverse ? scintilla.TextLength : 0;
+            end = reverse ? scintilla.AnchorPosition - text.Length : scintilla.CurrentPosition + text.Length;
+            pos = scintilla.FindText(SearchFlags.None, text, start, end);
+            if (pos == -1)
+            {
+                toolStripStatusLabel.Text = $"\"{text}\" not found in document.";
+                return;
+            }
+            else
+                toolStripStatusLabel.Text = $"Search wrapped.";
+        }
+        else
+            toolStripStatusLabel.Text = "";
+
+        int caret = pos + text.Length, anchor = pos;
+        scintilla.SetSelection(caret, anchor);
+        scintilla.ScrollRange(anchor, caret);
+    }
+
+    private void toolStripTextBox_Find_KeyDown(object sender, KeyEventArgs e)
+    {
+        if (e.KeyCode == Keys.Enter && (e.Modifiers & ~Keys.Shift) == 0)
+        {
+            Search(toolStripTextBox_Find.Text, e.Shift);
+            e.Handled = true;
+            e.SuppressKeyPress = true;
+        }
+    }
 }
