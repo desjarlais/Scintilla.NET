@@ -996,6 +996,39 @@ namespace ScintillaNET
         }
 
         /// <summary>
+        /// Search text in document without changing the current selection.
+        /// The <paramref name="searchFlags"/> argument controls the search type, which includes regular expression searches.
+        /// You can search backwards to find the previous occurrence of a search string by setting the end of the search range before the start.
+        /// </summary>
+        /// <param name="searchFlags">Specifies the how patterns are matched when performing the search.</param>
+        /// <param name="text">String to search for.</param>
+        /// <param name="start">Beginning of </param>
+        /// <param name="end"></param>
+        /// <returns>The position of the found text if it succeeds or <c>-1</c> if the search fails.</returns>
+        public unsafe int FindText(SearchFlags searchFlags, string text, int start, int end)
+        {
+            int bytePos = 0;
+            byte[] bytes = Helpers.GetBytes(text ?? string.Empty, Encoding, zeroTerminated: true);
+
+            fixed (byte* bp = bytes)
+            {
+                NativeMethods.Sci_TextToFind textToFind = new NativeMethods.Sci_TextToFind() {
+                    chrg = new NativeMethods.Sci_CharacterRange() {
+                        cpMin = Lines.CharToBytePosition(Helpers.Clamp(start, 0, TextLength)),
+                        cpMax = Lines.CharToBytePosition(Helpers.Clamp(end, 0, TextLength)),
+                    },
+                    lpstrText = new IntPtr(bp),
+                };
+                bytePos = DirectMessage(NativeMethods.SCI_FINDTEXT, (IntPtr)searchFlags, new IntPtr(&textToFind)).ToInt32();
+            }
+
+            if (bytePos == -1)
+                return bytePos;
+
+            return Lines.ByteToCharPosition(bytePos);
+        }
+
+        /// <summary>
         /// Performs the specified fold action on the entire document.
         /// </summary>
         /// <param name="action">One of the <see cref="FoldAction" /> enumeration values.</param>

@@ -37,6 +37,8 @@ public partial class FormMain : Form
 
         baseTitle = this.Text;
 
+        scintilla.AssignCmdKey(Keys.Control | Keys.Shift | Keys.Z, Command.Redo);
+
         scintilla.LexerName = "cpp";
 
         SetScintillaStyles(scintilla);
@@ -221,16 +223,6 @@ public partial class FormMain : Form
         scintilla.ReplaceSelection(scintilla.DescribeKeywordSets());
     }
 
-    private void scintilla_KeyDown(object sender, KeyEventArgs e)
-    {
-        if (e.KeyData == (Keys.Control | Keys.Shift | Keys.Z))
-        {
-            scintilla.Redo();
-            e.Handled = true;
-            e.SuppressKeyPress = true;
-        }
-    }
-
     private void scintilla_TextChanged(object sender, EventArgs e)
     {
         AdjustLineNumberMargin(scintilla);
@@ -244,5 +236,49 @@ public partial class FormMain : Form
     private void scintilla_SavePointReached(object sender, EventArgs e)
     {
         Text = BaseTitle;
+    }
+
+    private void toolStripMenuItem_Find_Click(object sender, EventArgs e)
+    {
+        Search(toolStripTextBox_Find.Text);
+    }
+
+    private void Search(string text, bool reverse = false)
+    {
+        if (string.IsNullOrEmpty(text))
+            return;
+
+        int start = reverse ? scintilla.AnchorPosition : scintilla.CurrentPosition;
+        int end = reverse ? 0 : scintilla.TextLength;
+        int pos = scintilla.FindText(SearchFlags.None, text, start, end);
+        if (pos == -1)
+        {
+            start = reverse ? scintilla.TextLength : 0;
+            end = reverse ? scintilla.AnchorPosition - text.Length : scintilla.CurrentPosition + text.Length;
+            pos = scintilla.FindText(SearchFlags.None, text, start, end);
+            if (pos == -1)
+            {
+                toolStripStatusLabel.Text = $"\"{text}\" not found in document.";
+                return;
+            }
+            else
+                toolStripStatusLabel.Text = $"Search wrapped.";
+        }
+        else
+            toolStripStatusLabel.Text = "";
+
+        int caret = pos + text.Length, anchor = pos;
+        scintilla.SetSelection(caret, anchor);
+        scintilla.ScrollRange(anchor, caret);
+    }
+
+    private void toolStripTextBox_Find_KeyDown(object sender, KeyEventArgs e)
+    {
+        if (e.KeyCode == Keys.Enter && (e.Modifiers & ~Keys.Shift) == 0)
+        {
+            Search(toolStripTextBox_Find.Text, e.Shift);
+            e.Handled = true;
+            e.SuppressKeyPress = true;
+        }
     }
 }
