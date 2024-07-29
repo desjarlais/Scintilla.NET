@@ -487,7 +487,7 @@ namespace ScintillaNET
         /// <param name="color">The new highlight text Color. The default is dark blue.</param>
         public void CallTipSetForeHlt(Color color)
         {
-            int colour = HelperMethods.ToWin32Color(color);
+            int colour = HelperMethods.ToWin32ColorOpaque(color);
             DirectMessage(NativeMethods.SCI_CALLTIPSETFOREHLT, new IntPtr(colour));
         }
 
@@ -1774,7 +1774,7 @@ namespace ScintillaNET
         public void MultiEdgeAddLine(int column, Color edgeColor)
         {
             column = Helpers.ClampMin(column, 0);
-            int colour = HelperMethods.ToWin32Color(edgeColor);
+            int colour = HelperMethods.ToWin32ColorOpaque(edgeColor);
 
             DirectMessage(NativeMethods.SCI_MULTIEDGEADDLINE, new IntPtr(column), new IntPtr(colour));
         }
@@ -2569,7 +2569,7 @@ namespace ScintillaNET
         [Obsolete("Superseded by SelectionAdditionalBackColor property.")]
         public void SetAdditionalSelBack(Color color)
         {
-            int colour = HelperMethods.ToWin32Color(color);
+            int colour = HelperMethods.ToWin32ColorOpaque(color);
             DirectMessage(NativeMethods.SCI_SETADDITIONALSELBACK, new IntPtr(colour));
         }
 
@@ -2581,7 +2581,7 @@ namespace ScintillaNET
         [Obsolete("Superseded by SelectionAdditionalTextColor property.")]
         public void SetAdditionalSelFore(Color color)
         {
-            int colour = HelperMethods.ToWin32Color(color);
+            int colour = HelperMethods.ToWin32ColorOpaque(color);
             DirectMessage(NativeMethods.SCI_SETADDITIONALSELFORE, new IntPtr(colour));
         }
 
@@ -2614,7 +2614,7 @@ namespace ScintillaNET
         /// <seealso cref="SetFoldMarginHighlightColor" />
         public void SetFoldMarginColor(bool use, Color color)
         {
-            int colour = HelperMethods.ToWin32Color(color);
+            int colour = HelperMethods.ToWin32ColorOpaque(color);
             IntPtr useFoldMarginColour = use ? new IntPtr(1) : IntPtr.Zero;
 
             DirectMessage(NativeMethods.SCI_SETFOLDMARGINCOLOUR, useFoldMarginColour, new IntPtr(colour));
@@ -2628,7 +2628,7 @@ namespace ScintillaNET
         /// <seealso cref="SetFoldMarginColor" />
         public void SetFoldMarginHighlightColor(bool use, Color color)
         {
-            int colour = HelperMethods.ToWin32Color(color);
+            int colour = HelperMethods.ToWin32ColorOpaque(color);
             IntPtr useFoldMarginHighlightColour = use ? new IntPtr(1) : IntPtr.Zero;
 
             DirectMessage(NativeMethods.SCI_SETFOLDMARGINHICOLOUR, useFoldMarginHighlightColour, new IntPtr(colour));
@@ -2799,7 +2799,7 @@ namespace ScintillaNET
         [Obsolete("Superseded by SelectionBackColor property.")]
         public void SetSelectionBackColor(bool use, Color color)
         {
-            int colour = HelperMethods.ToWin32Color(color);
+            int colour = HelperMethods.ToWin32ColorOpaque(color);
             IntPtr useSelectionForeColour = use ? new IntPtr(1) : IntPtr.Zero;
 
             DirectMessage(NativeMethods.SCI_SETSELBACK, useSelectionForeColour, new IntPtr(colour));
@@ -2814,7 +2814,7 @@ namespace ScintillaNET
         [Obsolete("Superseded by SelectionTextColor property.")]
         public void SetSelectionForeColor(bool use, Color color)
         {
-            int colour = HelperMethods.ToWin32Color(color);
+            int colour = HelperMethods.ToWin32ColorOpaque(color);
             IntPtr useSelectionForeColour = use ? new IntPtr(1) : IntPtr.Zero;
 
             DirectMessage(NativeMethods.SCI_SETSELFORE, useSelectionForeColour, new IntPtr(colour));
@@ -2904,7 +2904,7 @@ namespace ScintillaNET
         [Obsolete("Superseded by WhitespaceBackColor property.")]
         public void SetWhitespaceBackColor(bool use, Color color)
         {
-            int colour = HelperMethods.ToWin32Color(color);
+            int colour = HelperMethods.ToWin32ColorOpaque(color);
             IntPtr useWhitespaceBackColour = use ? new IntPtr(1) : IntPtr.Zero;
 
             DirectMessage(NativeMethods.SCI_SETWHITESPACEBACK, useWhitespaceBackColour, new IntPtr(colour));
@@ -2921,7 +2921,7 @@ namespace ScintillaNET
         [Obsolete("Superseded by WhitespaceTextColor property.")]
         public void SetWhitespaceForeColor(bool use, Color color)
         {
-            int colour = HelperMethods.ToWin32Color(color);
+            int colour = HelperMethods.ToWin32ColorOpaque(color);
             IntPtr useWhitespaceForeColour = use ? new IntPtr(1) : IntPtr.Zero;
 
             DirectMessage(NativeMethods.SCI_SETWHITESPACEFORE, useWhitespaceForeColour, new IntPtr(colour));
@@ -4717,7 +4717,7 @@ namespace ScintillaNET
         /// <see cref="ScintillaNET.EdgeMode.Background" />.
         /// </summary>
         /// <returns>The background Color.</returns>
-        [DefaultValue(typeof(Color), "0, 192, 192, 192")]
+        [DefaultValue(typeof(Color), "Silver")]
         [Category("Long Lines")]
         [Description("The background color to use when indicating long lines.")]
         public Color EdgeColor
@@ -4725,11 +4725,11 @@ namespace ScintillaNET
             get
             {
                 int color = DirectMessage(NativeMethods.SCI_GETEDGECOLOUR).ToInt32();
-                return HelperMethods.FromWin32Color(color);
+                return HelperMethods.FromWin32ColorOpaque(color);
             }
             set
             {
-                int color = HelperMethods.ToWin32Color(value);
+                int color = HelperMethods.ToWin32ColorOpaque(value);
                 DirectMessage(NativeMethods.SCI_SETEDGECOLOUR, new IntPtr(color));
             }
         }

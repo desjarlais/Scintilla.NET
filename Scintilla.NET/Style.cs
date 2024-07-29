@@ -98,14 +98,14 @@ public class Style
         get
         {
             int color = this.scintilla.DirectMessage(NativeMethods.SCI_STYLEGETBACK, new IntPtr(Index), IntPtr.Zero).ToInt32();
-            return HelperMethods.FromWin32Color(color);
+            return HelperMethods.FromWin32ColorOpaque(color);
         }
         set
         {
             if (value.IsEmpty)
                 value = Color.White;
 
-            int color = HelperMethods.ToWin32Color(value);
+            int color = HelperMethods.ToWin32ColorOpaque(value);
             this.scintilla.DirectMessage(NativeMethods.SCI_STYLESETBACK, new IntPtr(Index), new IntPtr(color));
         }
     }
@@ -231,14 +231,14 @@ public class Style
         get
         {
             int color = this.scintilla.DirectMessage(NativeMethods.SCI_STYLEGETFORE, new IntPtr(Index), IntPtr.Zero).ToInt32();
-            return HelperMethods.FromWin32Color(color);
+            return HelperMethods.FromWin32ColorOpaque(color);
         }
         set
         {
             if (value.IsEmpty)
                 value = Color.Black;
 
-            int color = HelperMethods.ToWin32Color(value);
+            int color = HelperMethods.ToWin32ColorOpaque(value);
             this.scintilla.DirectMessage(NativeMethods.SCI_STYLESETFORE, new IntPtr(Index), new IntPtr(color));
         }
     }
