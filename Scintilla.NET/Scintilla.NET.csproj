@@ -13,9 +13,6 @@
 		<Platforms>AnyCPU</Platforms>
 	</PropertyGroup>
 	<PropertyGroup>
-		<LangVersion>latest</LangVersion>
-	</PropertyGroup>
-	<PropertyGroup>
 		<DefineConstants>SCINTILLA5</DefineConstants>
 	</PropertyGroup>
 	<PropertyGroup>

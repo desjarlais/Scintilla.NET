@@ -1,22 +1,23 @@
-﻿namespace ScintillaNET;
-
-/// <summary>
-/// Fold actions.
-/// </summary>
-public enum FoldAction
+﻿namespace ScintillaNET
 {
     /// <summary>
-    /// Contract the fold.
+    /// Fold actions.
     /// </summary>
-    Contract = NativeMethods.SC_FOLDACTION_CONTRACT,
+    public enum FoldAction
+    {
+        /// <summary>
+        /// Contract the fold.
+        /// </summary>
+        Contract = NativeMethods.SC_FOLDACTION_CONTRACT,
 
-    /// <summary>
-    /// Expand the fold.
-    /// </summary>
-    Expand = NativeMethods.SC_FOLDACTION_EXPAND,
+        /// <summary>
+        /// Expand the fold.
+        /// </summary>
+        Expand = NativeMethods.SC_FOLDACTION_EXPAND,
 
-    /// <summary>
-    /// Toggle between contracted and expanded.
-    /// </summary>
-    Toggle = NativeMethods.SC_FOLDACTION_TOGGLE
+        /// <summary>
+        /// Toggle between contracted and expanded.
+        /// </summary>
+        Toggle = NativeMethods.SC_FOLDACTION_TOGGLE
+    }
 }

@@ -1,39 +1,40 @@
 ﻿using System;
 
-namespace ScintillaNET;
-
-/// <summary>
-/// Provides data for the <see cref="Scintilla.StyleNeeded" /> event.
-/// </summary>
-public class StyleNeededEventArgs : EventArgs
+namespace ScintillaNET
 {
-    private readonly Scintilla scintilla;
-    private readonly int bytePosition;
-    private int? position;
-
     /// <summary>
-    /// Gets the document position where styling should end. The <see cref="Scintilla.GetEndStyled" /> method
-    /// indicates the last position styled correctly and the starting place for where styling should begin.
+    /// Provides data for the <see cref="Scintilla.StyleNeeded" /> event.
     /// </summary>
-    /// <returns>The zero-based position within the document to perform styling up to.</returns>
-    public int Position
+    public class StyleNeededEventArgs : EventArgs
     {
-        get
+        private readonly Scintilla scintilla;
+        private readonly int bytePosition;
+        private int? position;
+
+        /// <summary>
+        /// Gets the document position where styling should end. The <see cref="Scintilla.GetEndStyled" /> method
+        /// indicates the last position styled correctly and the starting place for where styling should begin.
+        /// </summary>
+        /// <returns>The zero-based position within the document to perform styling up to.</returns>
+        public int Position
         {
-            this.position ??= this.scintilla.Lines.ByteToCharPosition(this.bytePosition);
+            get
+            {
+                this.position = this.position ?? this.scintilla.Lines.ByteToCharPosition(this.bytePosition);
 
-            return (int)this.position;
+                return (int)this.position;
+            }
         }
-    }
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="StyleNeededEventArgs" /> class.
-    /// </summary>
-    /// <param name="scintilla">The <see cref="Scintilla" /> control that generated this event.</param>
-    /// <param name="bytePosition">The zero-based byte position within the document to stop styling.</param>
-    public StyleNeededEventArgs(Scintilla scintilla, int bytePosition)
-    {
-        this.scintilla = scintilla;
-        this.bytePosition = bytePosition;
+        /// <summary>
+        /// Initializes a new instance of the <see cref="StyleNeededEventArgs" /> class.
+        /// </summary>
+        /// <param name="scintilla">The <see cref="Scintilla" /> control that generated this event.</param>
+        /// <param name="bytePosition">The zero-based byte position within the document to stop styling.</param>
+        public StyleNeededEventArgs(Scintilla scintilla, int bytePosition)
+        {
+            this.scintilla = scintilla;
+            this.bytePosition = bytePosition;
+        }
     }
 }

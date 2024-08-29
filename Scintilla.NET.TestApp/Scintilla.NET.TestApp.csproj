@@ -9,11 +9,9 @@
     <Authors>desjarlais</Authors>
     <Description>A test application to validate that the ScintillaNET control is working.</Description>
     <UseWindowsForms>true</UseWindowsForms>
-    <LangVersion>latest</LangVersion>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <RootNamespace>ScintillaNET.TestApp</RootNamespace>
-    <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
     <Compile Update="FormMain.cs">

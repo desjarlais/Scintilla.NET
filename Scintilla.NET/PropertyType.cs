@@ -1,22 +1,23 @@
-﻿namespace ScintillaNET;
-
-/// <summary>
-/// Lexer property types.
-/// </summary>
-public enum PropertyType
+﻿namespace ScintillaNET
 {
     /// <summary>
-    /// A Boolean property. This is the default.
+    /// Lexer property types.
     /// </summary>
-    Boolean = NativeMethods.SC_TYPE_BOOLEAN,
+    public enum PropertyType
+    {
+        /// <summary>
+        /// A Boolean property. This is the default.
+        /// </summary>
+        Boolean = NativeMethods.SC_TYPE_BOOLEAN,
 
-    /// <summary>
-    /// An integer property.
-    /// </summary>
-    Integer = NativeMethods.SC_TYPE_INTEGER,
+        /// <summary>
+        /// An integer property.
+        /// </summary>
+        Integer = NativeMethods.SC_TYPE_INTEGER,
 
-    /// <summary>
-    /// A string property.
-    /// </summary>
-    String = NativeMethods.SC_TYPE_STRING
+        /// <summary>
+        /// A string property.
+        /// </summary>
+        String = NativeMethods.SC_TYPE_STRING
+    }
 }

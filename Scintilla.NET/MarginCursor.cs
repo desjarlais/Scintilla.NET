@@ -1,17 +1,18 @@
-﻿namespace ScintillaNET;
-
-/// <summary>
-/// The display of a cursor when over a margin.
-/// </summary>
-public enum MarginCursor
+﻿namespace ScintillaNET
 {
     /// <summary>
-    /// A normal arrow.
+    /// The display of a cursor when over a margin.
     /// </summary>
-    Arrow = NativeMethods.SC_CURSORARROW,
+    public enum MarginCursor
+    {
+        /// <summary>
+        /// A normal arrow.
+        /// </summary>
+        Arrow = NativeMethods.SC_CURSORARROW,
 
-    /// <summary>
-    /// A reversed arrow.
-    /// </summary>
-    ReverseArrow = NativeMethods.SC_CURSORREVERSEARROW
+        /// <summary>
+        /// A reversed arrow.
+        /// </summary>
+        ReverseArrow = NativeMethods.SC_CURSORREVERSEARROW
+    }
 }

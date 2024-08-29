@@ -1,38 +1,39 @@
 ﻿using System;
 
-namespace ScintillaNET;
-
-/// <summary>
-/// Provides data for the <see cref="Scintilla.IndicatorRelease" /> event.
-/// </summary>
-public class IndicatorReleaseEventArgs : EventArgs
+namespace ScintillaNET
 {
-    private readonly Scintilla scintilla;
-    private readonly int bytePosition;
-    private int? position;
-
     /// <summary>
-    /// Gets the zero-based document position of the text clicked.
+    /// Provides data for the <see cref="Scintilla.IndicatorRelease" /> event.
     /// </summary>
-    /// <returns>The zero-based character position within the document of the clicked text.</returns>
-    public int Position
+    public class IndicatorReleaseEventArgs : EventArgs
     {
-        get
+        private readonly Scintilla scintilla;
+        private readonly int bytePosition;
+        private int? position;
+
+        /// <summary>
+        /// Gets the zero-based document position of the text clicked.
+        /// </summary>
+        /// <returns>The zero-based character position within the document of the clicked text.</returns>
+        public int Position
         {
-            this.position ??= this.scintilla.Lines.ByteToCharPosition(this.bytePosition);
+            get
+            {
+                this.position = this.position ?? this.scintilla.Lines.ByteToCharPosition(this.bytePosition);
 
-            return (int)this.position;
+                return (int)this.position;
+            }
         }
-    }
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="IndicatorReleaseEventArgs" /> class.
-    /// </summary>
-    /// <param name="scintilla">The <see cref="Scintilla" /> control that generated this event.</param>
-    /// <param name="bytePosition">The zero-based byte position of the clicked text.</param>
-    public IndicatorReleaseEventArgs(Scintilla scintilla, int bytePosition)
-    {
-        this.scintilla = scintilla;
-        this.bytePosition = bytePosition;
+        /// <summary>
+        /// Initializes a new instance of the <see cref="IndicatorReleaseEventArgs" /> class.
+        /// </summary>
+        /// <param name="scintilla">The <see cref="Scintilla" /> control that generated this event.</param>
+        /// <param name="bytePosition">The zero-based byte position of the clicked text.</param>
+        public IndicatorReleaseEventArgs(Scintilla scintilla, int bytePosition)
+        {
+            this.scintilla = scintilla;
+            this.bytePosition = bytePosition;
+        }
     }
 }

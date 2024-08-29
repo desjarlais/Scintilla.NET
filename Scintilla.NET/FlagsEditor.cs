@@ -4,27 +4,28 @@ using System.Drawing.Design;
 using System.Linq;
 using System.Windows.Forms.Design;
 
-namespace ScintillaNET;
-
-internal class FlagsEditor : UITypeEditor
+namespace ScintillaNET
 {
-    public override UITypeEditorEditStyle GetEditStyle(ITypeDescriptorContext context) => UITypeEditorEditStyle.DropDown;
-
-    public override bool IsDropDownResizable => true;
-
-    public override object EditValue(ITypeDescriptorContext context, IServiceProvider provider, object value)
+    internal class FlagsEditor : UITypeEditor
     {
-        if (value is Enum e && context.PropertyDescriptor.Attributes.OfType<FlagsAttribute>().Any())
-        {
-            var svc = (IWindowsFormsEditorService)provider.GetService(typeof(IWindowsFormsEditorService));
+        public override UITypeEditorEditStyle GetEditStyle(ITypeDescriptorContext context) => UITypeEditorEditStyle.DropDown;
 
-            var control = new FlagsEditorControl(svc, e);
-            svc.DropDownControl(control);
-            return control.Value;
-        }
-        else
+        public override bool IsDropDownResizable => true;
+
+        public override object EditValue(ITypeDescriptorContext context, IServiceProvider provider, object value)
         {
-            return base.EditValue(context, provider, value);
+            if (value is Enum e && context.PropertyDescriptor.Attributes.OfType<FlagsAttribute>().Any())
+            {
+                var svc = (IWindowsFormsEditorService)provider.GetService(typeof(IWindowsFormsEditorService));
+
+                var control = new FlagsEditorControl(svc, e);
+                svc.DropDownControl(control);
+                return control.Value;
+            }
+            else
+            {
+                return base.EditValue(context, provider, value);
+            }
         }
     }
 }

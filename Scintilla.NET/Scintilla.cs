@@ -23,7 +23,7 @@ namespace ScintillaNET
     {
         static Scintilla()
         {
-            List<string> searchedPathList = [];
+            var searchedPathList = new List<string>();
             foreach (string path in EnumerateSatelliteLibrarySearchPaths())
             {
                 string scintillaDllPath = Path.Combine(path, "Scintilla.dll");
@@ -62,12 +62,15 @@ namespace ScintillaNET
 
         private static bool InDesignProcess()
         {
-            using var proc = Process.GetCurrentProcess();
-            string procName = proc.ProcessName;
-            return
-                procName is "devenv" or "DesignToolsServer" or // WinForms app in VS IDE
-                "xdesproc" or // WPF app in VS IDE/Blend
-                "blend";
+            using (var proc = Process.GetCurrentProcess())
+            {
+                string procName = proc.ProcessName;
+                return
+                    procName == "devenv" ||
+                    procName == "DesignToolsServer" || // WinForms app in VS IDE
+                    procName == "xdesproc" || // WPF app in VS IDE/Blend
+                    procName == "blend";
+            }
         }
 
         /// <summary>
@@ -116,39 +119,39 @@ namespace ScintillaNET
         private static Lexilla lexilla;
 
         // Events
-        private static readonly object scNotificationEventKey = new();
-        private static readonly object insertCheckEventKey = new();
-        private static readonly object beforeInsertEventKey = new();
-        private static readonly object beforeDeleteEventKey = new();
-        private static readonly object insertEventKey = new();
-        private static readonly object deleteEventKey = new();
-        private static readonly object updateUIEventKey = new();
-        private static readonly object modifyAttemptEventKey = new();
-        private static readonly object styleNeededEventKey = new();
-        private static readonly object savePointReachedEventKey = new();
-        private static readonly object savePointLeftEventKey = new();
-        private static readonly object changeAnnotationEventKey = new();
-        private static readonly object marginClickEventKey = new();
-        private static readonly object marginRightClickEventKey = new();
-        private static readonly object charAddedEventKey = new();
-        private static readonly object autoCSelectionEventKey = new();
-        private static readonly object autoCSelectionChangeEventKey = new();
-        private static readonly object autoCCompletedEventKey = new();
-        private static readonly object autoCCancelledEventKey = new();
-        private static readonly object autoCCharDeletedEventKey = new();
-        private static readonly object dwellStartEventKey = new();
-        private static readonly object callTipClickEventKey = new();
-        private static readonly object dwellEndEventKey = new();
-        private static readonly object borderStyleChangedEventKey = new();
-        private static readonly object doubleClickEventKey = new();
-        private static readonly object paintedEventKey = new();
-        private static readonly object needShownEventKey = new();
-        private static readonly object hotspotClickEventKey = new();
-        private static readonly object hotspotDoubleClickEventKey = new();
-        private static readonly object hotspotReleaseClickEventKey = new();
-        private static readonly object indicatorClickEventKey = new();
-        private static readonly object indicatorReleaseEventKey = new();
-        private static readonly object zoomChangedEventKey = new();
+        private static readonly object scNotificationEventKey = new object();
+        private static readonly object insertCheckEventKey = new object();
+        private static readonly object beforeInsertEventKey = new object();
+        private static readonly object beforeDeleteEventKey = new object();
+        private static readonly object insertEventKey = new object();
+        private static readonly object deleteEventKey = new object();
+        private static readonly object updateUIEventKey = new object();
+        private static readonly object modifyAttemptEventKey = new object();
+        private static readonly object styleNeededEventKey = new object();
+        private static readonly object savePointReachedEventKey = new object();
+        private static readonly object savePointLeftEventKey = new object();
+        private static readonly object changeAnnotationEventKey = new object();
+        private static readonly object marginClickEventKey = new object();
+        private static readonly object marginRightClickEventKey = new object();
+        private static readonly object charAddedEventKey = new object();
+        private static readonly object autoCSelectionEventKey = new object();
+        private static readonly object autoCSelectionChangeEventKey = new object();
+        private static readonly object autoCCompletedEventKey = new object();
+        private static readonly object autoCCancelledEventKey = new object();
+        private static readonly object autoCCharDeletedEventKey = new object();
+        private static readonly object dwellStartEventKey = new object();
+        private static readonly object callTipClickEventKey = new object();
+        private static readonly object dwellEndEventKey = new object();
+        private static readonly object borderStyleChangedEventKey = new object();
+        private static readonly object doubleClickEventKey = new object();
+        private static readonly object paintedEventKey = new object();
+        private static readonly object needShownEventKey = new object();
+        private static readonly object hotspotClickEventKey = new object();
+        private static readonly object hotspotDoubleClickEventKey = new object();
+        private static readonly object hotspotReleaseClickEventKey = new object();
+        private static readonly object indicatorClickEventKey = new object();
+        private static readonly object indicatorReleaseEventKey = new object();
+        private static readonly object zoomChangedEventKey = new object();
 
         // The goods
         private IntPtr sciPtr;
@@ -349,7 +352,7 @@ namespace ScintillaNET
             // That means we need to keep a copy of the string around for the life of the control AND put it
             // in a place where it won't get moved by the GC.
 
-            chars ??= string.Empty;
+            chars = chars ?? string.Empty;
 
             if (this.fillUpChars != IntPtr.Zero)
             {
@@ -1012,7 +1015,7 @@ namespace ScintillaNET
 
             fixed (byte* bp = bytes)
             {
-                NativeMethods.Sci_TextToFind textToFind = new NativeMethods.Sci_TextToFind() {
+                var textToFind = new NativeMethods.Sci_TextToFind() {
                     chrg = new NativeMethods.Sci_CharacterRange() {
                         cpMin = Lines.CharToBytePosition(Helpers.Clamp(start, 0, TextLength)),
                         cpMax = Lines.CharToBytePosition(Helpers.Clamp(end, 0, TextLength)),
@@ -1310,146 +1313,284 @@ namespace ScintillaNET
         /// <exception cref="ArgumentOutOfRangeException"></exception>
         public string GetLexerIDFromLexer(Lexer lexer)
         {
-            return lexer switch
+            switch (lexer)
             {
-                Lexer.SCLEX_A68K => "a68k",
-                Lexer.SCLEX_ADPL => "apdl",
-                Lexer.SCLEX_ASYMPTOTE => "asy",
-                Lexer.SCLEX_AU3 => "au3",
-                Lexer.SCLEX_AVE => "ave",
-                Lexer.SCLEX_AVS => "avs",
-                Lexer.SCLEX_ABAQUS => "abaqus",
-                Lexer.SCLEX_ADA => "ada",
-                Lexer.SCLEX_ASCIIDOC => "asciidoc",
-                Lexer.SCLEX_ASM => "asm",
-                Lexer.SCLEX_AS => "as",
-                Lexer.SCLEX_ASN1 => "asn1",
-                Lexer.SCLEX_BAAN => "baan",
-                Lexer.SCLEX_BASH => "bash",
-                Lexer.SCLEX_BLITZBASIC => "blitzbasic",
-                Lexer.SCLEX_PUREBASIC => "purebasic",
-                Lexer.SCLEX_FREEBASIC => "freebasic",
-                Lexer.SCLEX_BATCH => "batch",
-                Lexer.SCLEX_BIBTEX => "bibtex",
-                Lexer.SCLEX_BULLANT => "bullant",
-                Lexer.SCLEX_CIL => "cil",
-                Lexer.SCLEX_CLW => "clarion",
-                Lexer.SCLEX_CLWNOCASE => "clarionnocase",
-                Lexer.SCLEX_COBOL => "COBOL",
-                Lexer.SCLEX_CPP => "cpp",
-                Lexer.SCLEX_CPPNOCASE => "cppnocase",
-                Lexer.SCLEX_CSHARP => "cpp",
-                Lexer.SCLEX_JAVA => "cpp",
-                Lexer.SCLEX_JAVASCRIPT => "cpp",
-                Lexer.SCLEX_CSS => "css",
-                Lexer.SCLEX_CAML => "caml",
-                Lexer.SCLEX_CMAKE => "cmake",
-                Lexer.SCLEX_COFFEESCRIPT => "coffeescript",
-                Lexer.SCLEX_CONF => "conf",
-                Lexer.SCLEX_NNCRONTAB => "nncrontab",
-                Lexer.SCLEX_CSOUND => "csound",
-                Lexer.SCLEX_D => "d",
-                Lexer.SCLEX_DMAP => "DMAP",
-                Lexer.SCLEX_DMIS => "DMIS",
-                Lexer.SCLEX_DATAFLEX => "dataflex",
-                Lexer.SCLEX_DIFF => "diff",
-                Lexer.SCLEX_ECL => "ecl",
-                Lexer.SCLEX_EDIFACT => "edifact",
-                Lexer.SCLEX_ESCRIPT => "escript",
-                Lexer.SCLEX_EIFFEL => "eiffel",
-                Lexer.SCLEX_EIFFELKW => "eiffelkw",
-                Lexer.SCLEX_ERLANG => "erlang",
-                Lexer.SCLEX_ERRORLIST => "errorlist",
-                Lexer.SCLEX_FSHARP => "fsharp",
-                Lexer.SCLEX_FLAGSHIP => "flagship",
-                Lexer.SCLEX_FORTH => "forth",
-                Lexer.SCLEX_FORTRAN => "fortran",
-                Lexer.SCLEX_F77 => "f77",
-                Lexer.SCLEX_GAP => "gap",
-                Lexer.SCLEX_GDSCRIPT => "gdscript",
-                Lexer.SCLEX_GUI4CLI => "gui4cli",
-                Lexer.SCLEX_HTML => "hypertext",
-                Lexer.SCLEX_XML => "xml",
-                Lexer.SCLEX_PHPSCRIPT => "phpscript",
-                Lexer.SCLEX_HASKELL => "haskell",
-                Lexer.SCLEX_LITERATEHASKELL => "literatehaskell",
-                Lexer.SCLEX_SREC => "srec",
-                Lexer.SCLEX_IHEX => "ihex",
-                Lexer.SCLEX_TEHEX => "tehex",
-                Lexer.SCLEX_HOLLYWOOD => "hollywood",
-                Lexer.SCLEX_INDENT => "indent",
-                Lexer.SCLEX_INNOSETUP => "inno",
-                Lexer.SCLEX_JSON => "json",
-                Lexer.SCLEX_JULIA => "julia",
-                Lexer.SCLEX_KIX => "kix",
-                Lexer.SCLEX_KVIRC => "kvirc",
-                Lexer.SCLEX_LATEX => "latex",
-                Lexer.SCLEX_LISP => "lisp",
-                Lexer.SCLEX_LOUT => "lout",
-                Lexer.SCLEX_LUA => "lua",
-                Lexer.SCLEX_MMIXAL => "mmixal",
-                Lexer.SCLEX_LOT => "lot",
-                Lexer.SCLEX_MSSQL => "mssql",
-                Lexer.SCLEX_MAGIK => "magiksf",
-                Lexer.SCLEX_MAKEFILE => "makefile",
-                Lexer.SCLEX_MARKDOWN => "markdown",
-                Lexer.SCLEX_MATLAB => "matlab",
-                Lexer.SCLEX_OCTAVE => "octave",
-                Lexer.SCLEX_MAXIMA => "maxima",
-                Lexer.SCLEX_METAPOST => "metapost",
-                Lexer.SCLEX_MODULA => "modula",
-                Lexer.SCLEX_MYSQL => "mysql",
-                Lexer.SCLEX_NIM => "nim",
-                Lexer.SCLEX_NIMROD => "nimrod",
-                Lexer.SCLEX_NSIS => "nsis",
-                Lexer.SCLEX_NULL => "null",
-                Lexer.SCLEX_OSCRIPT => "oscript",
-                Lexer.SCLEX_OPAL => "opal",
-                Lexer.SCLEX_POWERBASIC => "powerbasic",
-                Lexer.SCLEX_PLM => "PL/M",
-                Lexer.SCLEX_PO => "po",
-                Lexer.SCLEX_POV => "pov",
-                Lexer.SCLEX_POSTSCRIPT => "ps",
-                Lexer.SCLEX_PASCAL => "pascal",
-                Lexer.SCLEX_PERL => "perl",
-                Lexer.SCLEX_POWERPRO => "powerpro",
-                Lexer.SCLEX_POWERSHELL => "powershell",
-                Lexer.SCLEX_PROGRESS => "abl",
-                Lexer.SCLEX_PROPERTIES => "props",
-                Lexer.SCLEX_PYTHON => "python",
-                Lexer.SCLEX_R => "r",
-                Lexer.SCLEX_S => "r",
-                Lexer.SCLEX_SPLUS => "r",
-                Lexer.SCLEX_RAKU => "raku",
-                Lexer.SCLEX_REBOL => "rebol",
-                Lexer.SCLEX_REGISTRY => "registry",
-                Lexer.SCLEX_RUBY => "ruby",
-                Lexer.SCLEX_RUST => "rust",
-                Lexer.SCLEX_SAS => "sas",
-                Lexer.SCLEX_SML => "SML",
-                Lexer.SCLEX_SQL => "sql",
-                Lexer.SCLEX_STTXT => "fcST",
-                Lexer.SCLEX_SCRIPTOL => "scriptol",
-                Lexer.SCLEX_SMALLTALK => "smalltalk",
-                Lexer.SCLEX_SORCUS => "sorcins",
-                Lexer.SCLEX_SPECMAN => "specman",
-                Lexer.SCLEX_SPICE => "spice",
-                Lexer.SCLEX_STATA => "stata",
-                Lexer.SCLEX_TACL => "TACL",
-                Lexer.SCLEX_TADS3 => "tads3",
-                Lexer.SCLEX_TAL => "TAL",
-                Lexer.SCLEX_TCL => "tcl",
-                Lexer.SCLEX_TCMD => "tcmd",
-                Lexer.SCLEX_TEX => "tex",
-                Lexer.SCLEX_TXT2TAGS => "txt2tags",
-                Lexer.SCLEX_VB => "vb",
-                Lexer.SCLEX_VBSCRIPT => "vbscript",
-                Lexer.SCLEX_VHDL => "vhdl",
-                Lexer.SCLEX_VERILOG => "verilog",
-                Lexer.SCLEX_VISUALPROLOG => "visualprolog",
-                Lexer.SCLEX_X12 => "x12",
-                Lexer.SCLEX_YAML => "yaml",
-                _ => throw new ArgumentOutOfRangeException(nameof(lexer), lexer, null),
+                case Lexer.SCLEX_A68K:
+                    return "a68k";
+                case Lexer.SCLEX_ADPL:
+                    return "apdl";
+                case Lexer.SCLEX_ASYMPTOTE:
+                    return "asy";
+                case Lexer.SCLEX_AU3:
+                    return "au3";
+                case Lexer.SCLEX_AVE:
+                    return "ave";
+                case Lexer.SCLEX_AVS:
+                    return "avs";
+                case Lexer.SCLEX_ABAQUS:
+                    return "abaqus";
+                case Lexer.SCLEX_ADA:
+                    return "ada";
+                case Lexer.SCLEX_ASCIIDOC:
+                    return "asciidoc";
+                case Lexer.SCLEX_ASM:
+                    return "asm";
+                case Lexer.SCLEX_AS:
+                    return "as";
+                case Lexer.SCLEX_ASN1:
+                    return "asn1";
+                case Lexer.SCLEX_BAAN:
+                    return "baan";
+                case Lexer.SCLEX_BASH:
+                    return "bash";
+                case Lexer.SCLEX_BLITZBASIC:
+                    return "blitzbasic";
+                case Lexer.SCLEX_PUREBASIC:
+                    return "purebasic";
+                case Lexer.SCLEX_FREEBASIC:
+                    return "freebasic";
+                case Lexer.SCLEX_BATCH:
+                    return "batch";
+                case Lexer.SCLEX_BIBTEX:
+                    return "bibtex";
+                case Lexer.SCLEX_BULLANT:
+                    return "bullant";
+                case Lexer.SCLEX_CIL:
+                    return "cil";
+                case Lexer.SCLEX_CLW:
+                    return "clarion";
+                case Lexer.SCLEX_CLWNOCASE:
+                    return "clarionnocase";
+                case Lexer.SCLEX_COBOL:
+                    return "COBOL";
+                case Lexer.SCLEX_CPP:
+                    return "cpp";
+                case Lexer.SCLEX_CPPNOCASE:
+                    return "cppnocase";
+                case Lexer.SCLEX_CSHARP:
+                    return "cpp";
+                case Lexer.SCLEX_JAVA:
+                    return "cpp";
+                case Lexer.SCLEX_JAVASCRIPT:
+                    return "cpp";
+                case Lexer.SCLEX_CSS:
+                    return "css";
+                case Lexer.SCLEX_CAML:
+                    return "caml";
+                case Lexer.SCLEX_CMAKE:
+                    return "cmake";
+                case Lexer.SCLEX_COFFEESCRIPT:
+                    return "coffeescript";
+                case Lexer.SCLEX_CONF:
+                    return "conf";
+                case Lexer.SCLEX_NNCRONTAB:
+                    return "nncrontab";
+                case Lexer.SCLEX_CSOUND:
+                    return "csound";
+                case Lexer.SCLEX_D:
+                    return "d";
+                case Lexer.SCLEX_DMAP:
+                    return "DMAP";
+                case Lexer.SCLEX_DMIS:
+                    return "DMIS";
+                case Lexer.SCLEX_DATAFLEX:
+                    return "dataflex";
+                case Lexer.SCLEX_DIFF:
+                    return "diff";
+                case Lexer.SCLEX_ECL:
+                    return "ecl";
+                case Lexer.SCLEX_EDIFACT:
+                    return "edifact";
+                case Lexer.SCLEX_ESCRIPT:
+                    return "escript";
+                case Lexer.SCLEX_EIFFEL:
+                    return "eiffel";
+                case Lexer.SCLEX_EIFFELKW:
+                    return "eiffelkw";
+                case Lexer.SCLEX_ERLANG:
+                    return "erlang";
+                case Lexer.SCLEX_ERRORLIST:
+                    return "errorlist";
+                case Lexer.SCLEX_FSHARP:
+                    return "fsharp";
+                case Lexer.SCLEX_FLAGSHIP:
+                    return "flagship";
+                case Lexer.SCLEX_FORTH:
+                    return "forth";
+                case Lexer.SCLEX_FORTRAN:
+                    return "fortran";
+                case Lexer.SCLEX_F77:
+                    return "f77";
+                case Lexer.SCLEX_GAP:
+                    return "gap";
+                case Lexer.SCLEX_GDSCRIPT:
+                    return "gdscript";
+                case Lexer.SCLEX_GUI4CLI:
+                    return "gui4cli";
+                case Lexer.SCLEX_HTML:
+                    return "hypertext";
+                case Lexer.SCLEX_XML:
+                    return "xml";
+                case Lexer.SCLEX_PHPSCRIPT:
+                    return "phpscript";
+                case Lexer.SCLEX_HASKELL:
+                    return "haskell";
+                case Lexer.SCLEX_LITERATEHASKELL:
+                    return "literatehaskell";
+                case Lexer.SCLEX_SREC:
+                    return "srec";
+                case Lexer.SCLEX_IHEX:
+                    return "ihex";
+                case Lexer.SCLEX_TEHEX:
+                    return "tehex";
+                case Lexer.SCLEX_HOLLYWOOD:
+                    return "hollywood";
+                case Lexer.SCLEX_INDENT:
+                    return "indent";
+                case Lexer.SCLEX_INNOSETUP:
+                    return "inno";
+                case Lexer.SCLEX_JSON:
+                    return "json";
+                case Lexer.SCLEX_JULIA:
+                    return "julia";
+                case Lexer.SCLEX_KIX:
+                    return "kix";
+                case Lexer.SCLEX_KVIRC:
+                    return "kvirc";
+                case Lexer.SCLEX_LATEX:
+                    return "latex";
+                case Lexer.SCLEX_LISP:
+                    return "lisp";
+                case Lexer.SCLEX_LOUT:
+                    return "lout";
+                case Lexer.SCLEX_LUA:
+                    return "lua";
+                case Lexer.SCLEX_MMIXAL:
+                    return "mmixal";
+                case Lexer.SCLEX_LOT:
+                    return "lot";
+                case Lexer.SCLEX_MSSQL:
+                    return "mssql";
+                case Lexer.SCLEX_MAGIK:
+                    return "magiksf";
+                case Lexer.SCLEX_MAKEFILE:
+                    return "makefile";
+                case Lexer.SCLEX_MARKDOWN:
+                    return "markdown";
+                case Lexer.SCLEX_MATLAB:
+                    return "matlab";
+                case Lexer.SCLEX_OCTAVE:
+                    return "octave";
+                case Lexer.SCLEX_MAXIMA:
+                    return "maxima";
+                case Lexer.SCLEX_METAPOST:
+                    return "metapost";
+                case Lexer.SCLEX_MODULA:
+                    return "modula";
+                case Lexer.SCLEX_MYSQL:
+                    return "mysql";
+                case Lexer.SCLEX_NIM:
+                    return "nim";
+                case Lexer.SCLEX_NIMROD:
+                    return "nimrod";
+                case Lexer.SCLEX_NSIS:
+                    return "nsis";
+                case Lexer.SCLEX_NULL:
+                    return "null";
+                case Lexer.SCLEX_OSCRIPT:
+                    return "oscript";
+                case Lexer.SCLEX_OPAL:
+                    return "opal";
+                case Lexer.SCLEX_POWERBASIC:
+                    return "powerbasic";
+                case Lexer.SCLEX_PLM:
+                    return "PL/M";
+                case Lexer.SCLEX_PO:
+                    return "po";
+                case Lexer.SCLEX_POV:
+                    return "pov";
+                case Lexer.SCLEX_POSTSCRIPT:
+                    return "ps";
+                case Lexer.SCLEX_PASCAL:
+                    return "pascal";
+                case Lexer.SCLEX_PERL:
+                    return "perl";
+                case Lexer.SCLEX_POWERPRO:
+                    return "powerpro";
+                case Lexer.SCLEX_POWERSHELL:
+                    return "powershell";
+                case Lexer.SCLEX_PROGRESS:
+                    return "abl";
+                case Lexer.SCLEX_PROPERTIES:
+                    return "props";
+                case Lexer.SCLEX_PYTHON:
+                    return "python";
+                case Lexer.SCLEX_R:
+                    return "r";
+                case Lexer.SCLEX_S:
+                    return "r";
+                case Lexer.SCLEX_SPLUS:
+                    return "r";
+                case Lexer.SCLEX_RAKU:
+                    return "raku";
+                case Lexer.SCLEX_REBOL:
+                    return "rebol";
+                case Lexer.SCLEX_REGISTRY:
+                    return "registry";
+                case Lexer.SCLEX_RUBY:
+                    return "ruby";
+                case Lexer.SCLEX_RUST:
+                    return "rust";
+                case Lexer.SCLEX_SAS:
+                    return "sas";
+                case Lexer.SCLEX_SML:
+                    return "SML";
+                case Lexer.SCLEX_SQL:
+                    return "sql";
+                case Lexer.SCLEX_STTXT:
+                    return "fcST";
+                case Lexer.SCLEX_SCRIPTOL:
+                    return "scriptol";
+                case Lexer.SCLEX_SMALLTALK:
+                    return "smalltalk";
+                case Lexer.SCLEX_SORCUS:
+                    return "sorcins";
+                case Lexer.SCLEX_SPECMAN:
+                    return "specman";
+                case Lexer.SCLEX_SPICE:
+                    return "spice";
+                case Lexer.SCLEX_STATA:
+                    return "stata";
+                case Lexer.SCLEX_TACL:
+                    return "TACL";
+                case Lexer.SCLEX_TADS3:
+                    return "tads3";
+                case Lexer.SCLEX_TAL:
+                    return "TAL";
+                case Lexer.SCLEX_TCL:
+                    return "tcl";
+                case Lexer.SCLEX_TCMD:
+                    return "tcmd";
+                case Lexer.SCLEX_TEX:
+                    return "tex";
+                case Lexer.SCLEX_TXT2TAGS:
+                    return "txt2tags";
+                case Lexer.SCLEX_VB:
+                    return "vb";
+                case Lexer.SCLEX_VBSCRIPT:
+                    return "vbscript";
+                case Lexer.SCLEX_VHDL:
+                    return "vhdl";
+                case Lexer.SCLEX_VERILOG:
+                    return "verilog";
+                case Lexer.SCLEX_VISUALPROLOG:
+                    return "visualprolog";
+                case Lexer.SCLEX_X12:
+                    return "x12";
+                case Lexer.SCLEX_YAML:
+                    return "yaml";
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(lexer), lexer, null);
             };
         }
 
@@ -2320,7 +2461,7 @@ namespace ScintillaNET
         /// </remarks>
         public unsafe int ReplaceTarget(string text)
         {
-            text ??= string.Empty;
+            text = text ?? string.Empty;
 
             byte[] bytes = Helpers.GetBytes(text, Encoding, false);
             // Scintilla asserts that lParam is not null, so make sure it isn't
@@ -2682,7 +2823,7 @@ namespace ScintillaNET
         public static void SetDestroyHandleBehavior(bool reparent)
         {
             // WM_DESTROY workaround
-            Scintilla.reparentAll ??= reparent;
+            Scintilla.reparentAll = Scintilla.reparentAll ?? reparent;
         }
 
         /// <summary>
@@ -3131,15 +3272,17 @@ namespace ScintillaNET
             IntPtr hDC = NativeMethods.GetWindowDC(m.HWnd);
             try
             {
-                using var graphics = Graphics.FromHdc(hDC);
-                // Clip everything except the border
-                var bounds = new Rectangle(0, 0, windowRect.right - windowRect.left, windowRect.bottom - windowRect.top);
-                graphics.ExcludeClip(Rectangle.Inflate(bounds, -borderSize.Width, -borderSize.Height));
+                using (var graphics = Graphics.FromHdc(hDC))
+                {
+                    // Clip everything except the border
+                    var bounds = new Rectangle(0, 0, windowRect.right - windowRect.left, windowRect.bottom - windowRect.top);
+                    graphics.ExcludeClip(Rectangle.Inflate(bounds, -borderSize.Width, -borderSize.Height));
 
-                // Paint the theme border
-                if (this.renderer.IsBackgroundPartiallyTransparent())
-                    this.renderer.DrawParentBackground(graphics, bounds, this);
-                this.renderer.DrawBackground(graphics, bounds);
+                    // Paint the theme border
+                    if (this.renderer.IsBackgroundPartiallyTransparent())
+                        this.renderer.DrawParentBackground(graphics, bounds, this);
+                    this.renderer.DrawBackground(graphics, bounds);
+                }
             }
             finally
             {
@@ -3166,7 +3309,7 @@ namespace ScintillaNET
         {
             // A standard Windows notification and a Scintilla notification header are compatible
             var scn = (NativeMethods.SCNotification)Marshal.PtrToStructure(m.LParam, typeof(NativeMethods.SCNotification));
-            if (scn.nmhdr.code is >= NativeMethods.SCN_STYLENEEDED and <= NativeMethods.SCN_AUTOCSELECTIONCHANGE)
+            if (scn.nmhdr.code >= NativeMethods.SCN_STYLENEEDED && scn.nmhdr.code <= NativeMethods.SCN_AUTOCSELECTIONCHANGE)
             {
                 if (Events[scNotificationEventKey] is EventHandler<SCNotificationEventArgs> handler)
                     handler(this, new SCNotificationEventArgs(scn));
@@ -4925,7 +5068,7 @@ namespace ScintillaNET
             set
             {
                 Style defaultFontStyle = Styles[Style.Default];
-                value ??= Parent?.Font ?? Control.DefaultFont;
+                value = value ?? Parent?.Font ?? Control.DefaultFont;
                 defaultFontStyle.Font = value.Name;
                 defaultFontStyle.SizeF = value.Size;
                 defaultFontStyle.Bold = value.Bold;
@@ -5167,7 +5310,7 @@ namespace ScintillaNET
 
                 if (!SetLexerByName(value))
                 {
-                    throw new InvalidOperationException(@$"Lexer with the name of '{value}' was not found.");
+                    throw new InvalidOperationException($@"Lexer with the name of '{value}' was not found.");
                 }
 
                 this.lexerName = value;
@@ -6371,7 +6514,7 @@ namespace ScintillaNET
 
                 // Assumption is that moving the gap will always be equal to or less expensive
                 // than using one of the APIs which requires an intermediate buffer.
-                string text = new((sbyte*)ptr, 0, length, Encoding);
+                string text = new string((sbyte*)ptr, 0, length, Encoding);
                 return text;
             }
             set

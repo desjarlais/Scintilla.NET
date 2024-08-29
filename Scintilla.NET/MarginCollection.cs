@@ -3,163 +3,164 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 
-namespace ScintillaNET;
-
-/// <summary>
-/// An immutable collection of margins in a <see cref="Scintilla" /> control.
-/// </summary>
-public class MarginCollection : IEnumerable<Margin>
+namespace ScintillaNET
 {
-    private readonly Scintilla scintilla;
-
     /// <summary>
-    /// Removes all text displayed in every <see cref="MarginType.Text" /> and <see cref="MarginType.RightText" /> margins.
+    /// An immutable collection of margins in a <see cref="Scintilla" /> control.
     /// </summary>
-    public void ClearAllText()
+    public class MarginCollection : IEnumerable<Margin>
     {
-        this.scintilla.DirectMessage(NativeMethods.SCI_MARGINTEXTCLEARALL);
-    }
+        private readonly Scintilla scintilla;
 
-    /// <summary>
-    /// Provides an enumerator that iterates through the collection.
-    /// </summary>
-    /// <returns>An object that contains all <see cref="Margin" /> objects within the <see cref="MarginCollection" />.</returns>
-    public IEnumerator<Margin> GetEnumerator()
-    {
-        int count = Count;
-        for (int i = 0; i < count; i++)
-            yield return this[i];
+        /// <summary>
+        /// Removes all text displayed in every <see cref="MarginType.Text" /> and <see cref="MarginType.RightText" /> margins.
+        /// </summary>
+        public void ClearAllText()
+        {
+            this.scintilla.DirectMessage(NativeMethods.SCI_MARGINTEXTCLEARALL);
+        }
 
-        yield break;
-    }
+        /// <summary>
+        /// Provides an enumerator that iterates through the collection.
+        /// </summary>
+        /// <returns>An object that contains all <see cref="Margin" /> objects within the <see cref="MarginCollection" />.</returns>
+        public IEnumerator<Margin> GetEnumerator()
+        {
+            int count = Count;
+            for (int i = 0; i < count; i++)
+                yield return this[i];
 
-    IEnumerator IEnumerable.GetEnumerator()
-    {
-        return GetEnumerator();
-    }
+            yield break;
+        }
 
-    /// <summary>
-    /// Gets or sets the number of margins in the <see cref="MarginCollection" />.
-    /// </summary>
-    /// <returns>The number of margins in the collection. The default is 5.</returns>
-    [DefaultValue(NativeMethods.SC_MAX_MARGIN + 1)]
-    [Description("The maximum number of margins.")]
-    public int Capacity
-    {
-        get
+        IEnumerator IEnumerable.GetEnumerator()
         {
-            return this.scintilla.DirectMessage(NativeMethods.SCI_GETMARGINS).ToInt32();
+            return GetEnumerator();
         }
-        set
-        {
-            value = Helpers.ClampMin(value, 0);
-            this.scintilla.DirectMessage(NativeMethods.SCI_SETMARGINS, new IntPtr(value));
-        }
-    }
 
-    /// <summary>
-    /// Gets the number of margins in the <see cref="MarginCollection" />.
-    /// </summary>
-    /// <returns>The number of margins in the collection.</returns>
-    /// <remarks>This property is kept for convenience. The return value will always be equal to <see cref="Capacity" />.</remarks>
-    /// <seealso cref="Capacity" />
-    [Browsable(false)]
-    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-    public int Count
-    {
-        get
+        /// <summary>
+        /// Gets or sets the number of margins in the <see cref="MarginCollection" />.
+        /// </summary>
+        /// <returns>The number of margins in the collection. The default is 5.</returns>
+        [DefaultValue(NativeMethods.SC_MAX_MARGIN + 1)]
+        [Description("The maximum number of margins.")]
+        public int Capacity
         {
-            return Capacity;
+            get
+            {
+                return this.scintilla.DirectMessage(NativeMethods.SCI_GETMARGINS).ToInt32();
+            }
+            set
+            {
+                value = Helpers.ClampMin(value, 0);
+                this.scintilla.DirectMessage(NativeMethods.SCI_SETMARGINS, new IntPtr(value));
+            }
         }
-    }
 
-    /// <summary>
-    /// Gets or sets the width in pixels of the left margin padding.
-    /// </summary>
-    /// <returns>The left margin padding measured in pixels. The default is 1.</returns>
-    [DefaultValue(1)]
-    [Description("The left margin padding in pixels.")]
-    public int Left
-    {
-        get
+        /// <summary>
+        /// Gets the number of margins in the <see cref="MarginCollection" />.
+        /// </summary>
+        /// <returns>The number of margins in the collection.</returns>
+        /// <remarks>This property is kept for convenience. The return value will always be equal to <see cref="Capacity" />.</remarks>
+        /// <seealso cref="Capacity" />
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public int Count
         {
-            return this.scintilla.DirectMessage(NativeMethods.SCI_GETMARGINLEFT).ToInt32();
+            get
+            {
+                return Capacity;
+            }
         }
-        set
-        {
-            value = Helpers.ClampMin(value, 0);
-            this.scintilla.DirectMessage(NativeMethods.SCI_SETMARGINLEFT, IntPtr.Zero, new IntPtr(value));
-        }
-    }
 
-    // TODO Why is this commented out?
-    /*
-    /// <summary>
-    /// Gets or sets the margin options.
-    /// </summary>
-    /// <returns>
-    /// A <see cref="ScintillaNET.MarginOptions" /> that represents the margin options.
-    /// The default is <see cref="ScintillaNET.MarginOptions.None" />.
-    /// </returns>
-    [DefaultValue(MarginOptions.None)]
-    [Description("Margin options flags.")]
-    [TypeConverter(typeof(FlagsEnumTypeConverter.FlagsEnumConverter))]
-    public MarginOptions Options
-    {
-        get
+        /// <summary>
+        /// Gets or sets the width in pixels of the left margin padding.
+        /// </summary>
+        /// <returns>The left margin padding measured in pixels. The default is 1.</returns>
+        [DefaultValue(1)]
+        [Description("The left margin padding in pixels.")]
+        public int Left
         {
-            return (MarginOptions)scintilla.DirectMessage(NativeMethods.SCI_GETMARGINOPTIONS);
+            get
+            {
+                return this.scintilla.DirectMessage(NativeMethods.SCI_GETMARGINLEFT).ToInt32();
+            }
+            set
+            {
+                value = Helpers.ClampMin(value, 0);
+                this.scintilla.DirectMessage(NativeMethods.SCI_SETMARGINLEFT, IntPtr.Zero, new IntPtr(value));
+            }
         }
-        set
-        {
-            var options = (int)value;
-            scintilla.DirectMessage(NativeMethods.SCI_SETMARGINOPTIONS, new IntPtr(options));
-        }
-    }
-    */
 
-    /// <summary>
-    /// Gets or sets the width in pixels of the right margin padding.
-    /// </summary>
-    /// <returns>The right margin padding measured in pixels. The default is 1.</returns>
-    [DefaultValue(1)]
-    [Description("The right margin padding in pixels.")]
-    public int Right
-    {
-        get
+        // TODO Why is this commented out?
+        /*
+        /// <summary>
+        /// Gets or sets the margin options.
+        /// </summary>
+        /// <returns>
+        /// A <see cref="ScintillaNET.MarginOptions" /> that represents the margin options.
+        /// The default is <see cref="ScintillaNET.MarginOptions.None" />.
+        /// </returns>
+        [DefaultValue(MarginOptions.None)]
+        [Description("Margin options flags.")]
+        [TypeConverter(typeof(FlagsEnumTypeConverter.FlagsEnumConverter))]
+        public MarginOptions Options
         {
-            return this.scintilla.DirectMessage(NativeMethods.SCI_GETMARGINRIGHT).ToInt32();
+            get
+            {
+                return (MarginOptions)scintilla.DirectMessage(NativeMethods.SCI_GETMARGINOPTIONS);
+            }
+            set
+            {
+                var options = (int)value;
+                scintilla.DirectMessage(NativeMethods.SCI_SETMARGINOPTIONS, new IntPtr(options));
+            }
         }
-        set
-        {
-            value = Helpers.ClampMin(value, 0);
-            this.scintilla.DirectMessage(NativeMethods.SCI_SETMARGINRIGHT, IntPtr.Zero, new IntPtr(value));
-        }
-    }
+        */
 
-    /// <summary>
-    /// Gets a <see cref="Margin" /> object at the specified index.
-    /// </summary>
-    /// <param name="index">The margin index.</param>
-    /// <returns>An object representing the margin at the specified <paramref name="index" />.</returns>
-    /// <remarks>By convention margin 0 is used for line numbers and the two following for symbols.</remarks>
-    [Browsable(false)]
-    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-    public Margin this[int index]
-    {
-        get
+        /// <summary>
+        /// Gets or sets the width in pixels of the right margin padding.
+        /// </summary>
+        /// <returns>The right margin padding measured in pixels. The default is 1.</returns>
+        [DefaultValue(1)]
+        [Description("The right margin padding in pixels.")]
+        public int Right
         {
-            index = Helpers.Clamp(index, 0, Count - 1);
-            return new Margin(this.scintilla, index);
+            get
+            {
+                return this.scintilla.DirectMessage(NativeMethods.SCI_GETMARGINRIGHT).ToInt32();
+            }
+            set
+            {
+                value = Helpers.ClampMin(value, 0);
+                this.scintilla.DirectMessage(NativeMethods.SCI_SETMARGINRIGHT, IntPtr.Zero, new IntPtr(value));
+            }
         }
-    }
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="MarginCollection" /> class.
-    /// </summary>
-    /// <param name="scintilla">The <see cref="Scintilla" /> control that created this collection.</param>
-    public MarginCollection(Scintilla scintilla)
-    {
-        this.scintilla = scintilla;
+        /// <summary>
+        /// Gets a <see cref="Margin" /> object at the specified index.
+        /// </summary>
+        /// <param name="index">The margin index.</param>
+        /// <returns>An object representing the margin at the specified <paramref name="index" />.</returns>
+        /// <remarks>By convention margin 0 is used for line numbers and the two following for symbols.</remarks>
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public Margin this[int index]
+        {
+            get
+            {
+                index = Helpers.Clamp(index, 0, Count - 1);
+                return new Margin(this.scintilla, index);
+            }
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MarginCollection" /> class.
+        /// </summary>
+        /// <param name="scintilla">The <see cref="Scintilla" /> control that created this collection.</param>
+        public MarginCollection(Scintilla scintilla)
+        {
+            this.scintilla = scintilla;
+        }
     }
 }

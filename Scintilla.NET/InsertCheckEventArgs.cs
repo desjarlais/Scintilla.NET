@@ -1,68 +1,69 @@
 ﻿using System;
 
-namespace ScintillaNET;
-
-/// <summary>
-/// Provides data for the <see cref="Scintilla.InsertCheck" /> event.
-/// </summary>
-public class InsertCheckEventArgs : EventArgs
+namespace ScintillaNET
 {
-    private readonly Scintilla scintilla;
-    private readonly int bytePosition;
-    private readonly int byteLength;
-    private readonly IntPtr textPtr;
-
-    internal int? CachedPosition { get; set; }
-    internal string CachedText { get; set; }
-
     /// <summary>
-    /// Gets the zero-based document position where text will be inserted.
+    /// Provides data for the <see cref="Scintilla.InsertCheck" /> event.
     /// </summary>
-    /// <returns>The zero-based character position within the document where text will be inserted.</returns>
-    public int Position
+    public class InsertCheckEventArgs : EventArgs
     {
-        get
+        private readonly Scintilla scintilla;
+        private readonly int bytePosition;
+        private readonly int byteLength;
+        private readonly IntPtr textPtr;
+
+        internal int? CachedPosition { get; set; }
+        internal string CachedText { get; set; }
+
+        /// <summary>
+        /// Gets the zero-based document position where text will be inserted.
+        /// </summary>
+        /// <returns>The zero-based character position within the document where text will be inserted.</returns>
+        public int Position
         {
-            CachedPosition ??= this.scintilla.Lines.ByteToCharPosition(this.bytePosition);
+            get
+            {
+                CachedPosition = CachedPosition ?? this.scintilla.Lines.ByteToCharPosition(this.bytePosition);
 
-            return (int)CachedPosition;
+                return (int)CachedPosition;
+            }
         }
-    }
 
-    /// <summary>
-    /// Gets or sets the text being inserted.
-    /// </summary>
-    /// <returns>The text being inserted into the document.</returns>
-    public unsafe string Text
-    {
-        get
+        /// <summary>
+        /// Gets or sets the text being inserted.
+        /// </summary>
+        /// <returns>The text being inserted into the document.</returns>
+        public unsafe string Text
         {
-            CachedText ??= Helpers.GetString(this.textPtr, this.byteLength, this.scintilla.Encoding);
+            get
+            {
+                CachedText = CachedText ?? Helpers.GetString(this.textPtr, this.byteLength, this.scintilla.Encoding);
 
-            return CachedText;
+                return CachedText;
+            }
+            set
+            {
+                CachedText = value ?? string.Empty;
+
+                byte[] bytes = Helpers.GetBytes(CachedText, this.scintilla.Encoding, zeroTerminated: false);
+                fixed (byte* bp = bytes)
+                    this.scintilla.DirectMessage(NativeMethods.SCI_CHANGEINSERTION, new IntPtr(bytes.Length), new IntPtr(bp));
+            }
         }
-        set
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="InsertCheckEventArgs" /> class.
+        /// </summary>
+        /// <param name="scintilla">The <see cref="Scintilla" /> control that generated this event.</param>
+        /// <param name="bytePosition">The zero-based byte position within the document where text is being inserted.</param>
+        /// <param name="byteLength">The length in bytes of the inserted text.</param>
+        /// <param name="text">A pointer to the text being inserted.</param>
+        public InsertCheckEventArgs(Scintilla scintilla, int bytePosition, int byteLength, IntPtr text)
         {
-            CachedText = value ?? string.Empty;
-
-            byte[] bytes = Helpers.GetBytes(CachedText, this.scintilla.Encoding, zeroTerminated: false);
-            fixed (byte* bp = bytes)
-                this.scintilla.DirectMessage(NativeMethods.SCI_CHANGEINSERTION, new IntPtr(bytes.Length), new IntPtr(bp));
+            this.scintilla = scintilla;
+            this.bytePosition = bytePosition;
+            this.byteLength = byteLength;
+            this.textPtr = text;
         }
-    }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="InsertCheckEventArgs" /> class.
-    /// </summary>
-    /// <param name="scintilla">The <see cref="Scintilla" /> control that generated this event.</param>
-    /// <param name="bytePosition">The zero-based byte position within the document where text is being inserted.</param>
-    /// <param name="byteLength">The length in bytes of the inserted text.</param>
-    /// <param name="text">A pointer to the text being inserted.</param>
-    public InsertCheckEventArgs(Scintilla scintilla, int bytePosition, int byteLength, IntPtr text)
-    {
-        this.scintilla = scintilla;
-        this.bytePosition = bytePosition;
-        this.byteLength = byteLength;
-        this.textPtr = text;
     }
 }

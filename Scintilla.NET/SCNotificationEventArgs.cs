@@ -1,14 +1,15 @@
 ﻿using System;
 
-namespace ScintillaNET;
-
-// For internal use only
-internal sealed class SCNotificationEventArgs : EventArgs
+namespace ScintillaNET
 {
-    public NativeMethods.SCNotification SCNotification { get; private set; }
-
-    public SCNotificationEventArgs(NativeMethods.SCNotification scn)
+    // For internal use only
+    internal sealed class SCNotificationEventArgs : EventArgs
     {
-        SCNotification = scn;
+        public NativeMethods.SCNotification SCNotification { get; private set; }
+
+        public SCNotificationEventArgs(NativeMethods.SCNotification scn)
+        {
+            SCNotification = scn;
+        }
     }
 }

@@ -1,22 +1,23 @@
-﻿namespace ScintillaNET;
-
-/// <summary>
-/// End-of-line format.
-/// </summary>
-public enum Eol
+﻿namespace ScintillaNET
 {
     /// <summary>
-    /// Carriage Return, Line Feed pair "\r\n" (0x0D0A).
+    /// End-of-line format.
     /// </summary>
-    CrLf = NativeMethods.SC_EOL_CRLF,
+    public enum Eol
+    {
+        /// <summary>
+        /// Carriage Return, Line Feed pair "\r\n" (0x0D0A).
+        /// </summary>
+        CrLf = NativeMethods.SC_EOL_CRLF,
 
-    /// <summary>
-    /// Carriage Return '\r' (0x0D).
-    /// </summary>
-    Cr = NativeMethods.SC_EOL_CR,
+        /// <summary>
+        /// Carriage Return '\r' (0x0D).
+        /// </summary>
+        Cr = NativeMethods.SC_EOL_CR,
 
-    /// <summary>
-    /// Line Feed '\n' (0x0A).
-    /// </summary>
-    Lf = NativeMethods.SC_EOL_LF
+        /// <summary>
+        /// Line Feed '\n' (0x0A).
+        /// </summary>
+        Lf = NativeMethods.SC_EOL_LF
+    }
 }

@@ -1,55 +1,56 @@
 ﻿using System;
 using System.Windows.Forms;
 
-namespace ScintillaNET;
-
-/// <summary>
-/// Provides data for the <see cref="Scintilla.MarginClick" /> event.
-/// </summary>
-public class MarginClickEventArgs : EventArgs
+namespace ScintillaNET
 {
-    private readonly Scintilla scintilla;
-    private readonly int bytePosition;
-    private int? position;
-
     /// <summary>
-    /// Gets the margin clicked.
+    /// Provides data for the <see cref="Scintilla.MarginClick" /> event.
     /// </summary>
-    /// <returns>The zero-based index of the clicked margin.</returns>
-    public int Margin { get; private set; }
-
-    /// <summary>
-    /// Gets the modifier keys (SHIFT, CTRL, ALT) held down when the margin was clicked.
-    /// </summary>
-    /// <returns>A bitwise combination of the Keys enumeration indicating the modifier keys.</returns>
-    public Keys Modifiers { get; private set; }
-
-    /// <summary>
-    /// Gets the zero-based document position where the line ajacent to the clicked margin starts.
-    /// </summary>
-    /// <returns>The zero-based character position within the document of the start of the line adjacent to the margin clicked.</returns>
-    public int Position
+    public class MarginClickEventArgs : EventArgs
     {
-        get
+        private readonly Scintilla scintilla;
+        private readonly int bytePosition;
+        private int? position;
+
+        /// <summary>
+        /// Gets the margin clicked.
+        /// </summary>
+        /// <returns>The zero-based index of the clicked margin.</returns>
+        public int Margin { get; private set; }
+
+        /// <summary>
+        /// Gets the modifier keys (SHIFT, CTRL, ALT) held down when the margin was clicked.
+        /// </summary>
+        /// <returns>A bitwise combination of the Keys enumeration indicating the modifier keys.</returns>
+        public Keys Modifiers { get; private set; }
+
+        /// <summary>
+        /// Gets the zero-based document position where the line ajacent to the clicked margin starts.
+        /// </summary>
+        /// <returns>The zero-based character position within the document of the start of the line adjacent to the margin clicked.</returns>
+        public int Position
         {
-            this.position ??= this.scintilla.Lines.ByteToCharPosition(this.bytePosition);
+            get
+            {
+                this.position = this.position ?? this.scintilla.Lines.ByteToCharPosition(this.bytePosition);
 
-            return (int)this.position;
+                return (int)this.position;
+            }
         }
-    }
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="MarginClickEventArgs" /> class.
-    /// </summary>
-    /// <param name="scintilla">The <see cref="Scintilla" /> control that generated this event.</param>
-    /// <param name="modifiers">The modifier keys that where held down at the time of the margin click.</param>
-    /// <param name="bytePosition">The zero-based byte position within the document where the line adjacent to the clicked margin starts.</param>
-    /// <param name="margin">The zero-based index of the clicked margin.</param>
-    public MarginClickEventArgs(Scintilla scintilla, Keys modifiers, int bytePosition, int margin)
-    {
-        this.scintilla = scintilla;
-        this.bytePosition = bytePosition;
-        Modifiers = modifiers;
-        Margin = margin;
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MarginClickEventArgs" /> class.
+        /// </summary>
+        /// <param name="scintilla">The <see cref="Scintilla" /> control that generated this event.</param>
+        /// <param name="modifiers">The modifier keys that where held down at the time of the margin click.</param>
+        /// <param name="bytePosition">The zero-based byte position within the document where the line adjacent to the clicked margin starts.</param>
+        /// <param name="margin">The zero-based index of the clicked margin.</param>
+        public MarginClickEventArgs(Scintilla scintilla, Keys modifiers, int bytePosition, int margin)
+        {
+            this.scintilla = scintilla;
+            this.bytePosition = bytePosition;
+            Modifiers = modifiers;
+            Margin = margin;
+        }
     }
 }

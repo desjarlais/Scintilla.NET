@@ -1,18 +1,19 @@
 ﻿using System;
 using System.Windows.Forms;
 
-namespace ScintillaNET.TestApp;
-
-static class Program
+namespace ScintillaNET.TestApp
 {
-    /// <summary>
-    /// The main entry point for the application.
-    /// </summary>
-    [STAThread]
-    static void Main()
+    internal static class Program
     {
-        Application.EnableVisualStyles();
-        Application.SetCompatibleTextRenderingDefault(false);
-        Application.Run(new FormMain());
+        /// <summary>
+        /// The main entry point for the application.
+        /// </summary>
+        [STAThread]
+        private static void Main()
+        {
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+            Application.Run(new FormMain());
+        }
     }
 }

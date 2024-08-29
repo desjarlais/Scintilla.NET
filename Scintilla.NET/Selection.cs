@@ -1,150 +1,151 @@
 ﻿using System;
 
-namespace ScintillaNET;
-
-/// <summary>
-/// Represents a selection when there are multiple active selections in a <see cref="Scintilla" /> control.
-/// </summary>
-public class Selection
+namespace ScintillaNET
 {
-    private readonly Scintilla scintilla;
-
     /// <summary>
-    /// Gets or sets the anchor position of the selection.
+    /// Represents a selection when there are multiple active selections in a <see cref="Scintilla" /> control.
     /// </summary>
-    /// <returns>The zero-based document position of the selection anchor.</returns>
-    public int Anchor
+    public class Selection
     {
-        get
-        {
-            int pos = this.scintilla.DirectMessage(NativeMethods.SCI_GETSELECTIONNANCHOR, new IntPtr(Index)).ToInt32();
-            if (pos <= 0)
-                return pos;
+        private readonly Scintilla scintilla;
 
-            return this.scintilla.Lines.ByteToCharPosition(pos);
-        }
-        set
+        /// <summary>
+        /// Gets or sets the anchor position of the selection.
+        /// </summary>
+        /// <returns>The zero-based document position of the selection anchor.</returns>
+        public int Anchor
         {
-            value = Helpers.Clamp(value, 0, this.scintilla.TextLength);
-            value = this.scintilla.Lines.CharToBytePosition(value);
-            this.scintilla.DirectMessage(NativeMethods.SCI_SETSELECTIONNANCHOR, new IntPtr(Index), new IntPtr(value));
-        }
-    }
+            get
+            {
+                int pos = this.scintilla.DirectMessage(NativeMethods.SCI_GETSELECTIONNANCHOR, new IntPtr(Index)).ToInt32();
+                if (pos <= 0)
+                    return pos;
 
-    /// <summary>
-    /// Gets or sets the amount of anchor virtual space.
-    /// </summary>
-    /// <returns>The amount of virtual space past the end of the line offsetting the selection anchor.</returns>
-    public int AnchorVirtualSpace
-    {
-        get
-        {
-            return this.scintilla.DirectMessage(NativeMethods.SCI_GETSELECTIONNANCHORVIRTUALSPACE, new IntPtr(Index)).ToInt32();
+                return this.scintilla.Lines.ByteToCharPosition(pos);
+            }
+            set
+            {
+                value = Helpers.Clamp(value, 0, this.scintilla.TextLength);
+                value = this.scintilla.Lines.CharToBytePosition(value);
+                this.scintilla.DirectMessage(NativeMethods.SCI_SETSELECTIONNANCHOR, new IntPtr(Index), new IntPtr(value));
+            }
         }
-        set
-        {
-            value = Helpers.ClampMin(value, 0);
-            this.scintilla.DirectMessage(NativeMethods.SCI_SETSELECTIONNANCHORVIRTUALSPACE, new IntPtr(Index), new IntPtr(value));
-        }
-    }
 
-    /// <summary>
-    /// Gets or sets the caret position of the selection.
-    /// </summary>
-    /// <returns>The zero-based document position of the selection caret.</returns>
-    public int Caret
-    {
-        get
+        /// <summary>
+        /// Gets or sets the amount of anchor virtual space.
+        /// </summary>
+        /// <returns>The amount of virtual space past the end of the line offsetting the selection anchor.</returns>
+        public int AnchorVirtualSpace
         {
-            int pos = this.scintilla.DirectMessage(NativeMethods.SCI_GETSELECTIONNCARET, new IntPtr(Index)).ToInt32();
-            if (pos <= 0)
-                return pos;
-
-            return this.scintilla.Lines.ByteToCharPosition(pos);
+            get
+            {
+                return this.scintilla.DirectMessage(NativeMethods.SCI_GETSELECTIONNANCHORVIRTUALSPACE, new IntPtr(Index)).ToInt32();
+            }
+            set
+            {
+                value = Helpers.ClampMin(value, 0);
+                this.scintilla.DirectMessage(NativeMethods.SCI_SETSELECTIONNANCHORVIRTUALSPACE, new IntPtr(Index), new IntPtr(value));
+            }
         }
-        set
+
+        /// <summary>
+        /// Gets or sets the caret position of the selection.
+        /// </summary>
+        /// <returns>The zero-based document position of the selection caret.</returns>
+        public int Caret
         {
-            value = Helpers.Clamp(value, 0, this.scintilla.TextLength);
-            value = this.scintilla.Lines.CharToBytePosition(value);
-            this.scintilla.DirectMessage(NativeMethods.SCI_SETSELECTIONNCARET, new IntPtr(Index), new IntPtr(value));
-        }
-    }
+            get
+            {
+                int pos = this.scintilla.DirectMessage(NativeMethods.SCI_GETSELECTIONNCARET, new IntPtr(Index)).ToInt32();
+                if (pos <= 0)
+                    return pos;
 
-    /// <summary>
-    /// Gets or sets the amount of caret virtual space.
-    /// </summary>
-    /// <returns>The amount of virtual space past the end of the line offsetting the selection caret.</returns>
-    public int CaretVirtualSpace
-    {
-        get
+                return this.scintilla.Lines.ByteToCharPosition(pos);
+            }
+            set
+            {
+                value = Helpers.Clamp(value, 0, this.scintilla.TextLength);
+                value = this.scintilla.Lines.CharToBytePosition(value);
+                this.scintilla.DirectMessage(NativeMethods.SCI_SETSELECTIONNCARET, new IntPtr(Index), new IntPtr(value));
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the amount of caret virtual space.
+        /// </summary>
+        /// <returns>The amount of virtual space past the end of the line offsetting the selection caret.</returns>
+        public int CaretVirtualSpace
         {
-            return this.scintilla.DirectMessage(NativeMethods.SCI_GETSELECTIONNCARETVIRTUALSPACE, new IntPtr(Index)).ToInt32();
+            get
+            {
+                return this.scintilla.DirectMessage(NativeMethods.SCI_GETSELECTIONNCARETVIRTUALSPACE, new IntPtr(Index)).ToInt32();
+            }
+            set
+            {
+                value = Helpers.ClampMin(value, 0);
+                this.scintilla.DirectMessage(NativeMethods.SCI_SETSELECTIONNCARETVIRTUALSPACE, new IntPtr(Index), new IntPtr(value));
+            }
         }
-        set
+
+        /// <summary>
+        /// Gets or sets the end position of the selection.
+        /// </summary>
+        /// <returns>The zero-based document position where the selection ends.</returns>
+        public int End
         {
-            value = Helpers.ClampMin(value, 0);
-            this.scintilla.DirectMessage(NativeMethods.SCI_SETSELECTIONNCARETVIRTUALSPACE, new IntPtr(Index), new IntPtr(value));
-        }
-    }
+            get
+            {
+                int pos = this.scintilla.DirectMessage(NativeMethods.SCI_GETSELECTIONNEND, new IntPtr(Index)).ToInt32();
+                if (pos <= 0)
+                    return pos;
 
-    /// <summary>
-    /// Gets or sets the end position of the selection.
-    /// </summary>
-    /// <returns>The zero-based document position where the selection ends.</returns>
-    public int End
-    {
-        get
+                return this.scintilla.Lines.ByteToCharPosition(pos);
+            }
+            set
+            {
+                value = Helpers.Clamp(value, 0, this.scintilla.TextLength);
+                value = this.scintilla.Lines.CharToBytePosition(value);
+                this.scintilla.DirectMessage(NativeMethods.SCI_SETSELECTIONNEND, new IntPtr(Index), new IntPtr(value));
+            }
+        }
+
+        /// <summary>
+        /// Gets the selection index.
+        /// </summary>
+        /// <returns>The zero-based selection index within the <see cref="SelectionCollection" /> that created it.</returns>
+        public int Index { get; private set; }
+
+        /// <summary>
+        /// Gets or sets the start position of the selection.
+        /// </summary>
+        /// <returns>The zero-based document position where the selection starts.</returns>
+        public int Start
         {
-            int pos = this.scintilla.DirectMessage(NativeMethods.SCI_GETSELECTIONNEND, new IntPtr(Index)).ToInt32();
-            if (pos <= 0)
-                return pos;
+            get
+            {
+                int pos = this.scintilla.DirectMessage(NativeMethods.SCI_GETSELECTIONNSTART, new IntPtr(Index)).ToInt32();
+                if (pos <= 0)
+                    return pos;
 
-            return this.scintilla.Lines.ByteToCharPosition(pos);
+                return this.scintilla.Lines.ByteToCharPosition(pos);
+            }
+            set
+            {
+                value = Helpers.Clamp(value, 0, this.scintilla.TextLength);
+                value = this.scintilla.Lines.CharToBytePosition(value);
+                this.scintilla.DirectMessage(NativeMethods.SCI_SETSELECTIONNSTART, new IntPtr(Index), new IntPtr(value));
+            }
         }
-        set
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Selection" /> class.
+        /// </summary>
+        /// <param name="scintilla">The <see cref="Scintilla" /> control that created this selection.</param>
+        /// <param name="index">The index of this selection within the <see cref="SelectionCollection" /> that created it.</param>
+        public Selection(Scintilla scintilla, int index)
         {
-            value = Helpers.Clamp(value, 0, this.scintilla.TextLength);
-            value = this.scintilla.Lines.CharToBytePosition(value);
-            this.scintilla.DirectMessage(NativeMethods.SCI_SETSELECTIONNEND, new IntPtr(Index), new IntPtr(value));
+            this.scintilla = scintilla;
+            Index = index;
         }
-    }
-
-    /// <summary>
-    /// Gets the selection index.
-    /// </summary>
-    /// <returns>The zero-based selection index within the <see cref="SelectionCollection" /> that created it.</returns>
-    public int Index { get; private set; }
-
-    /// <summary>
-    /// Gets or sets the start position of the selection.
-    /// </summary>
-    /// <returns>The zero-based document position where the selection starts.</returns>
-    public int Start
-    {
-        get
-        {
-            int pos = this.scintilla.DirectMessage(NativeMethods.SCI_GETSELECTIONNSTART, new IntPtr(Index)).ToInt32();
-            if (pos <= 0)
-                return pos;
-
-            return this.scintilla.Lines.ByteToCharPosition(pos);
-        }
-        set
-        {
-            value = Helpers.Clamp(value, 0, this.scintilla.TextLength);
-            value = this.scintilla.Lines.CharToBytePosition(value);
-            this.scintilla.DirectMessage(NativeMethods.SCI_SETSELECTIONNSTART, new IntPtr(Index), new IntPtr(value));
-        }
-    }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="Selection" /> class.
-    /// </summary>
-    /// <param name="scintilla">The <see cref="Scintilla" /> control that created this selection.</param>
-    /// <param name="index">The index of this selection within the <see cref="SelectionCollection" /> that created it.</param>
-    public Selection(Scintilla scintilla, int index)
-    {
-        this.scintilla = scintilla;
-        Index = index;
     }
 }

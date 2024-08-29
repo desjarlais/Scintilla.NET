@@ -27,7 +27,7 @@ namespace ScintillaNET
         {
             get
             {
-                this.position ??= this.scintilla.Lines.ByteToCharPosition(this.bytePosition);
+                this.position = this.position ?? this.scintilla.Lines.ByteToCharPosition(this.bytePosition);
 
                 return (int)this.position;
             }

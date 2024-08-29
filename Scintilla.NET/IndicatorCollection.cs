@@ -2,73 +2,74 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 
-namespace ScintillaNET;
-
-/// <summary>
-/// An immutable collection of indicators in a <see cref="Scintilla" /> control.
-/// </summary>
-public class IndicatorCollection : IEnumerable<Indicator>
+namespace ScintillaNET
 {
-    private readonly Scintilla scintilla;
-
     /// <summary>
-    /// Provides an enumerator that iterates through the collection.
+    /// An immutable collection of indicators in a <see cref="Scintilla" /> control.
     /// </summary>
-    /// <returns>An object that contains all <see cref="Indicator" /> objects within the <see cref="IndicatorCollection" />.</returns>
-    public IEnumerator<Indicator> GetEnumerator()
+    public class IndicatorCollection : IEnumerable<Indicator>
     {
-        int count = Count;
-        for (int i = 0; i < count; i++)
-            yield return this[i];
+        private readonly Scintilla scintilla;
 
-        yield break;
-    }
-
-    IEnumerator IEnumerable.GetEnumerator()
-    {
-        return GetEnumerator();
-    }
-
-    /// <summary>
-    /// Gets the number of indicators.
-    /// </summary>
-    /// <returns>The number of indicators in the <see cref="IndicatorCollection" />.</returns>
-    [Browsable(false)]
-    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-    public int Count
-    {
-        get
+        /// <summary>
+        /// Provides an enumerator that iterates through the collection.
+        /// </summary>
+        /// <returns>An object that contains all <see cref="Indicator" /> objects within the <see cref="IndicatorCollection" />.</returns>
+        public IEnumerator<Indicator> GetEnumerator()
         {
-            return NativeMethods.INDICATOR_MAX + 1;
-        }
-    }
+            int count = Count;
+            for (int i = 0; i < count; i++)
+                yield return this[i];
 
-    /// <summary>
-    /// Gets an <see cref="Indicator" /> object at the specified index.
-    /// </summary>
-    /// <param name="index">The indicator index.</param>
-    /// <returns>An object representing the indicator at the specified <paramref name="index" />.</returns>
-    /// <remarks>
-    /// Indicators 0 through 7 are used by lexers.
-    /// Indicators 32 through 35 are used for IME.
-    /// </remarks>
-    [Browsable(false)]
-    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-    public Indicator this[int index]
-    {
-        get
+            yield break;
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
         {
-            index = Helpers.Clamp(index, 0, Count - 1);
-            return new Indicator(this.scintilla, index);
+            return GetEnumerator();
         }
-    }
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="IndicatorCollection" /> class.
-    /// </summary>
-    /// <param name="scintilla">The <see cref="Scintilla" /> control that created this collection.</param>
-    public IndicatorCollection(Scintilla scintilla)
-    {
-        this.scintilla = scintilla;
+        /// <summary>
+        /// Gets the number of indicators.
+        /// </summary>
+        /// <returns>The number of indicators in the <see cref="IndicatorCollection" />.</returns>
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public int Count
+        {
+            get
+            {
+                return NativeMethods.INDICATOR_MAX + 1;
+            }
+        }
+
+        /// <summary>
+        /// Gets an <see cref="Indicator" /> object at the specified index.
+        /// </summary>
+        /// <param name="index">The indicator index.</param>
+        /// <returns>An object representing the indicator at the specified <paramref name="index" />.</returns>
+        /// <remarks>
+        /// Indicators 0 through 7 are used by lexers.
+        /// Indicators 32 through 35 are used for IME.
+        /// </remarks>
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public Indicator this[int index]
+        {
+            get
+            {
+                index = Helpers.Clamp(index, 0, Count - 1);
+                return new Indicator(this.scintilla, index);
+            }
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="IndicatorCollection" /> class.
+        /// </summary>
+        /// <param name="scintilla">The <see cref="Scintilla" /> control that created this collection.</param>
+        public IndicatorCollection(Scintilla scintilla)
+        {
+            this.scintilla = scintilla;
+        }
     }
 }
