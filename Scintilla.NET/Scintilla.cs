@@ -78,8 +78,10 @@ namespace ScintillaNET
         {
             // check run-time paths
             string folder = Path.Combine("runtimes", Environment.Is64BitProcess ? "win-x64" : "win-x86", "native");
-            var runtimeAssembly = Assembly.GetExecutingAssembly();
-            string managedLocation = Path.GetDirectoryName(runtimeAssembly.Location) ?? AppDomain.CurrentDomain.BaseDirectory;
+            string location = Assembly.GetExecutingAssembly().Location;
+            if (string.IsNullOrWhiteSpace(location))
+                location = Assembly.GetEntryAssembly().Location;
+            string managedLocation = Path.GetDirectoryName(location) ?? AppDomain.CurrentDomain.BaseDirectory;
             yield return Path.Combine(managedLocation, folder);
 
             if (InDesignProcess())
