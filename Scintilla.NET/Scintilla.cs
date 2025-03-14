@@ -886,31 +886,37 @@ namespace ScintillaNET
             }
         }
 
-        internal IntPtr DirectMessage(int msg)
-        {
-            return DirectMessage(msg, IntPtr.Zero, IntPtr.Zero);
-        }
-
-        internal IntPtr DirectMessage(int msg, IntPtr wParam)
-        {
-            return DirectMessage(msg, wParam, IntPtr.Zero);
-        }
-
         /// <summary>
         /// Sends the specified message directly to the native Scintilla window,
         /// bypassing any managed APIs.
         /// </summary>
         /// <param name="msg">The message ID.</param>
-        /// <param name="wParam">The message <c>wparam</c> field.</param>
-        /// <param name="lParam">The message <c>lparam</c> field.</param>
         /// <returns>An <see cref="IntPtr"/> representing the result of the message request.</returns>
         /// <remarks>This API supports the Scintilla infrastructure and is not intended to be used directly from your code.</remarks>
+        [EditorBrowsable(EditorBrowsableState.Advanced)]
+        public IntPtr DirectMessage(int msg)
+        {
+            return DirectMessage(msg, IntPtr.Zero, IntPtr.Zero);
+        }
+
+        /// <inheritdoc cref="DirectMessage(int)"/>
+        /// <param name="msg"></param>
+        /// <param name="wParam">The message <c>wparam</c> field.</param>
+        [EditorBrowsable(EditorBrowsableState.Advanced)]
+        public IntPtr DirectMessage(int msg, IntPtr wParam)
+        {
+            return DirectMessage(msg, wParam, IntPtr.Zero);
+        }
+
+        /// <inheritdoc cref="DirectMessage(int, IntPtr)"/>
+        /// <param name="msg"></param>
+        /// <param name="wParam"></param>
+        /// <param name="lParam">The message <c>lparam</c> field.</param>
         [EditorBrowsable(EditorBrowsableState.Advanced)]
         public virtual IntPtr DirectMessage(int msg, IntPtr wParam, IntPtr lParam)
         {
             // If the control handle, ptr, direct function, etc... hasn't been created yet, it will be now.
-            IntPtr result = DirectMessage(SciPointer, msg, wParam, lParam);
-            return result;
+            return DirectMessage(SciPointer, msg, wParam, lParam);
         }
 
         private static IntPtr DirectMessage(IntPtr sciPtr, int msg, IntPtr wParam, IntPtr lParam)
