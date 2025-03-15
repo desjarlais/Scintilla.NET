@@ -682,7 +682,9 @@ public static class NativeMethods
     public const int SCI_SETVSCROLLBAR = 2280;
     public const int SCI_GETVSCROLLBAR = 2281;
     public const int SCI_APPENDTEXT = 2282;
+    [Obsolete("Use SCI_GETPHASESDRAW instead.")]
     public const int SCI_GETTWOPHASEDRAW = 2283;
+    [Obsolete("Use SCI_SETPHASESDRAW instead.")]
     public const int SCI_SETTWOPHASEDRAW = 2284;
     public const int SCI_GETPHASESDRAW = 2673;
     public const int SCI_SETPHASESDRAW = 2674;
