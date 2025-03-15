@@ -544,6 +544,7 @@ public static class NativeMethods
     public const int SCI_GETLINEINDENTPOSITION = 2128;
     public const int SCI_GETCOLUMN = 2129;
     public const int SCI_COUNTCHARACTERS = 2633;
+    public const int SCI_COUNTCODEUNITS = 2715;
     public const int SCI_SETHSCROLLBAR = 2130;
     public const int SCI_GETHSCROLLBAR = 2131;
     public const int SCI_SETINDENTATIONGUIDES = 2132;
@@ -826,6 +827,7 @@ public static class NativeMethods
     // public const int SCI_POSITIONBEFORE = 2417; // Bad, bad, bad. Don't use these...
     // public const int SCI_POSITIONAFTER = 2418;  // they treat \r\n as one character.
     public const int SCI_POSITIONRELATIVE = 2670;
+    public const int SCI_POSITIONRELATIVECODEUNITS = 2716;
     public const int SCI_COPYRANGE = 2419;
     public const int SCI_COPYTEXT = 2420;
     public const int SCI_SETSELECTIONMODE = 2422;
