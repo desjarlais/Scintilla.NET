@@ -10,10 +10,11 @@
     <Description>A test application to validate that the ScintillaNET control is working.</Description>
     <UseWindowsForms>true</UseWindowsForms>
     <LangVersion>latest</LangVersion>
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>$(Platform)</PlatformTarget>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <RootNamespace>ScintillaNET.TestApp</RootNamespace>
     <Nullable>enable</Nullable>
+    <Platforms>AnyCPU;x86;x64;ARM64</Platforms>
   </PropertyGroup>
   <ItemGroup>
     <Compile Update="FormMain.cs">
