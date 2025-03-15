@@ -77,7 +77,7 @@ namespace ScintillaNET
         public static IEnumerable<string> EnumerateSatelliteLibrarySearchPaths()
         {
             // check run-time paths
-            string folder = Path.Combine("runtimes", Environment.Is64BitProcess ? "win-x64" : "win-x86", "native");
+            string folder = Path.Combine("runtimes", "win-" + Helpers.GetArchitectureRid(WinApiHelpers.GetProcessArchitecture()), "native");
             string location = Assembly.GetExecutingAssembly().Location;
             if (string.IsNullOrWhiteSpace(location))
                 location = Assembly.GetEntryAssembly().Location;
