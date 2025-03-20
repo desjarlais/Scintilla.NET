@@ -64,8 +64,7 @@ internal static class WinApiHelpers
     internal static Architecture GetProcessArchitecture()
     {
         GetSystemInfo(out SYSTEM_INFO sysInfo);
-        return sysInfo.wProcessorArchitecture switch
-        {
+        return sysInfo.wProcessorArchitecture switch {
             PROCESSOR_ARCHITECTURE_INTEL => Architecture.X86,
             PROCESSOR_ARCHITECTURE_AMD64 => Architecture.X64,
             PROCESSOR_ARCHITECTURE_ARM => Architecture.Arm,

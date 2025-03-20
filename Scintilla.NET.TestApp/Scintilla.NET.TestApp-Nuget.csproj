@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="Scintilla.NET.TestApp-Common.targets" />
   <ItemGroup>
-    <ProjectReference Include="..\Scintilla.NET\Scintilla.NET.csproj" />
+    <PackageReference Include="Scintilla5.NET" Version="*-*" />
   </ItemGroup>
 </Project>

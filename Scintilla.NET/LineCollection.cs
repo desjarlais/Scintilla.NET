@@ -91,65 +91,42 @@ public class LineCollection : IEnumerable<Line>
         return start;
     }
 
-    internal int CharToWideBytePosition(int pos)
+    internal CharToBytePositionInfo CharToBytePosition(int pos)
     {
         Debug.Assert(pos >= 0);
         Debug.Assert(pos <= TextLength);
 
         // Adjust to the nearest line start
-        int line = LineFromCharPosition(pos);
-        int bytePos = this.scintilla.DirectMessage(NativeMethods.SCI_POSITIONFROMLINE, new IntPtr(line)).ToInt32();
-        pos -= CharPositionFromLine(line);
+        int lineIndex = LineFromCharPosition(pos);
+        int lineCharStart = CharPositionFromLine(lineIndex);
+        int lineByteStart = this.scintilla.DirectMessage(NativeMethods.SCI_POSITIONFROMLINE, new IntPtr(lineIndex)).ToInt32();
+        int lineCharOffset = pos - lineCharStart;
 
         // Optimization when the line contains NO multibyte characters
-        if (!LineContainsMultibyteChar(line))
-            return bytePos + pos;
+        if (!LineContainsMultibyteChar(lineIndex))
+            return new CharToBytePositionInfo(lineCharOffset + lineByteStart, pos, false, lineCharOffset + lineByteStart + 1);
 
-        int prevBytePos;
-        while (pos > 0)
+        int codePointBytePos = lineByteStart;
+        int nextCodePointBytePos = -1;
+        int i = 0;
+        while (i < lineCharOffset)
         {
-            // hang onto the prev byte position so we can determine if we are single or multi byte
-            prevBytePos = bytePos;
-            bytePos = this.scintilla.DirectMessage(NativeMethods.SCI_POSITIONRELATIVE, new IntPtr(bytePos), new IntPtr(1)).ToInt32();
-
-            if (bytePos - prevBytePos == 1)
-            {
-                // if the byte position is 1, we are single byte
-                pos--;
-            }
-            else
-            {
-                // if the byte position > 1, we are multi byte
-                pos -= 2;
-            }
+            nextCodePointBytePos = this.scintilla.DirectMessage(NativeMethods.SCI_POSITIONRELATIVE, new IntPtr(codePointBytePos), new IntPtr(1)).ToInt32();
+            int utf16Count = this.scintilla.DirectMessage(NativeMethods.SCI_COUNTCODEUNITS, new IntPtr(codePointBytePos), new IntPtr(nextCodePointBytePos)).ToInt32();
+            i += utf16Count;
+            codePointBytePos = nextCodePointBytePos;
         }
 
-        return bytePos;
-    }
-
-    internal int CharToBytePosition(int pos)
-    {
-        Debug.Assert(pos >= 0);
-        Debug.Assert(pos <= TextLength);
-
-        // Adjust to the nearest line start
-        int line = LineFromCharPosition(pos);
-        int bytePos = this.scintilla.DirectMessage(NativeMethods.SCI_POSITIONFROMLINE, new IntPtr(line)).ToInt32();
-        pos -= CharPositionFromLine(line);
-
-        // Optimization when the line contains NO multibyte characters
-        if (!LineContainsMultibyteChar(line))
-            return bytePos + pos;
-
-        while (pos > 0)
+        if (i == lineCharOffset)
         {
-            // Move char-by-char
-            bytePos = this.scintilla.DirectMessage(NativeMethods.SCI_POSITIONRELATIVE, new IntPtr(bytePos),
-                new IntPtr(1)).ToInt32();
-            pos--;
+            nextCodePointBytePos = this.scintilla.DirectMessage(NativeMethods.SCI_POSITIONRELATIVE, new IntPtr(codePointBytePos), new IntPtr(1)).ToInt32();
+        }
+        else if (i > lineCharOffset)
+        {
+            codePointBytePos = this.scintilla.DirectMessage(NativeMethods.SCI_POSITIONRELATIVE, new IntPtr(codePointBytePos), new IntPtr(-1)).ToInt32();
         }
 
-        return bytePos;
+        return new CharToBytePositionInfo(codePointBytePos, pos, i > lineCharOffset, nextCodePointBytePos);
     }
 
     private void DeletePerLine(int index)

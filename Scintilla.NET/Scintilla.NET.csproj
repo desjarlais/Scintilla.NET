@@ -4,8 +4,8 @@
 		<TargetFrameworks>net462;net6.0-windows;net8.0-windows</TargetFrameworks>
 		<NeutralLanguage>en-US</NeutralLanguage>
 		<Description>Source Editing Component based on Scintilla 5 series.</Description>
-		<Copyright>Copyright (c) Jacob Slusser 2018, VPKSoft, cyber960 2022, desjarlais 2023.</Copyright>
-		<Version>5.6.6</Version>
+		<Copyright>Copyright (c) Jacob Slusser 2018, VPKSoft, cyber960 2022, desjarlais 2023, Ahmet Sait 2025</Copyright>
+		<Version>6.0.0</Version>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
 		<UseWindowsForms>true</UseWindowsForms>
@@ -29,7 +29,7 @@
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
 		<RootNamespace>ScintillaNET</RootNamespace>
-		<Authors>Jacob Slusser, VPKSoft, cyber960, desjarlais</Authors>
+		<Authors>Jacob Slusser, VPKSoft, cyber960, desjarlais, Ahmet Sait</Authors>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<SignAssembly>True</SignAssembly>
 		<AssemblyOriginatorKeyFile>scintilla5.net.snk</AssemblyOriginatorKeyFile>

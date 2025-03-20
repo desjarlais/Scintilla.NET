@@ -544,6 +544,7 @@ public static class NativeMethods
     public const int SCI_GETLINEINDENTPOSITION = 2128;
     public const int SCI_GETCOLUMN = 2129;
     public const int SCI_COUNTCHARACTERS = 2633;
+    public const int SCI_COUNTCODEUNITS = 2715;
     public const int SCI_SETHSCROLLBAR = 2130;
     public const int SCI_GETHSCROLLBAR = 2131;
     public const int SCI_SETINDENTATIONGUIDES = 2132;
@@ -681,7 +682,9 @@ public static class NativeMethods
     public const int SCI_SETVSCROLLBAR = 2280;
     public const int SCI_GETVSCROLLBAR = 2281;
     public const int SCI_APPENDTEXT = 2282;
+    [Obsolete("Use SCI_GETPHASESDRAW instead.")]
     public const int SCI_GETTWOPHASEDRAW = 2283;
+    [Obsolete("Use SCI_SETPHASESDRAW instead.")]
     public const int SCI_SETTWOPHASEDRAW = 2284;
     public const int SCI_GETPHASESDRAW = 2673;
     public const int SCI_SETPHASESDRAW = 2674;
@@ -826,6 +829,7 @@ public static class NativeMethods
     // public const int SCI_POSITIONBEFORE = 2417; // Bad, bad, bad. Don't use these...
     // public const int SCI_POSITIONAFTER = 2418;  // they treat \r\n as one character.
     public const int SCI_POSITIONRELATIVE = 2670;
+    public const int SCI_POSITIONRELATIVECODEUNITS = 2716;
     public const int SCI_COPYRANGE = 2419;
     public const int SCI_COPYTEXT = 2420;
     public const int SCI_SETSELECTIONMODE = 2422;
