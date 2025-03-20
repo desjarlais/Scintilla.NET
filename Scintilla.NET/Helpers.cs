@@ -137,7 +137,7 @@ internal static class Helpers
         int endBytePos = endPos.BytePosition;
 
         // Plain text
-        if ((format & CopyFormat.Text) > 0)
+        if (format.HasFlag(CopyFormat.Text))
         {
             if (useSelection)
             {
@@ -153,7 +153,7 @@ internal static class Helpers
         }
 
         // RTF and/or HTML
-        if ((format & (CopyFormat.Rtf | CopyFormat.Html)) > 0)
+        if ((format & (CopyFormat.Rtf | CopyFormat.Html)) != 0)
         {
             // If we ever allow more than UTF-8, this will have to be revisited
             Debug.Assert(scintilla.DirectMessage(NativeMethods.SCI_GETCODEPAGE).ToInt32() == NativeMethods.SC_CP_UTF8);
@@ -744,7 +744,7 @@ internal static class Helpers
     public static unsafe byte[] GetBytes(string text, Encoding encoding, bool zeroTerminated)
     {
         if (string.IsNullOrEmpty(text))
-            return zeroTerminated ? new byte[] { 0 } : new byte[0];
+            return zeroTerminated ? [0] : [];
 
         int count = encoding.GetByteCount(text);
         byte[] buffer = new byte[count + (zeroTerminated ? 1 : 0)];
@@ -763,10 +763,10 @@ internal static class Helpers
 
     public static unsafe byte[] GetBytes(char[] text, int length, Encoding encoding, bool zeroTerminated)
     {
+        int count = encoding.GetByteCount(text);
+        byte[] buffer = new byte[count + (zeroTerminated ? 1 : 0)];
         fixed (char* cp = text)
         {
-            int count = encoding.GetByteCount(cp, length);
-            byte[] buffer = new byte[count + (zeroTerminated ? 1 : 0)];
             fixed (byte* bp = buffer)
                 encoding.GetBytes(cp, length, bp, buffer.Length);
 

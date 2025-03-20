@@ -95,7 +95,7 @@ internal class ProjectionEqualityComparer<TSource, TKey> : IEqualityComparer<TSo
     public ProjectionEqualityComparer(Func<TSource, TKey> projection, IEqualityComparer<TKey> comparer)
     {
         this.comparer = comparer ?? EqualityComparer<TKey>.Default;
-        this.projection = projection ?? throw new ArgumentNullException("projection");
+        this.projection = projection ?? throw new ArgumentNullException(nameof(projection));
     }
 
     /// <summary>
@@ -127,7 +127,7 @@ internal class ProjectionEqualityComparer<TSource, TKey> : IEqualityComparer<TSo
     {
         if (obj == null)
         {
-            throw new ArgumentNullException("obj");
+            throw new ArgumentNullException(nameof(obj));
         }
 
         return this.comparer.GetHashCode(this.projection(obj));

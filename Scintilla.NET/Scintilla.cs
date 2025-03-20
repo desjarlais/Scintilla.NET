@@ -1097,7 +1097,7 @@ namespace ScintillaNET
         }
 
         /// <summary>
-        /// Returns the character as the specified document position.
+        /// Returns the character at the specified document position.
         /// </summary>
         /// <param name="position">The zero-based document position of the character to get.</param>
         /// <returns>The character at the specified <paramref name="position" />.</returns>
@@ -1362,8 +1362,7 @@ namespace ScintillaNET
         /// <exception cref="ArgumentOutOfRangeException"></exception>
         public string GetLexerIDFromLexer(Lexer lexer)
         {
-            return lexer switch
-            {
+            return lexer switch {
                 Lexer.SCLEX_A68K => "a68k",
                 Lexer.SCLEX_ADPL => "apdl",
                 Lexer.SCLEX_ASYMPTOTE => "asy",
@@ -1709,7 +1708,7 @@ namespace ScintillaNET
         public unsafe void InsertText(int position, string text)
         {
             if (position < -1)
-                throw new ArgumentOutOfRangeException("position", "Position must be greater or equal to zero, or -1.");
+                throw new ArgumentOutOfRangeException(nameof(position), "Position must be greater or equal to zero, or -1.");
 
             byte[] textBytes = Helpers.GetBytes(text ?? string.Empty, Encoding, zeroTerminated: true);
 
@@ -1722,7 +1721,7 @@ namespace ScintillaNET
             {
                 int textLength = TextLength;
                 if (position > textLength)
-                    throw new ArgumentOutOfRangeException("position", "Position cannot exceed document length.");
+                    throw new ArgumentOutOfRangeException(nameof(position), "Position cannot exceed document length.");
 
                 var pos = Lines.CharToBytePosition(position);
                 if (pos.LowSurrogate)
@@ -2621,8 +2620,8 @@ namespace ScintillaNET
             start = Lines.CharToBytePosition(start).BytePosition;
             end = Lines.CharToBytePosition(end).RoundToNext;
 
-            // The arguments would  seem reverse from Scintilla documentation
-            // but empirical  evidence suggests this is correct....
+            // The arguments would seem reverse from Scintilla documentation but
+            // empirical evidence suggests this is correct...
             DirectMessage(NativeMethods.SCI_SCROLLRANGE, new IntPtr(start), new IntPtr(end));
         }
 
@@ -2959,11 +2958,11 @@ namespace ScintillaNET
             int textLength = TextLength;
 
             if (length < 0)
-                throw new ArgumentOutOfRangeException("length", "Length cannot be less than zero.");
+                throw new ArgumentOutOfRangeException(nameof(length), "Length cannot be less than zero.");
             if (this.stylingPosition + length > textLength)
-                throw new ArgumentOutOfRangeException("length", "Position and length must refer to a range within the document.");
+                throw new ArgumentOutOfRangeException(nameof(length), "Position and length must refer to a range within the document.");
             if (style < 0 || style >= Styles.Count)
-                throw new ArgumentOutOfRangeException("style", "Style must be non-negative and less than the size of the collection.");
+                throw new ArgumentOutOfRangeException(nameof(style), "Style must be non-negative and less than the size of the collection.");
 
             var pos = Lines.CharToBytePosition(this.stylingPosition + length);
             int endPos = pos.RoundToNextChar;
@@ -3254,7 +3253,7 @@ namespace ScintillaNET
                 windowRect.right - borderSize.Width,
                 windowRect.bottom - borderSize.Height);
 
-            if (m.WParam != (IntPtr)1)
+            if (m.WParam != new IntPtr(1))
                 NativeMethods.CombineRgn(clipRegion, clipRegion, m.WParam, NativeMethods.RGN_AND);
 
             // Call default proc to get the scrollbars, etc... painted
@@ -4251,7 +4250,7 @@ namespace ScintillaNET
                 if (this.borderStyle != value)
                 {
                     if (!Enum.IsDefined(typeof(BorderStyle), value))
-                        throw new InvalidEnumArgumentException("value", (int)value, typeof(BorderStyle));
+                        throw new InvalidEnumArgumentException(nameof(value), (int)value, typeof(BorderStyle));
 
                     this.borderStyle = value;
                     UpdateStyles();
