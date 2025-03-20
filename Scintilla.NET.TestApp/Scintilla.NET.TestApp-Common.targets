@@ -4,7 +4,7 @@
     <OutputType>WinExe</OutputType>
     <TargetFramework>net48</TargetFramework>
     <AssemblyTitle>ScintillaNET.TestApp</AssemblyTitle>
-    <Copyright>Copyright © desjarlais 2023</Copyright>
+    <Copyright>Copyright © desjarlais 2023, Ahmet Sait 2025</Copyright>
     <OutputPath>bin\$(Configuration)\</OutputPath>
     <Authors>desjarlais</Authors>
     <Description>A test application to validate that the ScintillaNET control is working.</Description>
