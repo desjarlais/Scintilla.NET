@@ -45,7 +45,7 @@ public class Indicator
     public int End(int position)
     {
         position = Helpers.Clamp(position, 0, this.scintilla.TextLength);
-        position = this.scintilla.Lines.CharToBytePosition(position);
+        position = this.scintilla.Lines.CharToBytePosition(position).BytePosition;
         position = this.scintilla.DirectMessage(NativeMethods.SCI_INDICATOREND, new IntPtr(Index), new IntPtr(position)).ToInt32();
         return this.scintilla.Lines.ByteToCharPosition(position);
     }
@@ -64,7 +64,7 @@ public class Indicator
     public int Start(int position)
     {
         position = Helpers.Clamp(position, 0, this.scintilla.TextLength);
-        position = this.scintilla.Lines.CharToBytePosition(position);
+        position = this.scintilla.Lines.CharToBytePosition(position).RoundToNext;
         position = this.scintilla.DirectMessage(NativeMethods.SCI_INDICATORSTART, new IntPtr(Index), new IntPtr(position)).ToInt32();
         return this.scintilla.Lines.ByteToCharPosition(position);
     }
@@ -77,7 +77,7 @@ public class Indicator
     public int ValueAt(int position)
     {
         position = Helpers.Clamp(position, 0, this.scintilla.TextLength);
-        position = this.scintilla.Lines.CharToBytePosition(position);
+        position = this.scintilla.Lines.CharToBytePosition(position).BytePosition;
 
         return this.scintilla.DirectMessage(NativeMethods.SCI_INDICATORVALUEAT, new IntPtr(Index), new IntPtr(position)).ToInt32();
     }

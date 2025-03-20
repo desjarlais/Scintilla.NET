@@ -130,8 +130,12 @@ internal static class Helpers
         return value;
     }
 
-    public static void Copy(Scintilla scintilla, CopyFormat format, bool useSelection, bool allowLine, int startBytePos, int endBytePos)
+    public static void Copy(Scintilla scintilla, CopyFormat format, bool useSelection, bool allowLine, CharToBytePositionInfo startPos, CharToBytePositionInfo endPos)
     {
+        // FIXME: Surrogate pair handling
+        int startBytePos = startPos.BytePosition;
+        int endBytePos = endPos.BytePosition;
+
         // Plain text
         if ((format & CopyFormat.Text) > 0)
         {
@@ -773,10 +777,14 @@ internal static class Helpers
         }
     }
 
-    public static string GetHtml(Scintilla scintilla, int startBytePos, int endBytePos)
+    public static string GetHtml(Scintilla scintilla, CharToBytePositionInfo startPos, CharToBytePositionInfo endPos)
     {
         // If we ever allow more than UTF-8, this will have to be revisited
         Debug.Assert(scintilla.DirectMessage(NativeMethods.SCI_GETCODEPAGE).ToInt32() == NativeMethods.SC_CP_UTF8);
+
+        // FIXME: Surrogate pair handling
+        int startBytePos = startPos.BytePosition;
+        int endBytePos = endPos.RoundToNext;
 
         if (startBytePos == endBytePos)
             return string.Empty;

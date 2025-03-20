@@ -26,7 +26,7 @@ public class Selection
         set
         {
             value = Helpers.Clamp(value, 0, this.scintilla.TextLength);
-            value = this.scintilla.Lines.CharToBytePosition(value);
+            value = this.scintilla.Lines.CharToBytePosition(value).BytePosition;
             this.scintilla.DirectMessage(NativeMethods.SCI_SETSELECTIONNANCHOR, new IntPtr(Index), new IntPtr(value));
         }
     }
@@ -65,7 +65,7 @@ public class Selection
         set
         {
             value = Helpers.Clamp(value, 0, this.scintilla.TextLength);
-            value = this.scintilla.Lines.CharToBytePosition(value);
+            value = this.scintilla.Lines.CharToBytePosition(value).BytePosition;
             this.scintilla.DirectMessage(NativeMethods.SCI_SETSELECTIONNCARET, new IntPtr(Index), new IntPtr(value));
         }
     }
@@ -104,7 +104,7 @@ public class Selection
         set
         {
             value = Helpers.Clamp(value, 0, this.scintilla.TextLength);
-            value = this.scintilla.Lines.CharToBytePosition(value);
+            value = this.scintilla.Lines.CharToBytePosition(value).BytePosition;
             this.scintilla.DirectMessage(NativeMethods.SCI_SETSELECTIONNEND, new IntPtr(Index), new IntPtr(value));
         }
     }
@@ -132,7 +132,7 @@ public class Selection
         set
         {
             value = Helpers.Clamp(value, 0, this.scintilla.TextLength);
-            value = this.scintilla.Lines.CharToBytePosition(value);
+            value = this.scintilla.Lines.CharToBytePosition(value).BytePosition;
             this.scintilla.DirectMessage(NativeMethods.SCI_SETSELECTIONNSTART, new IntPtr(Index), new IntPtr(value));
         }
     }

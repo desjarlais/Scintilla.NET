@@ -241,8 +241,8 @@ namespace ScintillaNET
             caret = Helpers.Clamp(caret, 0, textLength);
             anchor = Helpers.Clamp(anchor, 0, textLength);
 
-            caret = Lines.CharToBytePosition(caret);
-            anchor = Lines.CharToBytePosition(anchor);
+            caret = Lines.CharToBytePosition(caret).BytePosition;
+            anchor = Lines.CharToBytePosition(anchor).BytePosition;
 
             DirectMessage(NativeMethods.SCI_ADDSELECTION, new IntPtr(caret), new IntPtr(anchor));
         }
@@ -429,7 +429,7 @@ namespace ScintillaNET
         {
             position = Helpers.Clamp(position, -1, TextLength);
             if (position > 0)
-                position = Lines.CharToBytePosition(position);
+                position = Lines.CharToBytePosition(position).BytePosition;
 
             DirectMessage(NativeMethods.SCI_BRACEBADLIGHT, new IntPtr(position));
         }
@@ -447,11 +447,11 @@ namespace ScintillaNET
 
             position1 = Helpers.Clamp(position1, -1, textLength);
             if (position1 > 0)
-                position1 = Lines.CharToBytePosition(position1);
+                position1 = Lines.CharToBytePosition(position1).BytePosition;
 
             position2 = Helpers.Clamp(position2, -1, textLength);
             if (position2 > 0)
-                position2 = Lines.CharToBytePosition(position2);
+                position2 = Lines.CharToBytePosition(position2).BytePosition;
 
             DirectMessage(NativeMethods.SCI_BRACEHIGHLIGHT, new IntPtr(position1), new IntPtr(position2));
         }
@@ -466,7 +466,7 @@ namespace ScintillaNET
         public int BraceMatch(int position)
         {
             position = Helpers.Clamp(position, 0, TextLength);
-            position = Lines.CharToBytePosition(position);
+            position = Lines.CharToBytePosition(position).BytePosition;
 
             int match = DirectMessage(NativeMethods.SCI_BRACEMATCH, new IntPtr(position), IntPtr.Zero).ToInt32();
             if (match > 0)
@@ -540,7 +540,7 @@ namespace ScintillaNET
                 return;
 
             this.lastCallTip = definition;
-            posStart = Lines.CharToBytePosition(posStart);
+            posStart = Lines.CharToBytePosition(posStart).BytePosition;
             byte[] bytes = Helpers.GetBytes(definition, Encoding, zeroTerminated: true);
             fixed (byte* bp = bytes)
                 DirectMessage(NativeMethods.SCI_CALLTIPSHOW, new IntPtr(posStart), new IntPtr(bp));
@@ -572,8 +572,8 @@ namespace ScintillaNET
             startPos = Helpers.Clamp(startPos, 0, textLength);
             endPos = Helpers.Clamp(endPos, 0, textLength);
 
-            startPos = Lines.CharToBytePosition(startPos);
-            endPos = Lines.CharToBytePosition(endPos);
+            startPos = Lines.CharToBytePosition(startPos).BytePosition;
+            endPos = Lines.CharToBytePosition(endPos).BytePosition;
 
             DirectMessage(NativeMethods.SCI_CHANGELEXERSTATE, new IntPtr(startPos), new IntPtr(endPos));
         }
@@ -692,8 +692,8 @@ namespace ScintillaNET
             startPos = Helpers.Clamp(startPos, 0, textLength);
             endPos = Helpers.Clamp(endPos, 0, textLength);
 
-            startPos = Lines.CharToBytePosition(startPos);
-            endPos = Lines.CharToBytePosition(endPos);
+            startPos = Lines.CharToBytePosition(startPos).BytePosition;
+            endPos = Lines.CharToBytePosition(endPos).BytePosition;
 
             DirectMessage(NativeMethods.SCI_COLOURISE, new IntPtr(startPos), new IntPtr(endPos));
         }
@@ -722,7 +722,7 @@ namespace ScintillaNET
         /// <param name="format">One of the <see cref="CopyFormat" /> enumeration values.</param>
         public void Copy(CopyFormat format)
         {
-            Helpers.Copy(this, format, true, false, 0, 0);
+            Helpers.Copy(this, format, true, false, new CharToBytePositionInfo(0), new CharToBytePositionInfo(0));
         }
 
         /// <summary>
@@ -749,7 +749,7 @@ namespace ScintillaNET
         /// </remarks>
         public void CopyAllowLine(CopyFormat format)
         {
-            Helpers.Copy(this, format, true, true, 0, 0);
+            Helpers.Copy(this, format, true, true, new CharToBytePositionInfo(0, 0), new CharToBytePositionInfo(0, 0));
         }
 
         /// <summary>
@@ -759,15 +759,8 @@ namespace ScintillaNET
         /// <param name="end">The zero-based character position (exclusive) in the document to stop copying.</param>
         public void CopyRange(int start, int end)
         {
-            int textLength = TextLength;
-            start = Helpers.Clamp(start, 0, textLength);
-            end = Helpers.Clamp(end, 0, textLength);
-
-            // Convert to byte positions
-            start = Lines.CharToBytePosition(start);
-            end = Lines.CharToBytePosition(end);
-
-            DirectMessage(NativeMethods.SCI_COPYRANGE, new IntPtr(start), new IntPtr(end));
+            string text = GetTextRange(start, end - start);
+            Clipboard.SetText(text, TextDataFormat.UnicodeText);
         }
 
         /// <summary>
@@ -785,10 +778,10 @@ namespace ScintillaNET
                 return;
 
             // Convert to byte positions
-            start = Lines.CharToBytePosition(start);
-            end = Lines.CharToBytePosition(end);
+            var startPos = Lines.CharToBytePosition(start);
+            var endPos = Lines.CharToBytePosition(end);
 
-            Helpers.Copy(this, format, false, false, start, end);
+            Helpers.Copy(this, format, false, false, startPos, endPos);
         }
 
         /// <summary>
@@ -830,17 +823,55 @@ namespace ScintillaNET
         /// </summary>
         /// <param name="position">The zero-based character position to start deleting.</param>
         /// <param name="length">The number of characters to delete.</param>
-        public void DeleteRange(int position, int length)
+        public unsafe void DeleteRange(int position, int length)
         {
             int textLength = TextLength;
             position = Helpers.Clamp(position, 0, textLength);
             length = Helpers.Clamp(length, 0, textLength - position);
 
             // Convert to byte position/length
-            int byteStartPos = Lines.CharToBytePosition(position);
-            int byteEndPos = Lines.CharToBytePosition(position + length);
+            var startPos = Lines.CharToBytePosition(position);
+            var endPos = Lines.CharToBytePosition(position + length);
 
-            DirectMessage(NativeMethods.SCI_DELETERANGE, new IntPtr(byteStartPos), new IntPtr(byteEndPos - byteStartPos));
+            BeginUndoAction();
+            try
+            {
+                char highSurrogate = UnicodeConstants.replacementCharacter;
+                if (startPos.LowSurrogate)
+                {
+                    int leftCodePoint = GetCodePointAt(startPos.CharPosition);
+                    highSurrogate = char.ConvertFromUtf32(leftCodePoint)[0];
+                }
+
+                char lowSurrogate = UnicodeConstants.replacementCharacter;
+                if (endPos.LowSurrogate)
+                {
+                    int rightCodePoint = GetCodePointAt(endPos.CharPosition);
+                    lowSurrogate = char.ConvertFromUtf32(rightCodePoint)[1];
+                }
+
+                DirectMessage(NativeMethods.SCI_DELETERANGE, new IntPtr(startPos.BytePosition), new IntPtr(endPos.RoundToNext - startPos.BytePosition));
+
+                if (startPos.LowSurrogate && endPos.LowSurrogate)
+                {
+                    // "𠀀嶲".Remove(1, 2) => "𠇴"
+                    char[] surrogatePair = [highSurrogate, lowSurrogate];
+                    byte[] surrogatePairBytes = Helpers.GetBytes(surrogatePair, surrogatePair.Length, Encoding, zeroTerminated: true);
+                    fixed (byte* bp = surrogatePairBytes)
+                        DirectMessage(NativeMethods.SCI_INSERTTEXT, new IntPtr(startPos.BytePosition), new IntPtr(bp));
+                }
+                else if (startPos.LowSurrogate || endPos.LowSurrogate)
+                {
+                    // "𠀀".Remove(0, 1) => "�"
+                    // "𠀀".Remove(1, 1) => "�"
+                    fixed (byte* bp = UnicodeConstants.replacementCharacterUtf8z)
+                        DirectMessage(NativeMethods.SCI_INSERTTEXT, new IntPtr(startPos.BytePosition), new IntPtr(bp));
+                }
+            }
+            finally
+            {
+                EndUndoAction();
+            }
         }
 
         /// <summary>
@@ -1022,8 +1053,8 @@ namespace ScintillaNET
             {
                 NativeMethods.Sci_TextToFind textToFind = new NativeMethods.Sci_TextToFind() {
                     chrg = new NativeMethods.Sci_CharacterRange() {
-                        cpMin = Lines.CharToBytePosition(Helpers.Clamp(start, 0, TextLength)),
-                        cpMax = Lines.CharToBytePosition(Helpers.Clamp(end, 0, TextLength)),
+                        cpMin = Lines.CharToBytePosition(Helpers.Clamp(start, 0, TextLength)).BytePosition,
+                        cpMax = Lines.CharToBytePosition(Helpers.Clamp(end, 0, TextLength)).BytePosition,
                     },
                     lpstrText = new IntPtr(bp),
                 };
@@ -1070,17 +1101,16 @@ namespace ScintillaNET
         /// </summary>
         /// <param name="position">The zero-based document position of the character to get.</param>
         /// <returns>The character at the specified <paramref name="position" />.</returns>
-        public unsafe int GetCharAt(int position)
+        public unsafe char GetCharAt(int position)
         {
             position = Helpers.Clamp(position, 0, TextLength);
-            position = Lines.CharToBytePosition(position);
+            var pos = Lines.CharToBytePosition(position);
 
-            int nextPosition = DirectMessage(NativeMethods.SCI_POSITIONRELATIVE, new IntPtr(position), new IntPtr(1)).ToInt32();
-            int length = nextPosition - position;
+            int length = pos.NextCodePointBytePosition - pos.BytePosition;
             if (length <= 1)
             {
                 // Position is at single-byte character
-                return DirectMessage(NativeMethods.SCI_GETCHARAT, new IntPtr(position)).ToInt32();
+                return (char)(byte)DirectMessage(NativeMethods.SCI_GETCHARAT, new IntPtr(pos.BytePosition));
             }
 
             // Position is at multibyte character
@@ -1088,13 +1118,50 @@ namespace ScintillaNET
             fixed (byte* bp = bytes)
             {
                 NativeMethods.Sci_TextRange* range = stackalloc NativeMethods.Sci_TextRange[1];
-                range->chrg.cpMin = position;
-                range->chrg.cpMax = nextPosition;
+                range->chrg.cpMin = pos.BytePosition;
+                range->chrg.cpMax = pos.NextCodePointBytePosition;
                 range->lpstrText = new IntPtr(bp);
 
                 DirectMessage(NativeMethods.SCI_GETTEXTRANGE, IntPtr.Zero, new IntPtr(range));
                 string str = Helpers.GetString(new IntPtr(bp), length, Encoding);
-                return str[0];
+                return pos.LowSurrogate ? str[1] : str[0];
+            }
+        }
+
+        /// <summary>
+        /// Returns the code point at the specified document position.
+        /// </summary>
+        /// <param name="position">The zero-based document position of the character to get.</param>
+        /// <returns>The character at the specified <paramref name="position" />.</returns>
+        public unsafe int GetCodePointAt(int position)
+        {
+            position = Helpers.Clamp(position, 0, TextLength);
+            var pos = Lines.CharToBytePosition(position);
+
+            int length = pos.NextCodePointBytePosition - pos.BytePosition;
+            if (length <= 1)
+            {
+                // Position is at single-byte character
+                return (byte)DirectMessage(NativeMethods.SCI_GETCHARAT, new IntPtr(pos.BytePosition)).ToInt32();
+            }
+
+            // Position is at multibyte character
+            byte[] bytes = new byte[length + 1];
+            fixed (byte* bp = bytes)
+            {
+                NativeMethods.Sci_TextRange range;
+                range.chrg.cpMin = pos.BytePosition;
+                range.chrg.cpMax = pos.NextCodePointBytePosition;
+                range.lpstrText = new IntPtr(bp);
+
+                DirectMessage(NativeMethods.SCI_GETTEXTRANGE, IntPtr.Zero, new IntPtr(&range));
+                byte[] codePointBytes = Encoding.Convert(Encoding, Encoding.UTF32, bytes, 0, length);
+                return (
+                    (codePointBytes[0] << (0 * 8)) |
+                    (codePointBytes[1] << (1 * 8)) |
+                    (codePointBytes[2] << (2 * 8)) |
+                    (codePointBytes[3] << (3 * 8))
+                );
             }
         }
 
@@ -1106,7 +1173,7 @@ namespace ScintillaNET
         public int GetColumn(int position)
         {
             position = Helpers.Clamp(position, 0, TextLength);
-            position = Lines.CharToBytePosition(position);
+            position = Lines.CharToBytePosition(position).BytePosition;
             return DirectMessage(NativeMethods.SCI_GETCOLUMN, new IntPtr(position)).ToInt32();
         }
 
@@ -1231,7 +1298,7 @@ namespace ScintillaNET
         public int GetStyleAt(int position)
         {
             position = Helpers.Clamp(position, 0, TextLength);
-            position = Lines.CharToBytePosition(position);
+            position = Lines.CharToBytePosition(position).BytePosition;
 
             return DirectMessage(NativeMethods.SCI_GETSTYLEAT, new IntPtr(position)).ToInt32();
         }
@@ -1285,29 +1352,6 @@ namespace ScintillaNET
                 DirectMessage(NativeMethods.SCI_GETTAG, new IntPtr(tagNumber), new IntPtr(bp));
                 return Helpers.GetString(new IntPtr(bp), length, Encoding);
             }
-        }
-
-        /// <summary>
-        /// Gets a range of text from the document accounting for wide characters.
-        /// </summary>
-        /// <param name="position">The zero-based starting character position of the range to get.</param>
-        /// <param name="length">The number of characters (including wide) to get.</param>
-        /// <returns>A string representing the text range.</returns>
-        public unsafe string GetWideTextRange(int position, int length)
-        {
-            int textLength = TextLength;
-            position = Helpers.Clamp(position, 0, textLength);
-            length = Helpers.Clamp(length, 0, textLength - position);
-
-            // Convert to byte position/length
-            int byteStartPos = Lines.CharToWideBytePosition(position);
-            int byteEndPos = Lines.CharToWideBytePosition(position + length);
-
-            IntPtr ptr = DirectMessage(NativeMethods.SCI_GETRANGEPOINTER, new IntPtr(byteStartPos), new IntPtr(byteEndPos - byteStartPos));
-            if (ptr == IntPtr.Zero)
-                return string.Empty;
-
-            return Helpers.GetString(ptr, byteEndPos - byteStartPos, Encoding);
         }
 
         /// <summary>
@@ -1473,15 +1517,27 @@ namespace ScintillaNET
             position = Helpers.Clamp(position, 0, textLength);
             length = Helpers.Clamp(length, 0, textLength - position);
 
-            // Convert to byte position/length
-            int byteStartPos = Lines.CharToBytePosition(position);
-            int byteEndPos = Lines.CharToBytePosition(position + length);
+            var startPos = Lines.CharToBytePosition(position);
+            var endPos = Lines.CharToBytePosition(position + length);
 
-            IntPtr ptr = DirectMessage(NativeMethods.SCI_GETRANGEPOINTER, new IntPtr(byteStartPos), new IntPtr(byteEndPos - byteStartPos));
+            int startPosByte = startPos.BytePosition;
+            int endPosByte = endPos.RoundToNext;
+
+            IntPtr ptr = DirectMessage(NativeMethods.SCI_GETRANGEPOINTER, new IntPtr(startPosByte), new IntPtr(endPosByte - startPosByte));
             if (ptr == IntPtr.Zero)
                 return string.Empty;
 
-            return Helpers.GetString(ptr, byteEndPos - byteStartPos, Encoding);
+            string str = Helpers.GetString(ptr, endPosByte - startPosByte, Encoding);
+
+            if (startPos.LowSurrogate || endPos.LowSurrogate)
+            {
+                int begin = startPos.LowSurrogate ? 1 : 0;
+                int finish = endPos.LowSurrogate ? str.Length - 1 : str.Length;
+
+                str = str.Substring(begin, finish);
+            }
+
+            return str;
         }
 
         /// <summary>
@@ -1496,10 +1552,10 @@ namespace ScintillaNET
             position = Helpers.Clamp(position, 0, textLength);
             length = Helpers.Clamp(length, 0, textLength - position);
 
-            int startBytePos = Lines.CharToBytePosition(position);
-            int endBytePos = Lines.CharToBytePosition(position + length);
+            var startPos = Lines.CharToBytePosition(position);
+            var endPos = Lines.CharToBytePosition(position + length);
 
-            return Helpers.GetHtml(this, startBytePos, endBytePos);
+            return Helpers.GetHtml(this, startPos, endPos);
         }
 
         /// <summary>
@@ -1533,7 +1589,7 @@ namespace ScintillaNET
         public void GotoPosition(int position)
         {
             position = Helpers.Clamp(position, 0, TextLength);
-            position = Lines.CharToBytePosition(position);
+            position = Lines.CharToBytePosition(position).BytePosition;
             DirectMessage(NativeMethods.SCI_GOTOPOS, new IntPtr(position));
         }
 
@@ -1560,7 +1616,7 @@ namespace ScintillaNET
         public uint IndicatorAllOnFor(int position)
         {
             position = Helpers.Clamp(position, 0, TextLength);
-            position = Lines.CharToBytePosition(position);
+            position = Lines.CharToBytePosition(position).BytePosition;
 
             int bitmap = DirectMessage(NativeMethods.SCI_INDICATORALLONFOR, new IntPtr(position)).ToInt32();
             return unchecked((uint)bitmap);
@@ -1577,8 +1633,8 @@ namespace ScintillaNET
             position = Helpers.Clamp(position, 0, textLength);
             length = Helpers.Clamp(length, 0, textLength - position);
 
-            int startPos = Lines.CharToBytePosition(position);
-            int endPos = Lines.CharToBytePosition(position + length);
+            int startPos = Lines.CharToBytePosition(position).BytePosition;
+            int endPos = Lines.CharToBytePosition(position + length).BytePosition;
 
             DirectMessage(NativeMethods.SCI_INDICATORCLEARRANGE, new IntPtr(startPos), new IntPtr(endPos - startPos));
         }
@@ -1594,8 +1650,8 @@ namespace ScintillaNET
             position = Helpers.Clamp(position, 0, textLength);
             length = Helpers.Clamp(length, 0, textLength - position);
 
-            int startPos = Lines.CharToBytePosition(position);
-            int endPos = Lines.CharToBytePosition(position + length);
+            int startPos = Lines.CharToBytePosition(position).BytePosition;
+            int endPos = Lines.CharToBytePosition(position + length).BytePosition;
 
             DirectMessage(NativeMethods.SCI_INDICATORFILLRANGE, new IntPtr(startPos), new IntPtr(endPos - startPos));
         }
@@ -1655,17 +1711,49 @@ namespace ScintillaNET
             if (position < -1)
                 throw new ArgumentOutOfRangeException("position", "Position must be greater or equal to zero, or -1.");
 
-            if (position != -1)
+            byte[] textBytes = Helpers.GetBytes(text ?? string.Empty, Encoding, zeroTerminated: true);
+
+            if (position == -1)
+            {
+                fixed (byte* tp = textBytes)
+                    DirectMessage(NativeMethods.SCI_INSERTTEXT, new IntPtr(position), new IntPtr(tp));
+            }
+            else
             {
                 int textLength = TextLength;
                 if (position > textLength)
                     throw new ArgumentOutOfRangeException("position", "Position cannot exceed document length.");
 
-                position = Lines.CharToBytePosition(position);
+                var pos = Lines.CharToBytePosition(position);
+                if (pos.LowSurrogate)
+                {
+                    BeginUndoAction();
+                    try
+                    {
+                        // "𠀀".Insert(1, "Ă") => "�Ă�"
+                        DirectMessage(NativeMethods.SCI_DELETERANGE, new IntPtr(pos.BytePosition), new IntPtr(pos.Length));
+                        fixed (byte* bp = UnicodeConstants.replacementCharacterUtf8z)
+                        {
+                            int currentPos = pos.BytePosition;
+                            DirectMessage(NativeMethods.SCI_INSERTTEXT, new IntPtr(currentPos), new IntPtr(bp));
+                            currentPos += UnicodeConstants.replacementCharacterUtf8.Length;
+                            fixed (byte* tp = textBytes)
+                                DirectMessage(NativeMethods.SCI_INSERTTEXT, new IntPtr(currentPos), new IntPtr(tp));
+                            currentPos += textBytes.Length - 1; // Null terminated length
+                            DirectMessage(NativeMethods.SCI_INSERTTEXT, new IntPtr(currentPos), new IntPtr(bp));
+                        }
+                    }
+                    finally
+                    {
+                        EndUndoAction();
+                    }
+                }
+                else
+                {
+                    fixed (byte* tp = textBytes)
+                        DirectMessage(NativeMethods.SCI_INSERTTEXT, new IntPtr(pos.BytePosition), new IntPtr(tp));
+                }
             }
-
-            fixed (byte* bp = Helpers.GetBytes(text ?? string.Empty, Encoding, zeroTerminated: true))
-                DirectMessage(NativeMethods.SCI_INSERTTEXT, new IntPtr(position), new IntPtr(bp));
         }
 
         /// <summary>
@@ -1688,10 +1776,14 @@ namespace ScintillaNET
             start = Helpers.Clamp(start, 0, textLength);
             end = Helpers.Clamp(end, 0, textLength);
 
-            start = Lines.CharToBytePosition(start);
-            end = Lines.CharToBytePosition(end);
+            var startPos = Lines.CharToBytePosition(start);
+            if (startPos.LowSurrogate)
+                return false;
+            var endPos = Lines.CharToBytePosition(end);
+            if (endPos.LowSurrogate)
+                return false;
 
-            return DirectMessage(NativeMethods.SCI_ISRANGEWORD, new IntPtr(start), new IntPtr(end)) != IntPtr.Zero;
+            return DirectMessage(NativeMethods.SCI_ISRANGEWORD, new IntPtr(startPos.BytePosition), new IntPtr(endPos.BytePosition)) != IntPtr.Zero;
         }
 
         /// <summary>
@@ -2207,7 +2299,7 @@ namespace ScintillaNET
         public int PointXFromPosition(int pos)
         {
             pos = Helpers.Clamp(pos, 0, TextLength);
-            pos = Lines.CharToBytePosition(pos);
+            pos = Lines.CharToBytePosition(pos).BytePosition;
             return DirectMessage(NativeMethods.SCI_POINTXFROMPOSITION, IntPtr.Zero, new IntPtr(pos)).ToInt32();
         }
 
@@ -2219,7 +2311,7 @@ namespace ScintillaNET
         public int PointYFromPosition(int pos)
         {
             pos = Helpers.Clamp(pos, 0, TextLength);
-            pos = Lines.CharToBytePosition(pos);
+            pos = Lines.CharToBytePosition(pos).BytePosition;
             return DirectMessage(NativeMethods.SCI_POINTYFROMPOSITION, IntPtr.Zero, new IntPtr(pos)).ToInt32();
         }
 
@@ -2526,8 +2618,8 @@ namespace ScintillaNET
             end = Helpers.Clamp(end, 0, textLength);
 
             // Convert to byte positions
-            start = Lines.CharToBytePosition(start);
-            end = Lines.CharToBytePosition(end);
+            start = Lines.CharToBytePosition(start).BytePosition;
+            end = Lines.CharToBytePosition(end).RoundToNext;
 
             // The arguments would  seem reverse from Scintilla documentation
             // but empirical  evidence suggests this is correct....
@@ -2601,7 +2693,7 @@ namespace ScintillaNET
         public void SetEmptySelection(int pos)
         {
             pos = Helpers.Clamp(pos, 0, TextLength);
-            pos = Lines.CharToBytePosition(pos);
+            pos = Lines.CharToBytePosition(pos).BytePosition;
             DirectMessage(NativeMethods.SCI_SETEMPTYSELECTION, new IntPtr(pos));
         }
 
@@ -2768,13 +2860,13 @@ namespace ScintillaNET
             if (anchorPos >= 0)
             {
                 anchorPos = Helpers.Clamp(anchorPos, 0, textLength);
-                anchorPos = Lines.CharToBytePosition(anchorPos);
+                anchorPos = Lines.CharToBytePosition(anchorPos).BytePosition;
             }
 
             if (currentPos >= 0)
             {
                 currentPos = Helpers.Clamp(currentPos, 0, textLength);
-                currentPos = Lines.CharToBytePosition(currentPos);
+                currentPos = Lines.CharToBytePosition(currentPos).BytePosition;
             }
 
             DirectMessage(NativeMethods.SCI_SETSEL, new IntPtr(anchorPos), new IntPtr(currentPos));
@@ -2792,8 +2884,8 @@ namespace ScintillaNET
             caret = Helpers.Clamp(caret, 0, textLength);
             anchor = Helpers.Clamp(anchor, 0, textLength);
 
-            caret = Lines.CharToBytePosition(caret);
-            anchor = Lines.CharToBytePosition(anchor);
+            caret = Lines.CharToBytePosition(caret).BytePosition;
+            anchor = Lines.CharToBytePosition(anchor).BytePosition;
 
             DirectMessage(NativeMethods.SCI_SETSELECTION, new IntPtr(caret), new IntPtr(anchor));
         }
@@ -2873,8 +2965,9 @@ namespace ScintillaNET
             if (style < 0 || style >= Styles.Count)
                 throw new ArgumentOutOfRangeException("style", "Style must be non-negative and less than the size of the collection.");
 
-            int endPos = this.stylingPosition + length;
-            int endBytePos = Lines.CharToBytePosition(endPos);
+            var pos = Lines.CharToBytePosition(this.stylingPosition + length);
+            int endPos = pos.RoundToNextChar;
+            int endBytePos = pos.RoundToNext;
             DirectMessage(NativeMethods.SCI_SETSTYLING, new IntPtr(endBytePos - this.stylingBytePosition), new IntPtr(style));
 
             // Track this for the next call
@@ -2895,8 +2988,8 @@ namespace ScintillaNET
             start = Helpers.Clamp(start, 0, textLength);
             end = Helpers.Clamp(end, 0, textLength);
 
-            start = Lines.CharToBytePosition(start);
-            end = Lines.CharToBytePosition(end);
+            start = Lines.CharToBytePosition(start).BytePosition;
+            end = Lines.CharToBytePosition(end).BytePosition;
 
             DirectMessage(NativeMethods.SCI_SETTARGETRANGE, new IntPtr(start), new IntPtr(end));
         }
@@ -2987,7 +3080,7 @@ namespace ScintillaNET
         public void StartStyling(int position)
         {
             position = Helpers.Clamp(position, 0, TextLength);
-            int pos = Lines.CharToBytePosition(position);
+            int pos = Lines.CharToBytePosition(position).BytePosition;
             DirectMessage(NativeMethods.SCI_STARTSTYLING, new IntPtr(pos));
 
             // Track this so we can validate calls to SetStyling
@@ -3333,7 +3426,7 @@ namespace ScintillaNET
         {
             IntPtr onlyWordChars = onlyWordCharacters ? new IntPtr(1) : IntPtr.Zero;
             position = Helpers.Clamp(position, 0, TextLength);
-            position = Lines.CharToBytePosition(position);
+            position = Lines.CharToBytePosition(position).BytePosition;
             position = DirectMessage(NativeMethods.SCI_WORDENDPOSITION, new IntPtr(position), onlyWordChars).ToInt32();
             return Lines.ByteToCharPosition(position);
         }
@@ -3352,7 +3445,7 @@ namespace ScintillaNET
         {
             IntPtr onlyWordChars = onlyWordCharacters ? new IntPtr(1) : IntPtr.Zero;
             position = Helpers.Clamp(position, 0, TextLength);
-            position = Lines.CharToBytePosition(position);
+            position = Lines.CharToBytePosition(position).RoundToNext;
             position = DirectMessage(NativeMethods.SCI_WORDSTARTPOSITION, new IntPtr(position), onlyWordChars).ToInt32();
             return Lines.ByteToCharPosition(position);
         }
@@ -3663,7 +3756,7 @@ namespace ScintillaNET
             set
             {
                 value = Helpers.Clamp(value, 0, TextLength);
-                int bytePos = Lines.CharToBytePosition(value);
+                int bytePos = Lines.CharToBytePosition(value).BytePosition;
                 DirectMessage(NativeMethods.SCI_SETANCHOR, new IntPtr(bytePos));
             }
         }
@@ -4211,7 +4304,7 @@ namespace ScintillaNET
             set
             {
                 value = Helpers.Clamp(value, 0, TextLength);
-                value = Lines.CharToBytePosition(value);
+                value = Lines.CharToBytePosition(value).BytePosition;
                 DirectMessage(NativeMethods.SCI_CALLTIPSETPOSSTART, new IntPtr(value));
             }
         }
@@ -4618,7 +4711,7 @@ namespace ScintillaNET
             set
             {
                 value = Helpers.Clamp(value, 0, TextLength);
-                int bytePos = Lines.CharToBytePosition(value);
+                int bytePos = Lines.CharToBytePosition(value).BytePosition;
                 DirectMessage(NativeMethods.SCI_SETCURRENTPOS, new IntPtr(bytePos));
             }
         }
@@ -5586,7 +5679,7 @@ namespace ScintillaNET
             set
             {
                 value = Helpers.Clamp(value, 0, TextLength);
-                value = Lines.CharToBytePosition(value);
+                value = Lines.CharToBytePosition(value).BytePosition;
                 DirectMessage(NativeMethods.SCI_SETRECTANGULARSELECTIONANCHOR, new IntPtr(value));
             }
         }
@@ -5629,7 +5722,7 @@ namespace ScintillaNET
             set
             {
                 value = Helpers.Clamp(value, 0, TextLength);
-                value = Lines.CharToBytePosition(value);
+                value = Lines.CharToBytePosition(value).BytePosition;
                 DirectMessage(NativeMethods.SCI_SETRECTANGULARSELECTIONCARET, new IntPtr(value));
             }
         }
@@ -5785,7 +5878,7 @@ namespace ScintillaNET
             set
             {
                 value = Helpers.Clamp(value, 0, TextLength);
-                value = Lines.CharToBytePosition(value);
+                value = Lines.CharToBytePosition(value).BytePosition;
                 DirectMessage(NativeMethods.SCI_SETSELECTIONEND, new IntPtr(value));
             }
         }
@@ -6160,7 +6253,7 @@ namespace ScintillaNET
             set
             {
                 value = Helpers.Clamp(value, 0, TextLength);
-                value = Lines.CharToBytePosition(value);
+                value = Lines.CharToBytePosition(value).BytePosition;
                 DirectMessage(NativeMethods.SCI_SETSELECTIONSTART, new IntPtr(value));
             }
         }
@@ -6279,7 +6372,7 @@ namespace ScintillaNET
             set
             {
                 value = Helpers.Clamp(value, 0, TextLength);
-                value = Lines.CharToBytePosition(value);
+                value = Lines.CharToBytePosition(value).BytePosition;
                 DirectMessage(NativeMethods.SCI_SETTARGETEND, new IntPtr(value));
             }
         }
@@ -6304,7 +6397,7 @@ namespace ScintillaNET
             set
             {
                 value = Helpers.Clamp(value, 0, TextLength);
-                value = Lines.CharToBytePosition(value);
+                value = Lines.CharToBytePosition(value).BytePosition;
                 DirectMessage(NativeMethods.SCI_SETTARGETSTART, new IntPtr(value));
             }
         }
