@@ -107,6 +107,7 @@ public class LineCollection : IEnumerable<Line>
             return new CharToBytePositionInfo(lineCharOffset + lineByteStart, pos, false, lineCharOffset + lineByteStart + 1);
 
         int codePointBytePos = lineByteStart;
+        int prevCodePointBytePos = -1;
         int nextCodePointBytePos = -1;
         int i = 0;
         while (i < lineCharOffset)
@@ -114,6 +115,7 @@ public class LineCollection : IEnumerable<Line>
             nextCodePointBytePos = this.scintilla.DirectMessage(NativeMethods.SCI_POSITIONRELATIVE, new IntPtr(codePointBytePos), new IntPtr(1)).ToInt32();
             int utf16Count = this.scintilla.DirectMessage(NativeMethods.SCI_COUNTCODEUNITS, new IntPtr(codePointBytePos), new IntPtr(nextCodePointBytePos)).ToInt32();
             i += utf16Count;
+            prevCodePointBytePos = codePointBytePos;
             codePointBytePos = nextCodePointBytePos;
         }
 
@@ -123,7 +125,7 @@ public class LineCollection : IEnumerable<Line>
         }
         else if (i > lineCharOffset)
         {
-            codePointBytePos = this.scintilla.DirectMessage(NativeMethods.SCI_POSITIONRELATIVE, new IntPtr(codePointBytePos), new IntPtr(-1)).ToInt32();
+            codePointBytePos = prevCodePointBytePos;
         }
 
         return new CharToBytePositionInfo(codePointBytePos, pos, i > lineCharOffset, nextCodePointBytePos);
