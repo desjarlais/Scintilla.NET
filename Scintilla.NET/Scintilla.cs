@@ -77,28 +77,49 @@ namespace ScintillaNET
         public static IEnumerable<string> EnumerateSatelliteLibrarySearchPaths()
         {
             // check run-time paths
-            string folder = Path.Combine("runtimes", "win-" + Helpers.GetArchitectureRid(WinApiHelpers.GetProcessArchitecture()), "native");
-            string location = Assembly.GetExecutingAssembly().Location;
-            if (string.IsNullOrWhiteSpace(location))
-                location = Assembly.GetEntryAssembly().Location;
-            string managedLocation = Path.GetDirectoryName(location) ?? AppDomain.CurrentDomain.BaseDirectory;
-            yield return Path.Combine(managedLocation, folder);
+            string nativeSubFolder = Path.Combine("runtimes", "win-" + Helpers.GetArchitectureRid(WinApiHelpers.GetProcessArchitecture()), "native");
+
+            {
+                string location = Assembly.GetEntryAssembly()?.Location;
+                if (!string.IsNullOrWhiteSpace(location))
+                {
+                    string folder = Path.GetDirectoryName(location);
+                    if (!string.IsNullOrWhiteSpace(folder))
+                        yield return Path.Combine(folder, nativeSubFolder);
+                }
+            }
+            Assembly assembly = Assembly.GetAssembly(typeof(Scintilla));
+            {
+                string location = assembly?.Location;
+                if (!string.IsNullOrWhiteSpace(location))
+                {
+                    string folder = Path.GetDirectoryName(location);
+                    if (!string.IsNullOrWhiteSpace(folder))
+                        yield return Path.Combine(folder, nativeSubFolder);
+                }
+            }
+            {
+                string folder = AppDomain.CurrentDomain.BaseDirectory;
+                if (!string.IsNullOrWhiteSpace(folder))
+                {
+                    yield return Path.Combine(folder, nativeSubFolder);
+                }
+            }
 
             if (InDesignProcess())
             {
                 // Look for the assemblies in the nuget global packages folder
-                var designtimeAssembly = Assembly.GetAssembly(typeof(Scintilla));
                 string nugetScintillaPackageFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), @".nuget\packages\scintilla5.net");
-                Version packageVersion = designtimeAssembly.GetName().Version;
+                Version packageVersion = assembly.GetName().Version;
                 string versionString = packageVersion.Revision == 0 ? packageVersion.ToString(3) : packageVersion.ToString();
-                yield return Path.Combine(nugetScintillaPackageFolder, versionString, folder);
+                yield return Path.Combine(nugetScintillaPackageFolder, versionString, nativeSubFolder);
 
                 // then check the project folder using the Scintilla.NET assembly location
                 // move up a few levels to the host project folder and append the location nuget used at install
-                string nugetScintillaNETLocation = designtimeAssembly.Location;
-                string nugetScintillaPackageName = designtimeAssembly.GetName().Name;
+                string nugetScintillaNETLocation = assembly.Location;
+                string nugetScintillaPackageName = assembly.GetName().Name;
                 string rootProjectFolder = Path.GetFullPath(Path.Combine(nugetScintillaNETLocation, @"..\..\..\.."));
-                yield return Path.Combine(rootProjectFolder, "packages", nugetScintillaPackageName + "." + versionString, folder);
+                yield return Path.Combine(rootProjectFolder, "packages", nugetScintillaPackageName + "." + versionString, nativeSubFolder);
             }
         }
 
