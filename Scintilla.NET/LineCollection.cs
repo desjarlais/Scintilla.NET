@@ -107,6 +107,7 @@ public class LineCollection : IEnumerable<Line>
             return new CharToBytePositionInfo(lineCharOffset + lineByteStart, pos, false, lineCharOffset + lineByteStart + 1);
 
         int codePointBytePos = lineByteStart;
+        int prevCodePointBytePos = -1;
         int nextCodePointBytePos = -1;
         int i = 0;
         while (i < lineCharOffset)
@@ -114,6 +115,7 @@ public class LineCollection : IEnumerable<Line>
             nextCodePointBytePos = this.scintilla.DirectMessage(NativeMethods.SCI_POSITIONRELATIVE, new IntPtr(codePointBytePos), new IntPtr(1)).ToInt32();
             int utf16Count = this.scintilla.DirectMessage(NativeMethods.SCI_COUNTCODEUNITS, new IntPtr(codePointBytePos), new IntPtr(nextCodePointBytePos)).ToInt32();
             i += utf16Count;
+            prevCodePointBytePos = codePointBytePos;
             codePointBytePos = nextCodePointBytePos;
         }
 
@@ -123,7 +125,7 @@ public class LineCollection : IEnumerable<Line>
         }
         else if (i > lineCharOffset)
         {
-            codePointBytePos = this.scintilla.DirectMessage(NativeMethods.SCI_POSITIONRELATIVE, new IntPtr(codePointBytePos), new IntPtr(-1)).ToInt32();
+            codePointBytePos = prevCodePointBytePos;
         }
 
         return new CharToBytePositionInfo(codePointBytePos, pos, i > lineCharOffset, nextCodePointBytePos);
@@ -197,12 +199,13 @@ public class LineCollection : IEnumerable<Line>
 #endif
 
     /// <summary>
-    /// Gets the number of CHARACTERS int a BYTE range.
+    /// Gets the number of CHARACTERS in a BYTE range.
     /// </summary>
     private int GetCharCount(int pos, int length)
     {
-        IntPtr ptr = this.scintilla.DirectMessage(NativeMethods.SCI_GETRANGEPOINTER, new IntPtr(pos), new IntPtr(length));
-        return GetCharCount(ptr, length, this.scintilla.Encoding);
+        // Encoding.GetCharCount() counts a cut-off multi-byte Utf-8 char as a � char, which causes issues so we use SCI_COUNTCODEUNITS.
+        // Ideally Scintilla should never give us positions pointing to the middle of a code point.
+        return this.scintilla.DirectMessage(NativeMethods.SCI_COUNTCODEUNITS, new IntPtr(pos), new IntPtr(pos + length)).ToInt32();
     }
 
     /// <summary>
@@ -213,7 +216,6 @@ public class LineCollection : IEnumerable<Line>
         if (text == IntPtr.Zero || length == 0)
             return 0;
 
-        // Never use SCI_COUNTCHARACTERS. It counts CRLF as 1 char!
         int count = encoding.GetCharCount((byte*)text, length);
         return count;
     }
@@ -390,7 +392,7 @@ public class LineCollection : IEnumerable<Line>
         int startLine = this.scintilla.DirectMessage(NativeMethods.SCI_LINEFROMPOSITION, scn.position).ToInt32();
         if (scn.linesAdded == IntPtr.Zero)
         {
-            // That was easy
+            // Can't use `GetCharCount(scn.position.ToInt32(), scn.length.ToInt32())` because the text is deleted
             int delta = GetCharCount(scn.text, scn.length.ToInt32(), this.scintilla.Encoding);
             AdjustLineLength(startLine, delta * -1);
         }

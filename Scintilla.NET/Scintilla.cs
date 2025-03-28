@@ -157,7 +157,7 @@ namespace ScintillaNET
         private BorderStyle borderStyle;
 
         // Set style
-        private int stylingPosition;
+        private int stylingCharPosition;
         private int stylingBytePosition;
 
         // Modified event optimization
@@ -2959,18 +2959,18 @@ namespace ScintillaNET
 
             if (length < 0)
                 throw new ArgumentOutOfRangeException(nameof(length), "Length cannot be less than zero.");
-            if (this.stylingPosition + length > textLength)
+            if (this.stylingCharPosition + length > textLength)
                 throw new ArgumentOutOfRangeException(nameof(length), "Position and length must refer to a range within the document.");
             if (style < 0 || style >= Styles.Count)
                 throw new ArgumentOutOfRangeException(nameof(style), "Style must be non-negative and less than the size of the collection.");
 
-            var pos = Lines.CharToBytePosition(this.stylingPosition + length);
-            int endPos = pos.RoundToNextChar;
-            int endBytePos = pos.RoundToNext;
+            var endPos = Lines.CharToBytePosition(this.stylingCharPosition + length);
+            int endCharPos = endPos.RoundToNextChar;
+            int endBytePos = endPos.RoundToNext;
             DirectMessage(NativeMethods.SCI_SETSTYLING, new IntPtr(endBytePos - this.stylingBytePosition), new IntPtr(style));
 
             // Track this for the next call
-            this.stylingPosition = endPos;
+            this.stylingCharPosition = endCharPos;
             this.stylingBytePosition = endBytePos;
         }
 
@@ -3083,7 +3083,7 @@ namespace ScintillaNET
             DirectMessage(NativeMethods.SCI_STARTSTYLING, new IntPtr(pos));
 
             // Track this so we can validate calls to SetStyling
-            this.stylingPosition = position;
+            this.stylingCharPosition = position;
             this.stylingBytePosition = pos;
         }
 
