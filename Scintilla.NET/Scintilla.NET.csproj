@@ -59,9 +59,12 @@
 		</Content>
 	</ItemGroup>
 	<ItemGroup Condition="'$(TargetFramework.TrimEnd(`0123456789`))' == 'net'">
-	  <Reference Include="System.Design" />
+		<Reference Include="System.Design" />
 	</ItemGroup>
 	<Target Name="PostPack" AfterTargets="Pack">
 		<Exec Command="powershell .\nupkg.ps1 -MSBuildProjectDirectory '$(MSBuildProjectDirectory)' -NuGetPackageRoot '$(NuGetPackageRoot)' -NuGetPackageSourceDir '$(SolutionDir)\registry' -PackageOutputPath '$(PackageOutputPath)' -PackageId '$(PackageId)' -PackageVersion '$(PackageVersion)'" />
+	</Target>
+	<Target Name="PostClean" AfterTargets="Clean">
+		<RemoveDir Directories="$(SolutionDir)\registry" ContinueOnError="true" />
 	</Target>
 </Project>
