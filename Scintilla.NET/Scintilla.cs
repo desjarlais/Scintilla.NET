@@ -4635,9 +4635,10 @@ namespace ScintillaNET
             {
                 if (moduleHandle == IntPtr.Zero)
                 {
-                    // Load the native Scintilla library
-                    moduleHandle = NativeMethods.LoadLibrary(modulePathScintilla);
-                    lexillaHandle = NativeMethods.LoadLibrary(modulePathLexilla);
+                    // Try to get existing Scintilla library
+                    if (NativeMethods.GetModuleHandleEx(0, "Scintilla.dll", out moduleHandle) == 0)
+                        // Load if not already
+                        moduleHandle = NativeMethods.LoadLibrary(modulePathScintilla);
 
                     if (moduleHandle == IntPtr.Zero)
                     {
@@ -4645,13 +4646,14 @@ namespace ScintillaNET
                         throw new Win32Exception(message, new Win32Exception()); // Calls GetLastError
                     }
 
-                    // For some reason the 32-bit DLL has weird export names.
-                    bool is32Bit = IntPtr.Size == 4;
+                    if (NativeMethods.GetModuleHandleEx(0, "Lexilla.dll", out lexillaHandle) == 0)
+                        lexillaHandle = NativeMethods.LoadLibrary(modulePathLexilla);
 
-                    // Self-compiled DLLs required this:
-                    //var exportName = is32Bit
-                    //    ? "_Scintilla_DirectFunction@16"
-                    //    : nameof(NativeMethods.Scintilla_DirectFunction);
+                    if (lexillaHandle == IntPtr.Zero)
+                    {
+                        string message = string.Format(CultureInfo.InvariantCulture, "Could not load the Lexilla module at the path '{0}'.", modulePathLexilla);
+                        throw new Win32Exception(message, new Win32Exception()); // Calls GetLastError
+                    }
 
                     // Native DLL:
                     string exportName = nameof(NativeMethods.Scintilla_DirectFunction);

@@ -2094,6 +2094,9 @@ public static class NativeMethods
     [DllImport(DLL_NAME_USER32, SetLastError = true)]
     public static extern IntPtr SetParent(IntPtr hWndChild, IntPtr hWndNewParent);
 
+    [DllImport(DLL_NAME_KERNEL32, ExactSpelling = true, EntryPoint = "GetModuleHandleExW", SetLastError = true)]
+    internal static extern unsafe int GetModuleHandleEx(uint dwFlags, [MarshalAs(UnmanagedType.LPWStr)] string lpModuleName, out IntPtr phModule);
+
     #endregion Functions
 
     #region Structures
