@@ -77,28 +77,49 @@ namespace ScintillaNET
         public static IEnumerable<string> EnumerateSatelliteLibrarySearchPaths()
         {
             // check run-time paths
-            string folder = Path.Combine("runtimes", "win-" + Helpers.GetArchitectureRid(WinApiHelpers.GetProcessArchitecture()), "native");
-            string location = Assembly.GetExecutingAssembly().Location;
-            if (string.IsNullOrWhiteSpace(location))
-                location = Assembly.GetEntryAssembly().Location;
-            string managedLocation = Path.GetDirectoryName(location) ?? AppDomain.CurrentDomain.BaseDirectory;
-            yield return Path.Combine(managedLocation, folder);
+            string nativeSubFolder = Path.Combine("runtimes", "win-" + Helpers.GetArchitectureRid(WinApiHelpers.GetProcessArchitecture()), "native");
+
+            {
+                string location = Assembly.GetEntryAssembly()?.Location;
+                if (!string.IsNullOrWhiteSpace(location))
+                {
+                    string folder = Path.GetDirectoryName(location);
+                    if (!string.IsNullOrWhiteSpace(folder))
+                        yield return Path.Combine(folder, nativeSubFolder);
+                }
+            }
+            Assembly assembly = Assembly.GetAssembly(typeof(Scintilla));
+            {
+                string location = assembly?.Location;
+                if (!string.IsNullOrWhiteSpace(location))
+                {
+                    string folder = Path.GetDirectoryName(location);
+                    if (!string.IsNullOrWhiteSpace(folder))
+                        yield return Path.Combine(folder, nativeSubFolder);
+                }
+            }
+            {
+                string folder = AppDomain.CurrentDomain.BaseDirectory;
+                if (!string.IsNullOrWhiteSpace(folder))
+                {
+                    yield return Path.Combine(folder, nativeSubFolder);
+                }
+            }
 
             if (InDesignProcess())
             {
                 // Look for the assemblies in the nuget global packages folder
-                var designtimeAssembly = Assembly.GetAssembly(typeof(Scintilla));
                 string nugetScintillaPackageFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), @".nuget\packages\scintilla5.net");
-                Version packageVersion = designtimeAssembly.GetName().Version;
+                Version packageVersion = assembly.GetName().Version;
                 string versionString = packageVersion.Revision == 0 ? packageVersion.ToString(3) : packageVersion.ToString();
-                yield return Path.Combine(nugetScintillaPackageFolder, versionString, folder);
+                yield return Path.Combine(nugetScintillaPackageFolder, versionString, nativeSubFolder);
 
                 // then check the project folder using the Scintilla.NET assembly location
                 // move up a few levels to the host project folder and append the location nuget used at install
-                string nugetScintillaNETLocation = designtimeAssembly.Location;
-                string nugetScintillaPackageName = designtimeAssembly.GetName().Name;
+                string nugetScintillaNETLocation = assembly.Location;
+                string nugetScintillaPackageName = assembly.GetName().Name;
                 string rootProjectFolder = Path.GetFullPath(Path.Combine(nugetScintillaNETLocation, @"..\..\..\.."));
-                yield return Path.Combine(rootProjectFolder, "packages", nugetScintillaPackageName + "." + versionString, folder);
+                yield return Path.Combine(rootProjectFolder, "packages", nugetScintillaPackageName + "." + versionString, nativeSubFolder);
             }
         }
 
@@ -4614,9 +4635,10 @@ namespace ScintillaNET
             {
                 if (moduleHandle == IntPtr.Zero)
                 {
-                    // Load the native Scintilla library
-                    moduleHandle = NativeMethods.LoadLibrary(modulePathScintilla);
-                    lexillaHandle = NativeMethods.LoadLibrary(modulePathLexilla);
+                    // Try to get existing Scintilla library
+                    if (NativeMethods.GetModuleHandleEx(0, "Scintilla.dll", out moduleHandle) == 0)
+                        // Load if not already
+                        moduleHandle = NativeMethods.LoadLibrary(modulePathScintilla);
 
                     if (moduleHandle == IntPtr.Zero)
                     {
@@ -4624,13 +4646,14 @@ namespace ScintillaNET
                         throw new Win32Exception(message, new Win32Exception()); // Calls GetLastError
                     }
 
-                    // For some reason the 32-bit DLL has weird export names.
-                    bool is32Bit = IntPtr.Size == 4;
+                    if (NativeMethods.GetModuleHandleEx(0, "Lexilla.dll", out lexillaHandle) == 0)
+                        lexillaHandle = NativeMethods.LoadLibrary(modulePathLexilla);
 
-                    // Self-compiled DLLs required this:
-                    //var exportName = is32Bit
-                    //    ? "_Scintilla_DirectFunction@16"
-                    //    : nameof(NativeMethods.Scintilla_DirectFunction);
+                    if (lexillaHandle == IntPtr.Zero)
+                    {
+                        string message = string.Format(CultureInfo.InvariantCulture, "Could not load the Lexilla module at the path '{0}'.", modulePathLexilla);
+                        throw new Win32Exception(message, new Win32Exception()); // Calls GetLastError
+                    }
 
                     // Native DLL:
                     string exportName = nameof(NativeMethods.Scintilla_DirectFunction);
