@@ -15,13 +15,12 @@ if ($PackageVersionList.Count -Eq 4 -And [int]::Parse($PackageVersionList[3]) -E
 	$PackageVersion = [string]::Join('.', $PackageVersionList[0..2])
 }
 
-$LocalNuGetPackageRegistry = [System.IO.Path]::GetFullPath((Join-Path $NuGetPackageSourceDir ..\registry))
 $PackagePath = Join-Path $PackageOutputPath "$PackageId.$PackageVersion.nupkg"
 
-$PackageInRegistry = Join-Path $LocalNuGetPackageRegistry $PackageId
+$PackageInRegistry = Join-Path $NuGetPackageSourceDir $PackageId
 $PackageInRoot = Join-Path $NuGetPackageRoot $PackageId
 
 Remove-Item $PackageInRegistry -Recurse -Force -ErrorAction Ignore
 Remove-Item $PackageInRoot -Recurse -Force -ErrorAction Ignore
 
-nuget add $PackagePath -Source $LocalNuGetPackageRegistry
+nuget add $PackagePath -Source $NuGetPackageSourceDir
