@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
+using Windows.Win32;
+using Windows.Win32.Foundation;
 
 namespace ScintillaNET;
 
@@ -14,7 +16,7 @@ public class Lexilla
     /// Initializes the Lexilla.dll library.
     /// </summary>
     /// <param name="lexillaHandle">The handle to the Lexilla.dll file.</param>
-    internal Lexilla(IntPtr lexillaHandle)
+    internal Lexilla(FreeLibrarySafeHandle lexillaHandle)
     {
         const string win32Error = "The Scintilla module has no export for the '{0}' procedure.";
 
@@ -22,7 +24,7 @@ public class Lexilla
 
         // Get the Lexilla functions needed to define lexers and create managed callbacks...
 
-        IntPtr functionPointer = NativeMethods.GetProcAddress(new HandleRef(this, lexillaHandle), lpProcName);
+        FARPROC functionPointer = PInvoke.GetProcAddress(lexillaHandle, lpProcName);
         if (functionPointer == IntPtr.Zero)
         {
             throw new Win32Exception(string.Format(win32Error, lpProcName),
@@ -34,7 +36,7 @@ public class Lexilla
 
         lpProcName = nameof(NativeMethods.GetLexerName);
 
-        functionPointer = NativeMethods.GetProcAddress(new HandleRef(this, lexillaHandle), lpProcName);
+        functionPointer = PInvoke.GetProcAddress(lexillaHandle, lpProcName);
         if (functionPointer == IntPtr.Zero)
         {
             throw new Win32Exception(string.Format(win32Error, lpProcName),
@@ -46,7 +48,7 @@ public class Lexilla
 
         lpProcName = nameof(NativeMethods.GetLexerCount);
 
-        functionPointer = NativeMethods.GetProcAddress(new HandleRef(this, lexillaHandle), lpProcName);
+        functionPointer = PInvoke.GetProcAddress(lexillaHandle, lpProcName);
         if (functionPointer == IntPtr.Zero)
         {
             throw new Win32Exception(string.Format(win32Error, lpProcName),
@@ -58,7 +60,7 @@ public class Lexilla
 
         lpProcName = nameof(NativeMethods.LexerNameFromID);
 
-        functionPointer = NativeMethods.GetProcAddress(new HandleRef(this, lexillaHandle), lpProcName);
+        functionPointer = PInvoke.GetProcAddress(lexillaHandle, lpProcName);
         if (functionPointer == IntPtr.Zero)
         {
             throw new Win32Exception(string.Format(win32Error, lpProcName),

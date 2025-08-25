@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using Windows.Win32;
 
 namespace ScintillaNET;
 
@@ -9,11 +10,6 @@ namespace ScintillaNET;
 public static class NativeMethods
 {
     #region Constants
-
-    private const string DLL_NAME_GDI32 = "gdi32.dll";
-    private const string DLL_NAME_KERNEL32 = "kernel32.dll";
-    private const string DLL_NAME_OLE32 = "ole32.dll";
-    private const string DLL_NAME_USER32 = "user32.dll";
 
     public const int INVALID_POSITION = -1;
 
@@ -1195,9 +1191,6 @@ public static class NativeMethods
     public const int SCTD_LONGARROW = 0;
     public const int SCTD_STRIKEOUT = 1;
 
-    // Undo
-    public const int UNDO_MAY_COALESCE = 1;
-
     // Whitespace
     public const int SCWS_INVISIBLE = 0;
     public const int SCWS_VISIBLEALWAYS = 1;
@@ -1205,23 +1198,7 @@ public static class NativeMethods
     public const int SCWS_VISIBLEONLYININDENT = 3;
 
     // Window messages
-    public const int WM_CREATE = 0x0001;
-    public const int WM_DESTROY = 0x0002;
-    public const int WM_SETCURSOR = 0x0020;
-    public const int WM_NOTIFY = 0x004E;
-    public const int WM_NCPAINT = 0x0085;
-    public const int WM_LBUTTONDBLCLK = 0x0203;
-    public const int WM_RBUTTONDBLCLK = 0x0206;
-    public const int WM_MBUTTONDBLCLK = 0x0209;
-    public const int WM_XBUTTONDBLCLK = 0x020D;
-    public const int WM_USER = 0x0400;
-    public const int WM_REFLECT = WM_USER + 0x1C00;
-
-    // Window styles
-    public const int WS_BORDER = 0x00800000;
-    public const int WS_EX_CLIENTEDGE = 0x00000200;
-
-    public const int RGN_AND = 1;
+    public const uint WM_REFLECT = PInvoke.WM_USER + 0x1C00;
 
     #endregion Constants
 
@@ -2037,66 +2014,14 @@ public static class NativeMethods
 
     #region Functions
 
-    [DllImport(DLL_NAME_USER32, SetLastError = true)]
+    [DllImport("user32.dll", SetLastError = true)]
     public static extern IntPtr MB_GetString(uint hInst);
 
     public static string GetMessageBoxString(uint msgId) =>
         Marshal.PtrToStringUni(MB_GetString(msgId));
 
-    [DllImport(DLL_NAME_USER32, SetLastError = true)]
-    [return: MarshalAs(UnmanagedType.Bool)]
-    public static extern bool CloseClipboard();
-
-    [DllImport(DLL_NAME_GDI32, ExactSpelling = true)]
-    public static extern int CombineRgn(IntPtr hrgnDest, IntPtr hrgnSrc1, IntPtr hrgnSrc2, int fnCombineMode);
-
-    [DllImport(DLL_NAME_GDI32, ExactSpelling = true)]
-    public static extern IntPtr CreateRectRgn(int x1, int y1, int x2, int y2);
-
-    [DllImport(DLL_NAME_KERNEL32, CharSet = CharSet.Ansi, ExactSpelling = true, SetLastError = true)]
-    public static extern IntPtr GetProcAddress(HandleRef hModule, string lpProcName);
-
-    [DllImport(DLL_NAME_USER32, SetLastError = true)]
-    [return: MarshalAs(UnmanagedType.Bool)]
-    public static extern bool EmptyClipboard();
-
-    [DllImport(DLL_NAME_USER32, ExactSpelling = true)]
-    public static extern IntPtr GetWindowDC(IntPtr hWnd);
-
-    [DllImport(DLL_NAME_USER32, ExactSpelling = true)]
-    [return: MarshalAs(UnmanagedType.Bool)]
-    public static extern bool GetWindowRect(IntPtr hWnd, out RECT lpRect);
-
-    [DllImport(DLL_NAME_KERNEL32, EntryPoint = "LoadLibraryW", CharSet = CharSet.Unicode, SetLastError = true)]
-    public static extern IntPtr LoadLibrary(string lpFileName);
-
-    [DllImport(DLL_NAME_KERNEL32, EntryPoint = "RtlMoveMemory", SetLastError = true)]
+    [DllImport("kernel32.dll", EntryPoint = "RtlMoveMemory", SetLastError = true)]
     public static extern void MoveMemory(IntPtr dest, IntPtr src, int length);
-
-    [DllImport(DLL_NAME_USER32, SetLastError = true)]
-    [return: MarshalAs(UnmanagedType.Bool)]
-    public static extern bool OpenClipboard(IntPtr hWndNewOwner);
-
-    [DllImport(DLL_NAME_USER32, SetLastError = true)]
-    public static extern uint RegisterClipboardFormat(string lpszFormat);
-
-    [DllImport(DLL_NAME_USER32, ExactSpelling = true)]
-    public static extern int ReleaseDC(IntPtr hWnd, IntPtr hDC);
-
-    [DllImport(DLL_NAME_OLE32, ExactSpelling = true)]
-    public static extern int RevokeDragDrop(IntPtr hwnd);
-
-    [DllImport(DLL_NAME_USER32, EntryPoint = "SendMessageW", CharSet = CharSet.Unicode, SetLastError = true)]
-    public static extern IntPtr SendMessage(HandleRef hWnd, int msg, IntPtr wParam, IntPtr lParam);
-
-    [DllImport(DLL_NAME_USER32, SetLastError = true)]
-    public static extern IntPtr SetClipboardData(uint uFormat, IntPtr hMem);
-
-    [DllImport(DLL_NAME_USER32, SetLastError = true)]
-    public static extern IntPtr SetParent(IntPtr hWndChild, IntPtr hWndNewParent);
-
-    [DllImport(DLL_NAME_KERNEL32, ExactSpelling = true, EntryPoint = "GetModuleHandleExW", SetLastError = true)]
-    internal static extern unsafe int GetModuleHandleEx(uint dwFlags, [MarshalAs(UnmanagedType.LPWStr)] string lpModuleName, out IntPtr phModule);
 
     #endregion Functions
 

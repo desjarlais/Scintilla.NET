@@ -6,6 +6,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Windows.Win32;
+using Windows.Win32.Foundation;
 
 namespace ScintillaNET;
 
@@ -165,10 +167,10 @@ internal static class Helpers
                 // NppExport -> HTMLExporter.h
                 // NppExport -> RTFExporter.h
 
-                CF_LINESELECT = NativeMethods.RegisterClipboardFormat("MSDEVLineSelect");
-                CF_VSLINETAG = NativeMethods.RegisterClipboardFormat("VisualStudioEditorOperationsLineCutCopyClipboardTag");
-                CF_HTML = NativeMethods.RegisterClipboardFormat("HTML Format");
-                CF_RTF = NativeMethods.RegisterClipboardFormat("Rich Text Format");
+                CF_LINESELECT = PInvoke.RegisterClipboardFormat("MSDEVLineSelect");
+                CF_VSLINETAG = PInvoke.RegisterClipboardFormat("VisualStudioEditorOperationsLineCutCopyClipboardTag");
+                CF_HTML = PInvoke.RegisterClipboardFormat("HTML Format");
+                CF_RTF = PInvoke.RegisterClipboardFormat("Rich Text Format");
                 registeredFormats = true;
             }
 
@@ -201,18 +203,18 @@ internal static class Helpers
             }
 
             // If we have segments and can open the clipboard
-            if (styledSegments != null && styledSegments.Count > 0 && NativeMethods.OpenClipboard(scintilla.Handle))
+            if (styledSegments != null && styledSegments.Count > 0 && PInvoke.OpenClipboard((HWND)scintilla.Handle))
             {
                 if ((format & CopyFormat.Text) == 0)
                 {
                     // Do the things default (plain text) processing would normally give us
-                    NativeMethods.EmptyClipboard();
+                    PInvoke.EmptyClipboard();
 
                     if (lineCopy)
                     {
                         // Clipboard tags
-                        NativeMethods.SetClipboardData(CF_LINESELECT, IntPtr.Zero);
-                        NativeMethods.SetClipboardData(CF_VSLINETAG, IntPtr.Zero);
+                        PInvoke.SetClipboardData(CF_LINESELECT, HANDLE.Null);
+                        PInvoke.SetClipboardData(CF_VSLINETAG, HANDLE.Null);
                     }
                 }
 
@@ -224,7 +226,7 @@ internal static class Helpers
                 if ((format & CopyFormat.Html) > 0)
                     CopyHtml(scintilla, styles, styledSegments);
 
-                NativeMethods.CloseClipboard();
+                PInvoke.CloseClipboard();
             }
         }
     }
@@ -447,7 +449,7 @@ internal static class Helpers
             ms.WriteByte(0);
 
             string str = GetString(ms.Pointer, (int)ms.Length, Encoding.UTF8);
-            if (NativeMethods.SetClipboardData(CF_HTML, ms.Pointer) != IntPtr.Zero)
+            if (PInvoke.SetClipboardData(CF_HTML, (HANDLE)ms.Pointer) != IntPtr.Zero)
                 ms.FreeOnDispose = false; // Clipboard will free memory
         }
         catch (Exception ex)
@@ -730,7 +732,7 @@ internal static class Helpers
             ms.WriteByte(0);
 
             // var str = GetString(ms.Pointer, (int)ms.Length, Encoding.ASCII);
-            if (NativeMethods.SetClipboardData(CF_RTF, ms.Pointer) != IntPtr.Zero)
+            if (PInvoke.SetClipboardData(CF_RTF, (HANDLE)ms.Pointer) != IntPtr.Zero)
                 ms.FreeOnDispose = false; // Clipboard will free memory
         }
         catch (Exception ex)

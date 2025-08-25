@@ -11,6 +11,10 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
+using Windows.Win32;
+using Windows.Win32.Foundation;
+using Windows.Win32.Graphics.Gdi;
+using Windows.Win32.UI.WindowsAndMessaging;
 
 namespace ScintillaNET
 {
@@ -166,9 +170,9 @@ namespace ScintillaNET
         private static readonly string modulePathScintilla;
         private static readonly string modulePathLexilla;
 
-        private static IntPtr moduleHandle;
+        private static FreeLibrarySafeHandle moduleHandle;
         private static NativeMethods.Scintilla_DirectFunction directFunction;
-        private static IntPtr lexillaHandle;
+        private static FreeLibrarySafeHandle lexillaHandle;
         private static Lexilla lexilla;
 
         // Events
@@ -2149,7 +2153,7 @@ namespace ScintillaNET
             // native Scintilla control before base.OnHandleCreated does the standard
             // processing of AllowDrop.
             if (!_ScintillaManagedDragDrop)
-                NativeMethods.RevokeDragDrop(Handle);
+                PInvoke.RevokeDragDrop((HWND)Handle);
 
             base.OnHandleCreated(e);
         }
@@ -3258,7 +3262,7 @@ namespace ScintillaNET
                 // temporary bait-and-switch gets reconciled again automatically. Our Dispose method ensures
                 // that we truly get destroyed when the time is right.
 
-                NativeMethods.SetParent(Handle, new IntPtr(NativeMethods.HWND_MESSAGE));
+                PInvoke.SetParent((HWND)Handle, HWND.HWND_MESSAGE);
                 m.Result = IntPtr.Zero;
                 return;
             }
@@ -3291,9 +3295,11 @@ namespace ScintillaNET
                 return;
             }
 
-            NativeMethods.GetWindowRect(m.HWnd, out NativeMethods.RECT windowRect);
+            HWND hwnd = (HWND)m.HWnd;
+
+            PInvoke.GetWindowRect(hwnd, out RECT windowRect);
             Size borderSize = SystemInformation.Border3DSize;
-            IntPtr hDC = NativeMethods.GetWindowDC(m.HWnd);
+            HDC hDC = PInvoke.GetWindowDC(hwnd);
             try
             {
                 using var graphics = Graphics.FromHdc(hDC);
@@ -3308,18 +3314,19 @@ namespace ScintillaNET
             }
             finally
             {
-                NativeMethods.ReleaseDC(m.HWnd, hDC);
+                PInvoke.ReleaseDC(hwnd, hDC);
             }
 
             // Create a new region to pass to the default proc that excludes our border
-            IntPtr clipRegion = NativeMethods.CreateRectRgn(
+            HRGN clipRegion = PInvoke.CreateRectRgn(
                 windowRect.left + borderSize.Width,
                 windowRect.top + borderSize.Height,
                 windowRect.right - borderSize.Width,
-                windowRect.bottom - borderSize.Height);
+                windowRect.bottom - borderSize.Height
+            );
 
             if (m.WParam != new IntPtr(1))
-                NativeMethods.CombineRgn(clipRegion, clipRegion, m.WParam, NativeMethods.RGN_AND);
+                PInvoke.CombineRgn(clipRegion, clipRegion, (HRGN)m.WParam, RGN_COMBINE_MODE.RGN_AND);
 
             // Call default proc to get the scrollbars, etc... painted
             m.WParam = clipRegion;
@@ -3445,28 +3452,28 @@ namespace ScintillaNET
         /// <param name="m">The Windows Message to process.</param>
         protected override void WndProc(ref Message m)
         {
-            switch (m.Msg)
+            switch ((uint)m.Msg)
             {
-                case NativeMethods.WM_REFLECT + NativeMethods.WM_NOTIFY:
+                case NativeMethods.WM_REFLECT + PInvoke.WM_NOTIFY:
                     WmReflectNotify(ref m);
                     break;
 
-                case NativeMethods.WM_SETCURSOR:
+                case PInvoke.WM_SETCURSOR:
                     DefWndProc(ref m);
                     break;
 
-                case NativeMethods.WM_NCPAINT:
+                case PInvoke.WM_NCPAINT:
                     WmNcPaint(ref m);
                     break;
 
-                case NativeMethods.WM_LBUTTONDBLCLK:
-                case NativeMethods.WM_RBUTTONDBLCLK:
-                case NativeMethods.WM_MBUTTONDBLCLK:
-                case NativeMethods.WM_XBUTTONDBLCLK:
+                case PInvoke.WM_LBUTTONDBLCLK:
+                case PInvoke.WM_RBUTTONDBLCLK:
+                case PInvoke.WM_MBUTTONDBLCLK:
+                case PInvoke.WM_XBUTTONDBLCLK:
                     this.doubleClick = true;
                     goto default;
 
-                case NativeMethods.WM_DESTROY:
+                case PInvoke.WM_DESTROY:
                     WmDestroy(ref m);
                     break;
 
@@ -4677,23 +4684,23 @@ namespace ScintillaNET
         {
             get
             {
-                if (moduleHandle == IntPtr.Zero)
+                if (moduleHandle == null || moduleHandle.IsInvalid)
                 {
                     // Try to get existing Scintilla library
-                    if (NativeMethods.GetModuleHandleEx(0, "Scintilla.dll", out moduleHandle) == 0)
+                    if (PInvoke.GetModuleHandleEx(0, "Scintilla.dll", out moduleHandle) == 0)
                         // Load if not already
-                        moduleHandle = NativeMethods.LoadLibrary(modulePathScintilla);
+                        moduleHandle = PInvoke.LoadLibrary(modulePathScintilla);
 
-                    if (moduleHandle == IntPtr.Zero)
+                    if (moduleHandle == null || moduleHandle.IsInvalid)
                     {
                         string message = string.Format(CultureInfo.InvariantCulture, "Could not load the Scintilla module at the path '{0}'.", modulePathScintilla);
                         throw new Win32Exception(message, new Win32Exception()); // Calls GetLastError
                     }
 
-                    if (NativeMethods.GetModuleHandleEx(0, "Lexilla.dll", out lexillaHandle) == 0)
-                        lexillaHandle = NativeMethods.LoadLibrary(modulePathLexilla);
+                    if (PInvoke.GetModuleHandleEx(0, "Lexilla.dll", out lexillaHandle) == 0)
+                        lexillaHandle = PInvoke.LoadLibrary(modulePathLexilla);
 
-                    if (lexillaHandle == IntPtr.Zero)
+                    if (lexillaHandle == null || lexillaHandle.IsInvalid)
                     {
                         string message = string.Format(CultureInfo.InvariantCulture, "Could not load the Lexilla module at the path '{0}'.", modulePathLexilla);
                         throw new Win32Exception(message, new Win32Exception()); // Calls GetLastError
@@ -4703,7 +4710,7 @@ namespace ScintillaNET
                     string exportName = nameof(NativeMethods.Scintilla_DirectFunction);
 
                     // Get the native Scintilla direct function -- the only function the library exports
-                    IntPtr directFunctionPointer = NativeMethods.GetProcAddress(new HandleRef(this, moduleHandle), exportName);
+                    FARPROC directFunctionPointer = PInvoke.GetProcAddress(moduleHandle, exportName);
                     if (directFunctionPointer == IntPtr.Zero)
                     {
                         string message = "The Scintilla module has no export for the 'Scintilla_DirectFunction' procedure.";
@@ -4723,16 +4730,16 @@ namespace ScintillaNET
                 cp.ClassName = "Scintilla";
 
                 // The border effect is achieved through a native Windows style
-                cp.ExStyle &= ~NativeMethods.WS_EX_CLIENTEDGE;
-                cp.Style &= ~NativeMethods.WS_BORDER;
+                cp.ExStyle &= ~(int)WINDOW_EX_STYLE.WS_EX_CLIENTEDGE;
+                cp.Style &= ~(int)WINDOW_STYLE.WS_BORDER;
                 switch (this.borderStyle)
                 {
                     case BorderStyle.Fixed3D:
                     case BorderStyle.Fixed3DVisualStyles:
-                        cp.ExStyle |= NativeMethods.WS_EX_CLIENTEDGE;
+                        cp.ExStyle |= (int)WINDOW_EX_STYLE.WS_EX_CLIENTEDGE;
                         break;
                     case BorderStyle.FixedSingle:
-                        cp.Style |= NativeMethods.WS_BORDER;
+                        cp.Style |= (int)WINDOW_STYLE.WS_BORDER;
                         break;
                 }
 
@@ -5827,7 +5834,7 @@ namespace ScintillaNET
                 {
                     // Get a pointer to the native Scintilla object (i.e. C++ 'this') to use with the
                     // direct function. This will happen for each Scintilla control instance.
-                    this.sciPtr = NativeMethods.SendMessage(new HandleRef(this, Handle), NativeMethods.SCI_GETDIRECTPOINTER, IntPtr.Zero, IntPtr.Zero);
+                    this.sciPtr = PInvoke.SendMessage((HWND)Handle, NativeMethods.SCI_GETDIRECTPOINTER, 0, 0);
                 }
 
                 return this.sciPtr;
