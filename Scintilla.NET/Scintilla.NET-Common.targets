@@ -13,7 +13,7 @@
     <Platforms>AnyCPU</Platforms>
   </PropertyGroup>
   <PropertyGroup>
-    <LangVersion>latest</LangVersion>
+    <LangVersion>12</LangVersion>
   </PropertyGroup>
   <PropertyGroup>
     <DefineConstants>SCINTILLA5</DefineConstants>
