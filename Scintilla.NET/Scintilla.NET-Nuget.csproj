@@ -1,0 +1,9 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="Scintilla.NET-Common.targets" />
+  <Target Name="PostPack" AfterTargets="Pack">
+    <Exec Command="powershell .\nupkg.ps1 -MSBuildProjectDirectory '$(MSBuildProjectDirectory)' -NuGetPackageRoot '$(NuGetPackageRoot)' -NuGetPackageSourceDir '$(SolutionDir)\registry' -PackageOutputPath '$(PackageOutputPath)' -PackageId '$(PackageId)' -PackageVersion '$(PackageVersion)'" />
+  </Target>
+  <Target Name="PostClean" AfterTargets="Clean">
+    <RemoveDir Directories="$(SolutionDir)\registry" ContinueOnError="true" />
+  </Target>
+</Project>

@@ -1,0 +1,64 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <ProjectGuid>{22AE2386-60F1-476E-9303-61CDB0AAC4CF}</ProjectGuid>
+    <TargetFrameworks>net462;net8.0-windows</TargetFrameworks>
+    <NeutralLanguage>en-US</NeutralLanguage>
+    <Description>Source Editing Component based on Scintilla 5 series.</Description>
+    <Copyright>Copyright (c) Jacob Slusser 2018, VPKSoft, cyber960 2022, desjarlais 2023, Ahmet Sait 2025</Copyright>
+    <Version>6.1.2</Version>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <UseWindowsForms>true</UseWindowsForms>
+    <OutputPath>bin\$(Configuration)\</OutputPath>
+    <Platforms>AnyCPU</Platforms>
+  </PropertyGroup>
+  <PropertyGroup>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup>
+    <DefineConstants>SCINTILLA5</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PackageId>Scintilla5.NET</PackageId>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/desjarlais/Scintilla.NET</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/desjarlais/Scintilla.NET</RepositoryUrl>
+    <PackageIcon>icon.png</PackageIcon>
+    <PackageTags>ScintillaNET Scintilla Editor</PackageTags>
+    <PackageReleaseNotes>Please visit https://github.com/desjarlais/Scintilla.NET/releases to view the release notes.</PackageReleaseNotes>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <RootNamespace>ScintillaNET</RootNamespace>
+    <Authors>Jacob Slusser, VPKSoft, cyber960, desjarlais, Ahmet Sait</Authors>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <SignAssembly>True</SignAssembly>
+    <AssemblyOriginatorKeyFile>scintilla5.net.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <None Include="icon.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="build\**">
+      <PackagePath>build</PackagePath>
+      <Pack>True</Pack>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="runtimes\**" />
+    <Content Include="runtimes\**">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <PackagePath>runtimes</PackagePath>
+      <Pack>true</Pack>
+    </Content>
+  </ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework.TrimEnd(`0123456789`))' == 'net'">
+    <Reference Include="System.Design" />
+  </ItemGroup>
+</Project>
