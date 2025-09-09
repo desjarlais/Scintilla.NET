@@ -76,7 +76,23 @@ namespace ScintillaNET
         /// </summary>
         public static IEnumerable<string> EnumerateSatelliteLibrarySearchPaths()
         {
-            // check run-time paths
+            // 1. User configured (must be set before first Scintilla usage)
+            if (!string.IsNullOrWhiteSpace(ScintillaNativeLibrary.SatelliteDirectory))
+            {
+                yield return ScintillaNativeLibrary.SatelliteDirectory;
+            }
+
+            if (!string.IsNullOrWhiteSpace(ScintillaNativeLibrary.ScintillaFullPath))
+            {
+                yield return Path.GetDirectoryName(ScintillaNativeLibrary.ScintillaFullPath);
+            }
+
+            if (!string.IsNullOrWhiteSpace(ScintillaNativeLibrary.LexillaFullPath))
+            {
+                yield return Path.GetDirectoryName(ScintillaNativeLibrary.LexillaFullPath);
+            }
+
+            // 2. check run-time paths
             string nativeSubFolder = Path.Combine("runtimes", "win-" + Helpers.GetArchitectureRid(WinApiHelpers.GetProcessArchitecture()), "native");
 
             {
@@ -106,6 +122,7 @@ namespace ScintillaNET
                 }
             }
 
+            // 3. check design-time paths
             if (InDesignProcess())
             {
                 // Look for the assemblies in the nuget global packages folder
@@ -120,6 +137,19 @@ namespace ScintillaNET
                 string nugetScintillaPackageName = assembly.GetName().Name;
                 string rootProjectFolder = Path.GetFullPath(Path.Combine(nugetScintillaNETLocation, @"..\..\..\.."));
                 yield return Path.Combine(rootProjectFolder, "packages", nugetScintillaPackageName + "." + versionString, nativeSubFolder);
+            }
+
+            // 4. check environment variable custom paths
+            string x86CustomPath = Environment.GetEnvironmentVariable("SCINTILLA_X86", EnvironmentVariableTarget.User);
+            if (!string.IsNullOrWhiteSpace(x86CustomPath))
+            {
+                yield return x86CustomPath;
+            }
+
+            string x64CustomPath = Environment.GetEnvironmentVariable("SCINTILLA_X64", EnvironmentVariableTarget.User);
+            if (!string.IsNullOrWhiteSpace(x64CustomPath))
+            {
+                yield return x64CustomPath;
             }
         }
 
