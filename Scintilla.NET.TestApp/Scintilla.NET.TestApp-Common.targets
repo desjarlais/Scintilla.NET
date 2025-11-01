@@ -2,7 +2,6 @@
   <PropertyGroup>
     <ProjectGuid>{F25685EC-098A-4080-95A9-445268609806}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net48</TargetFramework>
     <AssemblyTitle>ScintillaNET.TestApp</AssemblyTitle>
     <Copyright>Copyright © desjarlais 2023, Ahmet Sait 2025</Copyright>
     <OutputPath>bin\$(Configuration)\</OutputPath>
