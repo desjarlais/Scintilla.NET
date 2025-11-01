@@ -7725,11 +7725,7 @@ namespace ScintillaNET
 
         #endregion Constructors
 
-        /// <summary>
-        /// Gets or sets a value indicating whether control's elements are aligned to support locales using right-to-left fonts.
-        /// </summary>
-        /// <value>The right to left.</value>
-
+        /// <inheritdoc cref="Control.RightToLeft" />
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         [EditorBrowsable(EditorBrowsableState.Never)]
         [Obsolete("Not used by the Scintilla.NET control.")]
