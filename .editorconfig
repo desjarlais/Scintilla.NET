@@ -3,34 +3,80 @@
 root = true
 
 [*]
+charset = utf-8
 indent_style = space
 indent_size = 4
 insert_final_newline = true
 trim_trailing_whitespace = false
 
-[*.{bat,cmd,ps1}]
+[*.as?x{,.tt}]
+# Some .NET tools require BOM to work properly.
+charset = utf-8-bom
+indent_size = 2
+
+[*.{cs,csx,vb,fs,fsx,fsi,cshtml,vbhtml,licx}{,.tt}]
+# Some .NET tools require BOM to work properly.
+charset = utf-8-bom
+
+[*.sln]
+# Visual Studio Version Selector needs BOM and CRLF to show correct icons in Explorer
+charset = utf-8-bom
 end_of_line = crlf
 
-[*.{html,htm,xhtml,xhtm,xml}]
+[*.{bat,cmd}{,.tt}]
+# Batch files don't play nice with non-ASCII files.
+charset = latin1
+# CMD requires carriage return (CR) to work properly.
+end_of_line = crlf
+
+[*.ps1{,.tt}]
+# PowerShell 5 falls back to Windows-1252 if no BOM is present.
+charset = utf-8-bom
+
+[*.xaml]
 indent_size = 2
 
-[*.{css,scss,sass}]
-indent_size = 2
-
-[*.{json}]
-insert_final_newline = false
-
-[*.{yml,yaml}]
+[*.{manifest,config}]
+# Visual Studio auto inserts 2 spaces regardless of XML settings.
 indent_style = space
 indent_size = 2
 
-[*.csproj]
+[*.sln]
+# Visual Studio Version Selector needs BOM and CRLF to show correct icons in Explorer
+charset = utf-8-bom
+end_of_line = crlf
+
+[*.*proj{,.tt}]
+# Some .NET tools require BOM to work properly
+charset = utf-8-bom
+# Visual Studio auto inserts 2 spaces regardless of XML settings.
+indent_style = space
+indent_size = 2
+# Visual Studio doesn't auto generate newline regardless of editorconfig.
+insert_final_newline = false
+
+[*.{targets,props,tasks}{,.tt}]
+# Some .NET tools require BOM to work properly
+charset = utf-8-bom
+# Visual Studio auto inserts 2 spaces regardless of XML settings.
+indent_style = space
+indent_size = 2
+# Visual Studio doesn't auto generate newline regardless of editorconfig.
+insert_final_newline = false
+
+[*.{html,htm,xhtml,xhtm,xml}{,.tt}]
 indent_size = 2
 
-[*.{props,targets}]
+[*.{css,less,scss,sass}{,.tt}]
 indent_size = 2
 
-[[Aa]pp.{config,manifest}]
+[*.json{,.tt}]
+# BOM is illegal in JSON.
+charset = utf-8
+
+[*.{yml,yaml}{,.tt}]
+# Tab indentation is forbidden in YAML.
+indent_style = space
 indent_size = 2
 
 # C# files
@@ -44,10 +90,10 @@ dotnet_sort_system_directives_first = true
 file_header_template = unset
 
 # this. and Me. preferences
-dotnet_style_qualification_for_event = false
+dotnet_style_qualification_for_event = true
 dotnet_style_qualification_for_field = true
 dotnet_style_qualification_for_method = false
-dotnet_style_qualification_for_property = false
+dotnet_style_qualification_for_property = true
 
 # Language keywords vs BCL types preferences
 dotnet_style_predefined_type_for_locals_parameters_members = true
