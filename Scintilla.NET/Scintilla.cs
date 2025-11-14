@@ -76,7 +76,13 @@ namespace ScintillaNET
         /// </summary>
         public static IEnumerable<string> EnumerateSatelliteLibrarySearchPaths()
         {
-            // check run-time paths
+            // 1. User configured (must be set before first Scintilla usage)
+            if (!string.IsNullOrWhiteSpace(SatelliteDirectory))
+            {
+                yield return SatelliteDirectory;
+            }
+
+            // 2. check run-time paths
             string nativeSubFolder = Path.Combine("runtimes", "win-" + Helpers.GetArchitectureRid(WinApiHelpers.GetProcessArchitecture()), "native");
 
             {
@@ -106,6 +112,7 @@ namespace ScintillaNET
                 }
             }
 
+            // 3. check design-time paths
             if (InDesignProcess())
             {
                 // Look for the assemblies in the nuget global packages folder
@@ -120,6 +127,19 @@ namespace ScintillaNET
                 string nugetScintillaPackageName = assembly.GetName().Name;
                 string rootProjectFolder = Path.GetFullPath(Path.Combine(nugetScintillaNETLocation, @"..\..\..\.."));
                 yield return Path.Combine(rootProjectFolder, "packages", nugetScintillaPackageName + "." + versionString, nativeSubFolder);
+            }
+
+            // 4. check environment variable custom paths
+            string x86CustomPath = Environment.GetEnvironmentVariable("SCINTILLA_X86", EnvironmentVariableTarget.User);
+            if (!string.IsNullOrWhiteSpace(x86CustomPath))
+            {
+                yield return x86CustomPath;
+            }
+
+            string x64CustomPath = Environment.GetEnvironmentVariable("SCINTILLA_X64", EnvironmentVariableTarget.User);
+            if (!string.IsNullOrWhiteSpace(x64CustomPath))
+            {
+                yield return x64CustomPath;
             }
         }
 
@@ -3556,6 +3576,12 @@ namespace ScintillaNET
         #endregion Methods
 
         #region Properties
+
+        /// <summary>
+        /// Optional absolute directory path probed first for native satellite libraries.
+        /// If set, this directory is checked before all default probing locations.
+        /// </summary>
+        public static string SatelliteDirectory { get; set; }
 
         /// <summary>
         /// Gets or sets whether Scintilla's native drag &amp; drop should be used instead of WinForms based one.
