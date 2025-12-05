@@ -11,5 +11,5 @@ public static class ScintillaNativeLibrary
     /// If set, this directory is checked before all default probing locations.
     /// Example Usage: ScintillaNativeLibrary.SatelliteDirectory = @"C:\MyApp\binaries";
     /// </summary>
-    public static string SatelliteDirectory { get; set; }
+    public static string? SatelliteDirectory { get; set; }
 }
