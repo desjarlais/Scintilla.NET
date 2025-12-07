@@ -1,4 +1,5 @@
-﻿namespace ScintillaNET;
+﻿#nullable enable
+namespace ScintillaNET;
 
 /// <summary>
 /// Provides optional early configuration for locating native satellite libraries (Scintilla.dll, Lexilla.dll).
