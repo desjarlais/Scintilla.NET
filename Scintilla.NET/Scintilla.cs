@@ -77,9 +77,9 @@ namespace ScintillaNET
         public static IEnumerable<string> EnumerateSatelliteLibrarySearchPaths()
         {
             // 1. User configured (must be set before first Scintilla usage)
-            if (!string.IsNullOrWhiteSpace(SatelliteDirectory))
+            if (!string.IsNullOrWhiteSpace(ScintillaNativeLibrary.SatelliteDirectory))
             {
-                yield return SatelliteDirectory;
+                yield return ScintillaNativeLibrary.SatelliteDirectory;
             }
 
             // 2. check run-time paths
@@ -3576,12 +3576,6 @@ namespace ScintillaNET
         #endregion Methods
 
         #region Properties
-
-        /// <summary>
-        /// Optional absolute directory path probed first for native satellite libraries.
-        /// If set, this directory is checked before all default probing locations.
-        /// </summary>
-        public static string SatelliteDirectory { get; set; }
 
         /// <summary>
         /// Gets or sets whether Scintilla's native drag &amp; drop should be used instead of WinForms based one.
