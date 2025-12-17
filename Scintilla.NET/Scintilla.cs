@@ -987,6 +987,9 @@ namespace ScintillaNET
         [EditorBrowsable(EditorBrowsableState.Advanced)]
         public virtual IntPtr DirectMessage(int msg, IntPtr wParam, IntPtr lParam)
         {
+            if (IsDisposed)
+                throw new ObjectDisposedException(!string.IsNullOrEmpty(Name) ? Name : nameof(Scintilla));
+
             // If the control handle, ptr, direct function, etc... hasn't been created yet, it will be now.
             return DirectMessage(SciPointer, msg, wParam, lParam);
         }
