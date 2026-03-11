@@ -1189,6 +1189,7 @@ public static class NativeMethods
     public const int SC_TECHNOLOGY_DIRECTWRITE = 1;
     public const int SC_TECHNOLOGY_DIRECTWRITERETAIN = 2;
     public const int SC_TECHNOLOGY_DIRECTWRITEDC = 3;
+    public const int SC_TECHNOLOGY_DIRECT_WRITE_1 = 4;
 
     // Tab draw
     public const int SCTD_LONGARROW = 0;
