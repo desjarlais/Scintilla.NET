@@ -6492,6 +6492,11 @@ namespace ScintillaNET
             set
             {
                 int technology = (int)value;
+                // DirectWrite 1 requires Windows 8 / Windows Server 2012 or later. If the user attempts to set it on an unsupported OS, fall back to default rendering technology.
+                if (value == Technology.DirectWrite1 && !(Environment.OSVersion.Platform == PlatformID.Win32NT && Environment.OSVersion.Version >= new Version(6, 2)))
+                {
+                    technology = (int)Technology.Default;
+                }
                 DirectMessage(NativeMethods.SCI_SETTECHNOLOGY, new IntPtr(technology));
             }
         }
