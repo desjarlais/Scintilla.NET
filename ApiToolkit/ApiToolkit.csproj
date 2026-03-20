@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <ProjectGuid>{0FDEBBCA-4469-48FD-91EE-45C2B6419C15}</ProjectGuid>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <LangVersion>12</LangVersion>
+    <OutputType>Library</OutputType>
+    <AssemblyTitle>ApiToolkit</AssemblyTitle>
+    <Copyright>Copyright © Ahmet Sait 2026</Copyright>
+    <OutputPath>bin\$(Configuration)\</OutputPath>
+    <Authors>Ahmet Sait</Authors>
+    <Description>Library for reading and generating code from Scintilla *.iface files.</Description>
+    <RootNamespace>ApiToolkit</RootNamespace>
+  </PropertyGroup>
+</Project>
