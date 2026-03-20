@@ -17,7 +17,7 @@ public class Selection
     {
         get
         {
-            int pos = this.scintilla.DirectMessage(NativeMethods.SCI_GETSELECTIONNANCHOR, new IntPtr(Index)).ToInt32();
+            int pos = this.scintilla.DirectMessage(SciApi.SCI_GETSELECTIONNANCHOR, new IntPtr(Index)).ToInt32();
             if (pos <= 0)
                 return pos;
 
@@ -27,7 +27,7 @@ public class Selection
         {
             value = Helpers.Clamp(value, 0, this.scintilla.TextLength);
             value = this.scintilla.Lines.CharToBytePosition(value).BytePosition;
-            this.scintilla.DirectMessage(NativeMethods.SCI_SETSELECTIONNANCHOR, new IntPtr(Index), new IntPtr(value));
+            this.scintilla.DirectMessage(SciApi.SCI_SETSELECTIONNANCHOR, new IntPtr(Index), new IntPtr(value));
         }
     }
 
@@ -39,12 +39,12 @@ public class Selection
     {
         get
         {
-            return this.scintilla.DirectMessage(NativeMethods.SCI_GETSELECTIONNANCHORVIRTUALSPACE, new IntPtr(Index)).ToInt32();
+            return this.scintilla.DirectMessage(SciApi.SCI_GETSELECTIONNANCHORVIRTUALSPACE, new IntPtr(Index)).ToInt32();
         }
         set
         {
             value = Helpers.ClampMin(value, 0);
-            this.scintilla.DirectMessage(NativeMethods.SCI_SETSELECTIONNANCHORVIRTUALSPACE, new IntPtr(Index), new IntPtr(value));
+            this.scintilla.DirectMessage(SciApi.SCI_SETSELECTIONNANCHORVIRTUALSPACE, new IntPtr(Index), new IntPtr(value));
         }
     }
 
@@ -56,7 +56,7 @@ public class Selection
     {
         get
         {
-            int pos = this.scintilla.DirectMessage(NativeMethods.SCI_GETSELECTIONNCARET, new IntPtr(Index)).ToInt32();
+            int pos = this.scintilla.DirectMessage(SciApi.SCI_GETSELECTIONNCARET, new IntPtr(Index)).ToInt32();
             if (pos <= 0)
                 return pos;
 
@@ -66,7 +66,7 @@ public class Selection
         {
             value = Helpers.Clamp(value, 0, this.scintilla.TextLength);
             value = this.scintilla.Lines.CharToBytePosition(value).BytePosition;
-            this.scintilla.DirectMessage(NativeMethods.SCI_SETSELECTIONNCARET, new IntPtr(Index), new IntPtr(value));
+            this.scintilla.DirectMessage(SciApi.SCI_SETSELECTIONNCARET, new IntPtr(Index), new IntPtr(value));
         }
     }
 
@@ -78,12 +78,12 @@ public class Selection
     {
         get
         {
-            return this.scintilla.DirectMessage(NativeMethods.SCI_GETSELECTIONNCARETVIRTUALSPACE, new IntPtr(Index)).ToInt32();
+            return this.scintilla.DirectMessage(SciApi.SCI_GETSELECTIONNCARETVIRTUALSPACE, new IntPtr(Index)).ToInt32();
         }
         set
         {
             value = Helpers.ClampMin(value, 0);
-            this.scintilla.DirectMessage(NativeMethods.SCI_SETSELECTIONNCARETVIRTUALSPACE, new IntPtr(Index), new IntPtr(value));
+            this.scintilla.DirectMessage(SciApi.SCI_SETSELECTIONNCARETVIRTUALSPACE, new IntPtr(Index), new IntPtr(value));
         }
     }
 
@@ -95,7 +95,7 @@ public class Selection
     {
         get
         {
-            int pos = this.scintilla.DirectMessage(NativeMethods.SCI_GETSELECTIONNEND, new IntPtr(Index)).ToInt32();
+            int pos = this.scintilla.DirectMessage(SciApi.SCI_GETSELECTIONNEND, new IntPtr(Index)).ToInt32();
             if (pos <= 0)
                 return pos;
 
@@ -105,7 +105,7 @@ public class Selection
         {
             value = Helpers.Clamp(value, 0, this.scintilla.TextLength);
             value = this.scintilla.Lines.CharToBytePosition(value).BytePosition;
-            this.scintilla.DirectMessage(NativeMethods.SCI_SETSELECTIONNEND, new IntPtr(Index), new IntPtr(value));
+            this.scintilla.DirectMessage(SciApi.SCI_SETSELECTIONNEND, new IntPtr(Index), new IntPtr(value));
         }
     }
 
@@ -123,7 +123,7 @@ public class Selection
     {
         get
         {
-            int pos = this.scintilla.DirectMessage(NativeMethods.SCI_GETSELECTIONNSTART, new IntPtr(Index)).ToInt32();
+            int pos = this.scintilla.DirectMessage(SciApi.SCI_GETSELECTIONNSTART, new IntPtr(Index)).ToInt32();
             if (pos <= 0)
                 return pos;
 
@@ -133,7 +133,7 @@ public class Selection
         {
             value = Helpers.Clamp(value, 0, this.scintilla.TextLength);
             value = this.scintilla.Lines.CharToBytePosition(value).BytePosition;
-            this.scintilla.DirectMessage(NativeMethods.SCI_SETSELECTIONNSTART, new IntPtr(Index), new IntPtr(value));
+            this.scintilla.DirectMessage(SciApi.SCI_SETSELECTIONNSTART, new IntPtr(Index), new IntPtr(value));
         }
     }
 

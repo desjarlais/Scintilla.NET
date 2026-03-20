@@ -36,7 +36,7 @@ public class StyleCollection : IEnumerable<Style>
     {
         get
         {
-            return NativeMethods.STYLE_MAX + 1;
+            return SciApi.STYLE_MAX + 1;
         }
     }
 

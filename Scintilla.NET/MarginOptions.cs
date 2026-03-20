@@ -12,10 +12,10 @@ public enum MarginOptions
     /// <summary>
     /// No options. This is the default.
     /// </summary>
-    None = NativeMethods.SC_MARGINOPTION_NONE,
+    None = SciApi.SC_MARGINOPTION_NONE,
 
     /// <summary>
     /// Lines selected by clicking on the margin will select only the subline of wrapped text.
     /// </summary>
-    SublineSelect = NativeMethods.SC_MARGINOPTION_SUBLINESELECT,
+    SublineSelect = SciApi.SC_MARGINOPTION_SUBLINESELECT,
 }

@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 
 namespace ScintillaNET;
+
 /// <summary>
 /// Non-generic class to produce instances of the generic class,
 /// optionally using type inference.

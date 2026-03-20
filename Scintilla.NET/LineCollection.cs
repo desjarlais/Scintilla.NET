@@ -47,10 +47,10 @@ public class LineCollection : IEnumerable<Line>
     internal int ByteToCharPosition(int pos)
     {
         Debug.Assert(pos >= 0);
-        Debug.Assert(pos <= this.scintilla.DirectMessage(NativeMethods.SCI_GETLENGTH).ToInt32());
+        Debug.Assert(pos <= this.scintilla.DirectMessage(SciApi.SCI_GETLENGTH).ToInt32());
 
-        int line = this.scintilla.DirectMessage(NativeMethods.SCI_LINEFROMPOSITION, new IntPtr(pos)).ToInt32();
-        int byteStart = this.scintilla.DirectMessage(NativeMethods.SCI_POSITIONFROMLINE, new IntPtr(line)).ToInt32();
+        int line = this.scintilla.DirectMessage(SciApi.SCI_LINEFROMPOSITION, new IntPtr(pos)).ToInt32();
+        int byteStart = this.scintilla.DirectMessage(SciApi.SCI_POSITIONFROMLINE, new IntPtr(line)).ToInt32();
         int count = CharPositionFromLine(line) + GetCharCount(byteStart, pos - byteStart);
 
         return count;
@@ -99,7 +99,7 @@ public class LineCollection : IEnumerable<Line>
         // Adjust to the nearest line start
         int lineIndex = LineFromCharPosition(pos);
         int lineCharStart = CharPositionFromLine(lineIndex);
-        int lineByteStart = this.scintilla.DirectMessage(NativeMethods.SCI_POSITIONFROMLINE, new IntPtr(lineIndex)).ToInt32();
+        int lineByteStart = this.scintilla.DirectMessage(SciApi.SCI_POSITIONFROMLINE, new IntPtr(lineIndex)).ToInt32();
         int lineCharOffset = pos - lineCharStart;
 
         // Optimization when the line contains NO multibyte characters
@@ -112,8 +112,8 @@ public class LineCollection : IEnumerable<Line>
         int i = 0;
         while (i < lineCharOffset)
         {
-            nextCodePointBytePos = this.scintilla.DirectMessage(NativeMethods.SCI_POSITIONRELATIVE, new IntPtr(codePointBytePos), new IntPtr(1)).ToInt32();
-            int utf16Count = this.scintilla.DirectMessage(NativeMethods.SCI_COUNTCODEUNITS, new IntPtr(codePointBytePos), new IntPtr(nextCodePointBytePos)).ToInt32();
+            nextCodePointBytePos = this.scintilla.DirectMessage(SciApi.SCI_POSITIONRELATIVE, new IntPtr(codePointBytePos), new IntPtr(1)).ToInt32();
+            int utf16Count = this.scintilla.DirectMessage(SciApi.SCI_COUNTCODEUNITS, new IntPtr(codePointBytePos), new IntPtr(nextCodePointBytePos)).ToInt32();
             i += utf16Count;
             prevCodePointBytePos = codePointBytePos;
             codePointBytePos = nextCodePointBytePos;
@@ -121,7 +121,7 @@ public class LineCollection : IEnumerable<Line>
 
         if (i == lineCharOffset)
         {
-            nextCodePointBytePos = this.scintilla.DirectMessage(NativeMethods.SCI_POSITIONRELATIVE, new IntPtr(codePointBytePos), new IntPtr(1)).ToInt32();
+            nextCodePointBytePos = this.scintilla.DirectMessage(SciApi.SCI_POSITIONRELATIVE, new IntPtr(codePointBytePos), new IntPtr(1)).ToInt32();
         }
         else if (i > lineCharOffset)
         {
@@ -177,11 +177,11 @@ public class LineCollection : IEnumerable<Line>
             }
             else
             {
-                int len = this.scintilla.DirectMessage(NativeMethods.SCI_GETLINE, new IntPtr(i)).ToInt32();
+                int len = this.scintilla.DirectMessage(SciApi.SCI_GETLINE, new IntPtr(i)).ToInt32();
                 byte[] bytes = new byte[len];
 
                 fixed (byte* ptr = bytes)
-                    this.scintilla.DirectMessage(NativeMethods.SCI_GETLINE, new IntPtr(i), new IntPtr(ptr));
+                    this.scintilla.DirectMessage(SciApi.SCI_GETLINE, new IntPtr(i), new IntPtr(ptr));
 
                 string str = this.scintilla.Encoding.GetString(bytes);
                 string containsMultibyte = "U";
@@ -205,7 +205,7 @@ public class LineCollection : IEnumerable<Line>
     {
         // Encoding.GetCharCount() counts a cut-off multi-byte Utf-8 char as a � char, which causes issues so we use SCI_COUNTCODEUNITS.
         // Ideally Scintilla should never give us positions pointing to the middle of a code point.
-        return this.scintilla.DirectMessage(NativeMethods.SCI_COUNTCODEUNITS, new IntPtr(pos), new IntPtr(pos + length)).ToInt32();
+        return this.scintilla.DirectMessage(SciApi.SCI_COUNTCODEUNITS, new IntPtr(pos), new IntPtr(pos + length)).ToInt32();
     }
 
     /// <summary>
@@ -244,7 +244,7 @@ public class LineCollection : IEnumerable<Line>
         if (perLine.ContainsMultibyte == ContainsMultibyte.Unkown)
         {
             perLine.ContainsMultibyte =
-                (this.scintilla.DirectMessage(NativeMethods.SCI_LINELENGTH, new IntPtr(index)).ToInt32() == CharLineLength(index))
+                (this.scintilla.DirectMessage(SciApi.SCI_LINELENGTH, new IntPtr(index)).ToInt32() == CharLineLength(index))
                     ? ContainsMultibyte.No
                     : ContainsMultibyte.Yes;
 
@@ -354,42 +354,42 @@ public class LineCollection : IEnumerable<Line>
         ];
 
         // Fake an insert notification
-        var scn = new NativeMethods.SCNotification();
-        int adjustedLines = this.scintilla.DirectMessage(NativeMethods.SCI_GETLINECOUNT).ToInt32() - 1;
+        var scn = new SciApi.SCNotification();
+        int adjustedLines = this.scintilla.DirectMessage(SciApi.SCI_GETLINECOUNT).ToInt32() - 1;
         scn.linesAdded = new IntPtr(adjustedLines);
         scn.position = IntPtr.Zero;
-        scn.length = this.scintilla.DirectMessage(NativeMethods.SCI_GETLENGTH);
-        scn.text = this.scintilla.DirectMessage(NativeMethods.SCI_GETRANGEPOINTER, scn.position, scn.length);
+        scn.length = this.scintilla.DirectMessage(SciApi.SCI_GETLENGTH);
+        scn.text = this.scintilla.DirectMessage(SciApi.SCI_GETRANGEPOINTER, scn.position, scn.length);
         TrackInsertText(scn);
     }
 
     private void scintilla_SCNotification(object sender, SCNotificationEventArgs e)
     {
-        NativeMethods.SCNotification scn = e.SCNotification;
+        SciApi.SCNotification scn = e.SCNotification;
         switch (scn.nmhdr.code)
         {
-            case NativeMethods.SCN_MODIFIED:
+            case SciApi.SCN_MODIFIED:
                 ScnModified(scn);
                 break;
         }
     }
 
-    private void ScnModified(NativeMethods.SCNotification scn)
+    private void ScnModified(SciApi.SCNotification scn)
     {
-        if ((scn.modificationType & NativeMethods.SC_MOD_DELETETEXT) > 0)
+        if ((scn.modificationType & SciApi.SC_MOD_DELETETEXT) > 0)
         {
             TrackDeleteText(scn);
         }
 
-        if ((scn.modificationType & NativeMethods.SC_MOD_INSERTTEXT) > 0)
+        if ((scn.modificationType & SciApi.SC_MOD_INSERTTEXT) > 0)
         {
             TrackInsertText(scn);
         }
     }
 
-    private void TrackDeleteText(NativeMethods.SCNotification scn)
+    private void TrackDeleteText(SciApi.SCNotification scn)
     {
-        int startLine = this.scintilla.DirectMessage(NativeMethods.SCI_LINEFROMPOSITION, scn.position).ToInt32();
+        int startLine = this.scintilla.DirectMessage(SciApi.SCI_LINEFROMPOSITION, scn.position).ToInt32();
         if (scn.linesAdded == IntPtr.Zero)
         {
             // Can't use `GetCharCount(scn.position.ToInt32(), scn.length.ToInt32())` because the text is deleted
@@ -399,8 +399,8 @@ public class LineCollection : IEnumerable<Line>
         else
         {
             // Adjust the existing line
-            int lineByteStart = this.scintilla.DirectMessage(NativeMethods.SCI_POSITIONFROMLINE, new IntPtr(startLine)).ToInt32();
-            int lineByteLength = this.scintilla.DirectMessage(NativeMethods.SCI_LINELENGTH, new IntPtr(startLine)).ToInt32();
+            int lineByteStart = this.scintilla.DirectMessage(SciApi.SCI_POSITIONFROMLINE, new IntPtr(startLine)).ToInt32();
+            int lineByteLength = this.scintilla.DirectMessage(SciApi.SCI_LINELENGTH, new IntPtr(startLine)).ToInt32();
             AdjustLineLength(startLine, GetCharCount(lineByteStart, lineByteLength) - CharLineLength(startLine));
 
             int linesRemoved = scn.linesAdded.ToInt32() * -1;
@@ -412,9 +412,9 @@ public class LineCollection : IEnumerable<Line>
         }
     }
 
-    private void TrackInsertText(NativeMethods.SCNotification scn)
+    private void TrackInsertText(SciApi.SCNotification scn)
     {
-        int startLine = this.scintilla.DirectMessage(NativeMethods.SCI_LINEFROMPOSITION, scn.position).ToInt32();
+        int startLine = this.scintilla.DirectMessage(SciApi.SCI_LINEFROMPOSITION, scn.position).ToInt32();
         if (scn.linesAdded == IntPtr.Zero)
         {
             // That was easy
@@ -427,8 +427,8 @@ public class LineCollection : IEnumerable<Line>
             int lineByteLength = 0;
 
             // Adjust existing line
-            lineByteStart = this.scintilla.DirectMessage(NativeMethods.SCI_POSITIONFROMLINE, new IntPtr(startLine)).ToInt32();
-            lineByteLength = this.scintilla.DirectMessage(NativeMethods.SCI_LINELENGTH, new IntPtr(startLine)).ToInt32();
+            lineByteStart = this.scintilla.DirectMessage(SciApi.SCI_POSITIONFROMLINE, new IntPtr(startLine)).ToInt32();
+            lineByteLength = this.scintilla.DirectMessage(SciApi.SCI_LINELENGTH, new IntPtr(startLine)).ToInt32();
             AdjustLineLength(startLine, GetCharCount(lineByteStart, lineByteLength) - CharLineLength(startLine));
 
             for (int i = 1; i <= scn.linesAdded.ToInt32(); i++)
@@ -437,7 +437,7 @@ public class LineCollection : IEnumerable<Line>
 
                 // Insert new line
                 lineByteStart += lineByteLength;
-                lineByteLength = this.scintilla.DirectMessage(NativeMethods.SCI_LINELENGTH, new IntPtr(line)).ToInt32();
+                lineByteLength = this.scintilla.DirectMessage(SciApi.SCI_LINELENGTH, new IntPtr(line)).ToInt32();
                 InsertPerLine(line, GetCharCount(lineByteStart, lineByteLength));
             }
         }
@@ -455,7 +455,7 @@ public class LineCollection : IEnumerable<Line>
     {
         get
         {
-            return this.scintilla.DirectMessage(NativeMethods.SCI_GETALLLINESVISIBLE) != IntPtr.Zero;
+            return this.scintilla.DirectMessage(SciApi.SCI_GETALLLINESVISIBLE) != IntPtr.Zero;
         }
     }
 

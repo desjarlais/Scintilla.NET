@@ -14,41 +14,41 @@ public class Style
     /// <summary>
     /// Default style index. This style is used to define properties that all styles receive when calling <see cref="Scintilla.StyleClearAll" />.
     /// </summary>
-    public const int Default = NativeMethods.STYLE_DEFAULT;
+    public const int Default = SciApi.STYLE_DEFAULT;
 
     /// <summary>
     /// Line number style index. This style is used for text in line number margins. The background color of this style also
     /// sets the background color for all margins that do not have any folding mask set.
     /// </summary>
-    public const int LineNumber = NativeMethods.STYLE_LINENUMBER;
+    public const int LineNumber = SciApi.STYLE_LINENUMBER;
 
     /// <summary>
     /// Call tip style index. Only font name, size, foreground color, background color, and character set attributes
     /// can be used when displaying a call tip.
     /// </summary>
-    public const int CallTip = NativeMethods.STYLE_CALLTIP;
+    public const int CallTip = SciApi.STYLE_CALLTIP;
 
     /// <summary>
     /// Indent guide style index. This style is used to specify the foreground and background colors of <see cref="Scintilla.IndentationGuides" />.
     /// </summary>
-    public const int IndentGuide = NativeMethods.STYLE_INDENTGUIDE;
+    public const int IndentGuide = SciApi.STYLE_INDENTGUIDE;
 
     /// <summary>
     /// Brace highlighting style index. This style is used on a brace character when set with the <see cref="Scintilla.BraceHighlight" /> method
     /// or the indentation guide when used with the <see cref="Scintilla.HighlightGuide" /> property.
     /// </summary>
-    public const int BraceLight = NativeMethods.STYLE_BRACELIGHT;
+    public const int BraceLight = SciApi.STYLE_BRACELIGHT;
 
     /// <summary>
     /// Bad brace style index. This style is used on an unmatched brace character when set with the <see cref="Scintilla.BraceBadLight" /> method.
     /// </summary>
-    public const int BraceBad = NativeMethods.STYLE_BRACEBAD;
+    public const int BraceBad = SciApi.STYLE_BRACEBAD;
 
     /// <summary>
     /// Fold text tag style index. This is the style used for drawing text tags attached to folded text when
     /// <see cref="Scintilla.FoldDisplayTextSetStyle" /> and <see cref="Line.ToggleFoldShowText" /> are used.
     /// </summary>
-    public const int FoldDisplayText = NativeMethods.STYLE_FOLDDISPLAYTEXT;
+    public const int FoldDisplayText = SciApi.STYLE_FOLDDISPLAYTEXT;
 
     #endregion Constants
 
@@ -97,7 +97,7 @@ public class Style
     {
         get
         {
-            int color = this.scintilla.DirectMessage(NativeMethods.SCI_STYLEGETBACK, new IntPtr(Index), IntPtr.Zero).ToInt32();
+            int color = this.scintilla.DirectMessage(SciApi.SCI_STYLEGETBACK, new IntPtr(Index), IntPtr.Zero).ToInt32();
             return HelperMethods.FromWin32ColorOpaque(color);
         }
         set
@@ -106,7 +106,7 @@ public class Style
                 value = Color.White;
 
             int color = HelperMethods.ToWin32ColorOpaque(value);
-            this.scintilla.DirectMessage(NativeMethods.SCI_STYLESETBACK, new IntPtr(Index), new IntPtr(color));
+            this.scintilla.DirectMessage(SciApi.SCI_STYLESETBACK, new IntPtr(Index), new IntPtr(color));
         }
     }
 
@@ -119,12 +119,12 @@ public class Style
     {
         get
         {
-            return this.scintilla.DirectMessage(NativeMethods.SCI_STYLEGETBOLD, new IntPtr(Index), IntPtr.Zero) != IntPtr.Zero;
+            return this.scintilla.DirectMessage(SciApi.SCI_STYLEGETBOLD, new IntPtr(Index), IntPtr.Zero) != IntPtr.Zero;
         }
         set
         {
             IntPtr bold = value ? new IntPtr(1) : IntPtr.Zero;
-            this.scintilla.DirectMessage(NativeMethods.SCI_STYLESETBOLD, new IntPtr(Index), bold);
+            this.scintilla.DirectMessage(SciApi.SCI_STYLESETBOLD, new IntPtr(Index), bold);
         }
     }
 
@@ -137,14 +137,14 @@ public class Style
     {
         get
         {
-            int @case = this.scintilla.DirectMessage(NativeMethods.SCI_STYLEGETCASE, new IntPtr(Index), IntPtr.Zero).ToInt32();
+            int @case = this.scintilla.DirectMessage(SciApi.SCI_STYLEGETCASE, new IntPtr(Index), IntPtr.Zero).ToInt32();
             return (StyleCase)@case;
         }
         set
         {
             // Just an excuse to use @... syntax
             int @case = (int)value;
-            this.scintilla.DirectMessage(NativeMethods.SCI_STYLESETCASE, new IntPtr(Index), new IntPtr(@case));
+            this.scintilla.DirectMessage(SciApi.SCI_STYLESETCASE, new IntPtr(Index), new IntPtr(@case));
         }
     }
 
@@ -159,12 +159,12 @@ public class Style
     {
         get
         {
-            return this.scintilla.DirectMessage(NativeMethods.SCI_STYLEGETCHANGEABLE, new IntPtr(Index), IntPtr.Zero) != IntPtr.Zero;
+            return this.scintilla.DirectMessage(SciApi.SCI_STYLEGETCHANGEABLE, new IntPtr(Index), IntPtr.Zero) != IntPtr.Zero;
         }
         set
         {
             IntPtr changeable = value ? new IntPtr(1) : IntPtr.Zero;
-            this.scintilla.DirectMessage(NativeMethods.SCI_STYLESETCHANGEABLE, new IntPtr(Index), changeable);
+            this.scintilla.DirectMessage(SciApi.SCI_STYLESETCHANGEABLE, new IntPtr(Index), changeable);
         }
     }
 
@@ -177,12 +177,12 @@ public class Style
     {
         get
         {
-            return this.scintilla.DirectMessage(NativeMethods.SCI_STYLEGETEOLFILLED, new IntPtr(Index), IntPtr.Zero) != IntPtr.Zero;
+            return this.scintilla.DirectMessage(SciApi.SCI_STYLEGETEOLFILLED, new IntPtr(Index), IntPtr.Zero) != IntPtr.Zero;
         }
         set
         {
             IntPtr fillLine = value ? new IntPtr(1) : IntPtr.Zero;
-            this.scintilla.DirectMessage(NativeMethods.SCI_STYLESETEOLFILLED, new IntPtr(Index), fillLine);
+            this.scintilla.DirectMessage(SciApi.SCI_STYLESETEOLFILLED, new IntPtr(Index), fillLine);
         }
     }
 
@@ -195,12 +195,12 @@ public class Style
     {
         get
         {
-            int length = this.scintilla.DirectMessage(NativeMethods.SCI_STYLEGETFONT, new IntPtr(Index), IntPtr.Zero).ToInt32();
+            int length = this.scintilla.DirectMessage(SciApi.SCI_STYLEGETFONT, new IntPtr(Index), IntPtr.Zero).ToInt32();
             byte[] font = new byte[length];
             unsafe
             {
                 fixed (byte* bp = font)
-                    this.scintilla.DirectMessage(NativeMethods.SCI_STYLEGETFONT, new IntPtr(Index), new IntPtr(bp));
+                    this.scintilla.DirectMessage(SciApi.SCI_STYLEGETFONT, new IntPtr(Index), new IntPtr(bp));
             }
 
             string name = Encoding.UTF8.GetString(font, 0, length);
@@ -216,7 +216,7 @@ public class Style
             unsafe
             {
                 fixed (byte* bp = font)
-                    this.scintilla.DirectMessage(NativeMethods.SCI_STYLESETFONT, new IntPtr(Index), new IntPtr(bp));
+                    this.scintilla.DirectMessage(SciApi.SCI_STYLESETFONT, new IntPtr(Index), new IntPtr(bp));
             }
         }
     }
@@ -230,7 +230,7 @@ public class Style
     {
         get
         {
-            int color = this.scintilla.DirectMessage(NativeMethods.SCI_STYLEGETFORE, new IntPtr(Index), IntPtr.Zero).ToInt32();
+            int color = this.scintilla.DirectMessage(SciApi.SCI_STYLEGETFORE, new IntPtr(Index), IntPtr.Zero).ToInt32();
             return HelperMethods.FromWin32ColorOpaque(color);
         }
         set
@@ -239,7 +239,7 @@ public class Style
                 value = Color.Black;
 
             int color = HelperMethods.ToWin32ColorOpaque(value);
-            this.scintilla.DirectMessage(NativeMethods.SCI_STYLESETFORE, new IntPtr(Index), new IntPtr(color));
+            this.scintilla.DirectMessage(SciApi.SCI_STYLESETFORE, new IntPtr(Index), new IntPtr(color));
         }
     }
 
@@ -251,12 +251,12 @@ public class Style
     {
         get
         {
-            return this.scintilla.DirectMessage(NativeMethods.SCI_STYLEGETHOTSPOT, new IntPtr(Index), IntPtr.Zero) != IntPtr.Zero;
+            return this.scintilla.DirectMessage(SciApi.SCI_STYLEGETHOTSPOT, new IntPtr(Index), IntPtr.Zero) != IntPtr.Zero;
         }
         set
         {
             IntPtr hotspot = value ? new IntPtr(1) : IntPtr.Zero;
-            this.scintilla.DirectMessage(NativeMethods.SCI_STYLESETHOTSPOT, new IntPtr(Index), hotspot);
+            this.scintilla.DirectMessage(SciApi.SCI_STYLESETHOTSPOT, new IntPtr(Index), hotspot);
         }
     }
 
@@ -274,12 +274,12 @@ public class Style
     {
         get
         {
-            return this.scintilla.DirectMessage(NativeMethods.SCI_STYLEGETITALIC, new IntPtr(Index), IntPtr.Zero) != IntPtr.Zero;
+            return this.scintilla.DirectMessage(SciApi.SCI_STYLEGETITALIC, new IntPtr(Index), IntPtr.Zero) != IntPtr.Zero;
         }
         set
         {
             IntPtr italic = value ? new IntPtr(1) : IntPtr.Zero;
-            this.scintilla.DirectMessage(NativeMethods.SCI_STYLESETITALIC, new IntPtr(Index), italic);
+            this.scintilla.DirectMessage(SciApi.SCI_STYLESETITALIC, new IntPtr(Index), italic);
         }
     }
 
@@ -291,11 +291,11 @@ public class Style
     {
         get
         {
-            return this.scintilla.DirectMessage(NativeMethods.SCI_STYLEGETSIZE, new IntPtr(Index), IntPtr.Zero).ToInt32();
+            return this.scintilla.DirectMessage(SciApi.SCI_STYLEGETSIZE, new IntPtr(Index), IntPtr.Zero).ToInt32();
         }
         set
         {
-            this.scintilla.DirectMessage(NativeMethods.SCI_STYLESETSIZE, new IntPtr(Index), new IntPtr(value));
+            this.scintilla.DirectMessage(SciApi.SCI_STYLESETSIZE, new IntPtr(Index), new IntPtr(value));
         }
     }
 
@@ -307,13 +307,13 @@ public class Style
     {
         get
         {
-            int fraction = this.scintilla.DirectMessage(NativeMethods.SCI_STYLEGETSIZEFRACTIONAL, new IntPtr(Index), IntPtr.Zero).ToInt32();
-            return (float)fraction / NativeMethods.SC_FONT_SIZE_MULTIPLIER;
+            int fraction = this.scintilla.DirectMessage(SciApi.SCI_STYLEGETSIZEFRACTIONAL, new IntPtr(Index), IntPtr.Zero).ToInt32();
+            return (float)fraction / SciApi.SC_FONT_SIZE_MULTIPLIER;
         }
         set
         {
-            int fraction = (int)(value * NativeMethods.SC_FONT_SIZE_MULTIPLIER);
-            this.scintilla.DirectMessage(NativeMethods.SCI_STYLESETSIZEFRACTIONAL, new IntPtr(Index), new IntPtr(fraction));
+            int fraction = (int)(value * SciApi.SC_FONT_SIZE_MULTIPLIER);
+            this.scintilla.DirectMessage(SciApi.SCI_STYLESETSIZEFRACTIONAL, new IntPtr(Index), new IntPtr(fraction));
         }
     }
 
@@ -325,12 +325,12 @@ public class Style
     {
         get
         {
-            return this.scintilla.DirectMessage(NativeMethods.SCI_STYLEGETUNDERLINE, new IntPtr(Index), IntPtr.Zero) != IntPtr.Zero;
+            return this.scintilla.DirectMessage(SciApi.SCI_STYLEGETUNDERLINE, new IntPtr(Index), IntPtr.Zero) != IntPtr.Zero;
         }
         set
         {
             IntPtr underline = value ? new IntPtr(1) : IntPtr.Zero;
-            this.scintilla.DirectMessage(NativeMethods.SCI_STYLESETUNDERLINE, new IntPtr(Index), underline);
+            this.scintilla.DirectMessage(SciApi.SCI_STYLESETUNDERLINE, new IntPtr(Index), underline);
         }
     }
 
@@ -342,12 +342,12 @@ public class Style
     {
         get
         {
-            return this.scintilla.DirectMessage(NativeMethods.SCI_STYLEGETVISIBLE, new IntPtr(Index), IntPtr.Zero) != IntPtr.Zero;
+            return this.scintilla.DirectMessage(SciApi.SCI_STYLEGETVISIBLE, new IntPtr(Index), IntPtr.Zero) != IntPtr.Zero;
         }
         set
         {
             IntPtr visible = value ? new IntPtr(1) : IntPtr.Zero;
-            this.scintilla.DirectMessage(NativeMethods.SCI_STYLESETVISIBLE, new IntPtr(Index), visible);
+            this.scintilla.DirectMessage(SciApi.SCI_STYLESETVISIBLE, new IntPtr(Index), visible);
         }
     }
 
@@ -360,11 +360,11 @@ public class Style
     {
         get
         {
-            return this.scintilla.DirectMessage(NativeMethods.SCI_STYLEGETWEIGHT, new IntPtr(Index), IntPtr.Zero).ToInt32();
+            return this.scintilla.DirectMessage(SciApi.SCI_STYLEGETWEIGHT, new IntPtr(Index), IntPtr.Zero).ToInt32();
         }
         set
         {
-            this.scintilla.DirectMessage(NativeMethods.SCI_STYLESETWEIGHT, new IntPtr(Index), new IntPtr(value));
+            this.scintilla.DirectMessage(SciApi.SCI_STYLESETWEIGHT, new IntPtr(Index), new IntPtr(value));
         }
     }
 
@@ -395,62 +395,62 @@ public class Style
         /// <summary>
         /// Default (whitespace) style index.
         /// </summary>
-        public const int Default = NativeMethods.SCE_ADA_DEFAULT;
+        public const int Default = LexApi.SCE_ADA_DEFAULT;
 
         /// <summary>
         /// Line comment style index.
         /// </summary>
-        public const int CommentLine = NativeMethods.SCE_ADA_COMMENTLINE;
+        public const int CommentLine = LexApi.SCE_ADA_COMMENTLINE;
 
         /// <summary>
         /// Number style index.
         /// </summary>
-        public const int Number = NativeMethods.SCE_ADA_NUMBER;
+        public const int Number = LexApi.SCE_ADA_NUMBER;
 
         /// <summary>
         /// Keyword style index.
         /// </summary>
-        public const int Word = NativeMethods.SCE_ADA_WORD;
+        public const int Word = LexApi.SCE_ADA_WORD;
 
         /// <summary>
         /// Double-quoted string style index.
         /// </summary>
-        public const int String = NativeMethods.SCE_ADA_STRING;
+        public const int String = LexApi.SCE_ADA_STRING;
 
         /// <summary>
         /// Single-quoted string style index.
         /// </summary>
-        public const int Character = NativeMethods.SCE_ADA_CHARACTER;
+        public const int Character = LexApi.SCE_ADA_CHARACTER;
 
         /// <summary>
         /// Delimiter style index.
         /// </summary>
-        public const int Delimiter = NativeMethods.SCE_ADA_DELIMITER;
+        public const int Delimiter = LexApi.SCE_ADA_DELIMITER;
 
         /// <summary>
         /// Label style index.
         /// </summary>
-        public const int Label = NativeMethods.SCE_ADA_LABEL;
+        public const int Label = LexApi.SCE_ADA_LABEL;
 
         /// <summary>
         /// Identifier style index.
         /// </summary>
-        public const int Identifier = NativeMethods.SCE_ADA_IDENTIFIER;
+        public const int Identifier = LexApi.SCE_ADA_IDENTIFIER;
 
         /// <summary>
         /// Unclosed string EOL style index.
         /// </summary>
-        public const int StringEol = NativeMethods.SCE_ADA_STRINGEOL;
+        public const int StringEol = LexApi.SCE_ADA_STRINGEOL;
 
         /// <summary>
         /// Unclosed character EOL style index.
         /// </summary>
-        public const int CharacterEol = NativeMethods.SCE_ADA_CHARACTEREOL;
+        public const int CharacterEol = LexApi.SCE_ADA_CHARACTEREOL;
 
         /// <summary>
         /// Illegal identifier or keyword style index.
         /// </summary>
-        public const int Illegal = NativeMethods.SCE_ADA_ILLEGAL;
+        public const int Illegal = LexApi.SCE_ADA_ILLEGAL;
     }
 
     #endregion Ada
@@ -465,82 +465,82 @@ public class Style
         /// <summary>
         /// Default (whitespace) style index.
         /// </summary>
-        public const int Default = NativeMethods.SCE_ASM_DEFAULT;
+        public const int Default = LexApi.SCE_ASM_DEFAULT;
 
         /// <summary>
         /// Comment style index.
         /// </summary>
-        public const int Comment = NativeMethods.SCE_ASM_COMMENT;
+        public const int Comment = LexApi.SCE_ASM_COMMENT;
 
         /// <summary>
         /// Comment block style index.
         /// </summary>
-        public const int CommentBlock = NativeMethods.SCE_ASM_COMMENTBLOCK;
+        public const int CommentBlock = LexApi.SCE_ASM_COMMENTBLOCK;
 
         /// <summary>
         /// Number style index.
         /// </summary>
-        public const int Number = NativeMethods.SCE_ASM_NUMBER;
+        public const int Number = LexApi.SCE_ASM_NUMBER;
 
         /// <summary>
         /// Math instruction (keword list 1) style index.
         /// </summary>
-        public const int MathInstruction = NativeMethods.SCE_ASM_MATHINSTRUCTION;
+        public const int MathInstruction = LexApi.SCE_ASM_MATHINSTRUCTION;
 
         /// <summary>
         /// Double-quoted string style index.
         /// </summary>
-        public const int String = NativeMethods.SCE_ASM_STRING;
+        public const int String = LexApi.SCE_ASM_STRING;
 
         /// <summary>
         /// Single-quoted string style index.
         /// </summary>
-        public const int Character = NativeMethods.SCE_ASM_CHARACTER;
+        public const int Character = LexApi.SCE_ASM_CHARACTER;
 
         /// <summary>
         /// CPU instruction (keyword list 0) style index.
         /// </summary>
-        public const int CpuInstruction = NativeMethods.SCE_ASM_CPUINSTRUCTION;
+        public const int CpuInstruction = LexApi.SCE_ASM_CPUINSTRUCTION;
 
         /// <summary>
         /// Register (keyword list 2) style index.
         /// </summary>
-        public const int Register = NativeMethods.SCE_ASM_REGISTER;
+        public const int Register = LexApi.SCE_ASM_REGISTER;
 
         /// <summary>
         /// Operator style index.
         /// </summary>
-        public const int Operator = NativeMethods.SCE_ASM_OPERATOR;
+        public const int Operator = LexApi.SCE_ASM_OPERATOR;
 
         /// <summary>
         /// Identifier style index.
         /// </summary>
-        public const int Identifier = NativeMethods.SCE_ASM_IDENTIFIER;
+        public const int Identifier = LexApi.SCE_ASM_IDENTIFIER;
 
         /// <summary>
         /// Unclosed string EOL style index.
         /// </summary>
-        public const int StringEol = NativeMethods.SCE_ASM_STRINGEOL;
+        public const int StringEol = LexApi.SCE_ASM_STRINGEOL;
 
         /// <summary>
         /// Directive (keyword list 3) string style index.
         /// </summary>
-        public const int Directive = NativeMethods.SCE_ASM_DIRECTIVE;
+        public const int Directive = LexApi.SCE_ASM_DIRECTIVE;
 
         /// <summary>
         /// Directive operand (keyword list 4) style index.
         /// </summary>
-        public const int DirectiveOperand = NativeMethods.SCE_ASM_DIRECTIVEOPERAND;
+        public const int DirectiveOperand = LexApi.SCE_ASM_DIRECTIVEOPERAND;
 
         /// <summary>
         /// Extended instruction (keyword list 5) style index.
         /// </summary>
-        public const int ExtInstruction = NativeMethods.SCE_ASM_EXTINSTRUCTION;
+        public const int ExtInstruction = LexApi.SCE_ASM_EXTINSTRUCTION;
 
         /// <summary>
         /// Comment directive style index.
         /// </summary>
-        public const int CommentDirective = NativeMethods.SCE_ASM_COMMENTDIRECTIVE;
+        public const int CommentDirective = LexApi.SCE_ASM_COMMENTDIRECTIVE;
     }
 
     #endregion Asm
@@ -555,117 +555,117 @@ public class Style
         /// <summary>
         /// Default (whitespace) style index.
         /// </summary>
-        public const int Default = NativeMethods.SCE_B_DEFAULT;
+        public const int Default = LexApi.SCE_B_DEFAULT;
 
         /// <summary>
         /// Comment style index.
         /// </summary>
-        public const int Comment = NativeMethods.SCE_B_COMMENT;
+        public const int Comment = LexApi.SCE_B_COMMENT;
 
         /// <summary>
         /// Number style index.
         /// </summary>
-        public const int Number = NativeMethods.SCE_B_NUMBER;
+        public const int Number = LexApi.SCE_B_NUMBER;
 
         /// <summary>
         /// Keyword style index.
         /// </summary>
-        public const int Keyword = NativeMethods.SCE_B_KEYWORD;
+        public const int Keyword = LexApi.SCE_B_KEYWORD;
 
         /// <summary>
         /// String style index.
         /// </summary>
-        public const int String = NativeMethods.SCE_B_STRING;
+        public const int String = LexApi.SCE_B_STRING;
 
         /// <summary>
         /// Preprocessor style index.
         /// </summary>
-        public const int Preprocessor = NativeMethods.SCE_B_PREPROCESSOR;
+        public const int Preprocessor = LexApi.SCE_B_PREPROCESSOR;
 
         /// <summary>
         /// Operator style index.
         /// </summary>
-        public const int Operator = NativeMethods.SCE_B_OPERATOR;
+        public const int Operator = LexApi.SCE_B_OPERATOR;
 
         /// <summary>
         /// Identifier style index.
         /// </summary>
-        public const int Identifier = NativeMethods.SCE_B_IDENTIFIER;
+        public const int Identifier = LexApi.SCE_B_IDENTIFIER;
 
         /// <summary>
         /// Date style index.
         /// </summary>
-        public const int Date = NativeMethods.SCE_B_DATE;
+        public const int Date = LexApi.SCE_B_DATE;
 
         /// <summary>
         /// Unclosed string EOL style index.
         /// </summary>
-        public const int StringEol = NativeMethods.SCE_B_STRINGEOL;
+        public const int StringEol = LexApi.SCE_B_STRINGEOL;
 
         /// <summary>
         /// Keyword list 2 (index 1) style index.
         /// </summary>
-        public const int Keyword2 = NativeMethods.SCE_B_KEYWORD2;
+        public const int Keyword2 = LexApi.SCE_B_KEYWORD2;
 
         /// <summary>
         /// Keyword list 3 (index 2) style index.
         /// </summary>
-        public const int Keyword3 = NativeMethods.SCE_B_KEYWORD3;
+        public const int Keyword3 = LexApi.SCE_B_KEYWORD3;
 
         /// <summary>
         /// Keyword list 4 (index 3) style index.
         /// </summary>
-        public const int Keyword4 = NativeMethods.SCE_B_KEYWORD4;
+        public const int Keyword4 = LexApi.SCE_B_KEYWORD4;
 
         /// <summary>
         /// Constant style index.
         /// </summary>
-        public const int Constant = NativeMethods.SCE_B_CONSTANT;
+        public const int Constant = LexApi.SCE_B_CONSTANT;
 
         /// <summary>
         /// Inline assembler style index.
         /// </summary>
-        public const int Asm = NativeMethods.SCE_B_ASM;
+        public const int Asm = LexApi.SCE_B_ASM;
 
         /// <summary>
         /// Label style index.
         /// </summary>
-        public const int Label = NativeMethods.SCE_B_LABEL;
+        public const int Label = LexApi.SCE_B_LABEL;
 
         /// <summary>
         /// Error style index.
         /// </summary>
-        public const int Error = NativeMethods.SCE_B_ERROR;
+        public const int Error = LexApi.SCE_B_ERROR;
 
         /// <summary>
         /// Hexadecimal number style index.
         /// </summary>
-        public const int HexNumber = NativeMethods.SCE_B_HEXNUMBER;
+        public const int HexNumber = LexApi.SCE_B_HEXNUMBER;
 
         /// <summary>
         /// Binary number style index.
         /// </summary>
-        public const int BinNumber = NativeMethods.SCE_B_BINNUMBER;
+        public const int BinNumber = LexApi.SCE_B_BINNUMBER;
 
         /// <summary>
         /// Block comment style index.
         /// </summary>
-        public const int CommentBlock = NativeMethods.SCE_B_COMMENTBLOCK;
+        public const int CommentBlock = LexApi.SCE_B_COMMENTBLOCK;
 
         /// <summary>
         /// Documentation line style index.
         /// </summary>
-        public const int DocLine = NativeMethods.SCE_B_DOCLINE;
+        public const int DocLine = LexApi.SCE_B_DOCLINE;
 
         /// <summary>
         /// Documentation block style index.
         /// </summary>
-        public const int DocBlock = NativeMethods.SCE_B_DOCBLOCK;
+        public const int DocBlock = LexApi.SCE_B_DOCBLOCK;
 
         /// <summary>
         /// Documentation keyword style index.
         /// </summary>
-        public const int DocKeyword = NativeMethods.SCE_B_DOCKEYWORD;
+        public const int DocKeyword = LexApi.SCE_B_DOCKEYWORD;
     }
 
     #endregion BlitzBasic
@@ -680,42 +680,42 @@ public class Style
         /// <summary>
         /// Default (whitespace) style index.
         /// </summary>
-        public const int Default = NativeMethods.SCE_BAT_DEFAULT;
+        public const int Default = LexApi.SCE_BAT_DEFAULT;
 
         /// <summary>
         /// Comment style index.
         /// </summary>
-        public const int Comment = NativeMethods.SCE_BAT_COMMENT;
+        public const int Comment = LexApi.SCE_BAT_COMMENT;
 
         /// <summary>
         /// Keyword (list 0) style index.
         /// </summary>
-        public const int Word = NativeMethods.SCE_BAT_WORD;
+        public const int Word = LexApi.SCE_BAT_WORD;
 
         /// <summary>
         /// Label style index.
         /// </summary>
-        public const int Label = NativeMethods.SCE_BAT_LABEL;
+        public const int Label = LexApi.SCE_BAT_LABEL;
 
         /// <summary>
         /// Hide (@ECHO OFF/ON) style index.
         /// </summary>
-        public const int Hide = NativeMethods.SCE_BAT_HIDE;
+        public const int Hide = LexApi.SCE_BAT_HIDE;
 
         /// <summary>
         /// External command (keyword list 1) style index.
         /// </summary>
-        public const int Command = NativeMethods.SCE_BAT_COMMAND;
+        public const int Command = LexApi.SCE_BAT_COMMAND;
 
         /// <summary>
         /// Identifier string style index.
         /// </summary>
-        public const int Identifier = NativeMethods.SCE_BAT_IDENTIFIER;
+        public const int Identifier = LexApi.SCE_BAT_IDENTIFIER;
 
         /// <summary>
         /// Operator style index.
         /// </summary>
-        public const int Operator = NativeMethods.SCE_BAT_OPERATOR;
+        public const int Operator = LexApi.SCE_BAT_OPERATOR;
     }
 
     #endregion Batch
@@ -730,87 +730,93 @@ public class Style
         /// <summary>
         /// Attributes style index
         /// </summary>
-        public const int Attributes = NativeMethods.SCE_CLW_ATTRIBUTE;
+        public const int Attributes = LexApi.SCE_CLW_ATTRIBUTE;
 
         /// <summary>
         /// Built in procedures function style index.
         /// </summary>
-        public const int BuiltInProceduresFunction = NativeMethods.SCE_CLW_BUILTIN_PROCEDURES_FUNCTION;
+        public const int BuiltInProceduresFunction = LexApi.SCE_CLW_BUILTIN_PROCEDURES_FUNCTION;
 
         /// <summary>
         /// Comment style index.
         /// </summary>
-        public const int Comment = NativeMethods.SCE_CLW_COMMENT;
+        public const int Comment = LexApi.SCE_CLW_COMMENT;
 
         /// <summary>
         /// Compiler directive style index
         /// </summary>
-        public const int CompilerDirective = NativeMethods.SCE_CLW_COMPILER_DIRECTIVE;
+        public const int CompilerDirective = LexApi.SCE_CLW_COMPILER_DIRECTIVE;
 
         /// <summary>
         /// Default (whitespace) style index.
         /// </summary>
-        public const int Default = NativeMethods.SCE_CLW_DEFAULT;
+        public const int Default = LexApi.SCE_CLW_DEFAULT;
 
         /// <summary>
         /// Depreciated style index
         /// </summary>
-        public const int Depreciated = NativeMethods.SCE_CLW_DEPRECATED;
+        [Obsolete("Use Deprecated instead.")]
+        public const int Depreciated = LexApi.SCE_CLW_DEPRECATED;
+
+        /// <summary>
+        /// Deprecated style index
+        /// </summary>
+        public const int Deprecated = LexApi.SCE_CLW_DEPRECATED;
 
         /// <summary>
         /// Error style index
         /// </summary>
-        public const int Error = NativeMethods.SCE_CLW_ERROR;
+        public const int Error = LexApi.SCE_CLW_ERROR;
 
         /// <summary>
         /// Integer Constant style index.
         /// </summary>
-        public const int IntegerConstant = NativeMethods.SCE_CLW_INTEGER_CONSTANT;
+        public const int IntegerConstant = LexApi.SCE_CLW_INTEGER_CONSTANT;
 
         /// <summary>
         /// Keyword style index
         /// </summary>
-        public const int Keyword = NativeMethods.SCE_CLW_KEYWORD;
+        public const int Keyword = LexApi.SCE_CLW_KEYWORD;
 
         /// <summary>
         /// Label string style index.
         /// </summary>
-        public const int Label = NativeMethods.SCE_CLW_LABEL;
+        public const int Label = LexApi.SCE_CLW_LABEL;
 
         /// <summary>
         /// Real Constant style index.
         /// </summary>
-        public const int PictureString = NativeMethods.SCE_CLW_PICTURE_STRING;
+        public const int PictureString = LexApi.SCE_CLW_PICTURE_STRING;
 
         /// <summary>
         /// Real Constant style index.
         /// </summary>
-        public const int RealConstant = NativeMethods.SCE_CLW_REAL_CONSTANT;
+        public const int RealConstant = LexApi.SCE_CLW_REAL_CONSTANT;
 
         /// <summary>
         /// Runtime expressions style index
         /// </summary>
-        public const int RuntimeExpressions = NativeMethods.SCE_CLW_RUNTIME_EXPRESSIONS;
+        public const int RuntimeExpressions = LexApi.SCE_CLW_RUNTIME_EXPRESSIONS;
 
         /// <summary>
         /// Standard equates style index
         /// </summary>
-        public const int StandardEquates = NativeMethods.SCE_CLW_STANDARD_EQUATE;
+        public const int StandardEquates = LexApi.SCE_CLW_STANDARD_EQUATE;
 
         /// <summary>
         /// Single-quoted string style index.
         /// </summary>
-        public const int String = NativeMethods.SCE_CLW_STRING;
+        public const int String = LexApi.SCE_CLW_STRING;
 
         /// <summary>
         /// Structure data type style index.
         /// </summary>
-        public const int StructureDataTypes = NativeMethods.SCE_CLW_STRUCTURE_DATA_TYPE;
+        public const int StructureDataTypes = LexApi.SCE_CLW_STRUCTURE_DATA_TYPE;
 
         /// <summary>
         /// User Identifier style index.
         /// </summary>
-        public const int UserIdentifier = NativeMethods.SCE_CLW_USER_IDENTIFIER;
+        public const int UserIdentifier = LexApi.SCE_CLW_USER_IDENTIFIER;
     }
 
     #endregion Clw
@@ -825,142 +831,142 @@ public class Style
         /// <summary>
         /// Default (whitespace) style index.
         /// </summary>
-        public const int Default = NativeMethods.SCE_C_DEFAULT;
+        public const int Default = LexApi.SCE_C_DEFAULT;
 
         /// <summary>
         /// Comment style index.
         /// </summary>
-        public const int Comment = NativeMethods.SCE_C_COMMENT;
+        public const int Comment = LexApi.SCE_C_COMMENT;
 
         /// <summary>
         /// Line comment style index.
         /// </summary>
-        public const int CommentLine = NativeMethods.SCE_C_COMMENTLINE;
+        public const int CommentLine = LexApi.SCE_C_COMMENTLINE;
 
         /// <summary>
         /// Documentation comment style index.
         /// </summary>
-        public const int CommentDoc = NativeMethods.SCE_C_COMMENTDOC;
+        public const int CommentDoc = LexApi.SCE_C_COMMENTDOC;
 
         /// <summary>
         /// Number style index.
         /// </summary>
-        public const int Number = NativeMethods.SCE_C_NUMBER;
+        public const int Number = LexApi.SCE_C_NUMBER;
 
         /// <summary>
         /// Keyword style index.
         /// </summary>
-        public const int Word = NativeMethods.SCE_C_WORD;
+        public const int Word = LexApi.SCE_C_WORD;
 
         /// <summary>
         /// Double-quoted string style index.
         /// </summary>
-        public const int String = NativeMethods.SCE_C_STRING;
+        public const int String = LexApi.SCE_C_STRING;
 
         /// <summary>
         /// Single-quoted string style index.
         /// </summary>
-        public const int Character = NativeMethods.SCE_C_CHARACTER;
+        public const int Character = LexApi.SCE_C_CHARACTER;
 
         /// <summary>
         /// UUID style index.
         /// </summary>
-        public const int Uuid = NativeMethods.SCE_C_UUID;
+        public const int Uuid = LexApi.SCE_C_UUID;
 
         /// <summary>
         /// Preprocessor style index.
         /// </summary>
-        public const int Preprocessor = NativeMethods.SCE_C_PREPROCESSOR;
+        public const int Preprocessor = LexApi.SCE_C_PREPROCESSOR;
 
         /// <summary>
         /// Operator style index.
         /// </summary>
-        public const int Operator = NativeMethods.SCE_C_OPERATOR;
+        public const int Operator = LexApi.SCE_C_OPERATOR;
 
         /// <summary>
         /// Identifier style index.
         /// </summary>
-        public const int Identifier = NativeMethods.SCE_C_IDENTIFIER;
+        public const int Identifier = LexApi.SCE_C_IDENTIFIER;
 
         /// <summary>
         /// Unclosed string EOL style index.
         /// </summary>
-        public const int StringEol = NativeMethods.SCE_C_STRINGEOL;
+        public const int StringEol = LexApi.SCE_C_STRINGEOL;
 
         /// <summary>
         /// Verbatim string style index.
         /// </summary>
-        public const int Verbatim = NativeMethods.SCE_C_VERBATIM;
+        public const int Verbatim = LexApi.SCE_C_VERBATIM;
 
         /// <summary>
         /// Regular expression style index.
         /// </summary>
-        public const int Regex = NativeMethods.SCE_C_REGEX;
+        public const int Regex = LexApi.SCE_C_REGEX;
 
         /// <summary>
         /// Documentation comment line style index.
         /// </summary>
-        public const int CommentLineDoc = NativeMethods.SCE_C_COMMENTLINEDOC;
+        public const int CommentLineDoc = LexApi.SCE_C_COMMENTLINEDOC;
 
         /// <summary>
         /// Keyword style 2 index.
         /// </summary>
-        public const int Word2 = NativeMethods.SCE_C_WORD2;
+        public const int Word2 = LexApi.SCE_C_WORD2;
 
         /// <summary>
         /// Comment keyword style index.
         /// </summary>
-        public const int CommentDocKeyword = NativeMethods.SCE_C_COMMENTDOCKEYWORD;
+        public const int CommentDocKeyword = LexApi.SCE_C_COMMENTDOCKEYWORD;
 
         /// <summary>
         /// Comment keyword error style index.
         /// </summary>
-        public const int CommentDocKeywordError = NativeMethods.SCE_C_COMMENTDOCKEYWORDERROR;
+        public const int CommentDocKeywordError = LexApi.SCE_C_COMMENTDOCKEYWORDERROR;
 
         /// <summary>
         /// Global class style index.
         /// </summary>
-        public const int GlobalClass = NativeMethods.SCE_C_GLOBALCLASS;
+        public const int GlobalClass = LexApi.SCE_C_GLOBALCLASS;
 
         /// <summary>
         /// Raw string style index.
         /// </summary>
-        public const int StringRaw = NativeMethods.SCE_C_STRINGRAW;
+        public const int StringRaw = LexApi.SCE_C_STRINGRAW;
 
         /// <summary>
         /// Triple-quoted string style index.
         /// </summary>
-        public const int TripleVerbatim = NativeMethods.SCE_C_TRIPLEVERBATIM;
+        public const int TripleVerbatim = LexApi.SCE_C_TRIPLEVERBATIM;
 
         /// <summary>
         /// Hash-quoted string style index.
         /// </summary>
-        public const int HashQuotedString = NativeMethods.SCE_C_HASHQUOTEDSTRING;
+        public const int HashQuotedString = LexApi.SCE_C_HASHQUOTEDSTRING;
 
         /// <summary>
         /// Preprocessor comment style index.
         /// </summary>
-        public const int PreprocessorComment = NativeMethods.SCE_C_PREPROCESSORCOMMENT;
+        public const int PreprocessorComment = LexApi.SCE_C_PREPROCESSORCOMMENT;
 
         /// <summary>
         /// Preprocessor documentation comment style index.
         /// </summary>
-        public const int PreprocessorCommentDoc = NativeMethods.SCE_C_PREPROCESSORCOMMENTDOC;
+        public const int PreprocessorCommentDoc = LexApi.SCE_C_PREPROCESSORCOMMENTDOC;
 
         /// <summary>
         /// User-defined literal style index.
         /// </summary>
-        public const int UserLiteral = NativeMethods.SCE_C_USERLITERAL;
+        public const int UserLiteral = LexApi.SCE_C_USERLITERAL;
 
         /// <summary>
         /// Task marker style index.
         /// </summary>
-        public const int TaskMarker = NativeMethods.SCE_C_TASKMARKER;
+        public const int TaskMarker = LexApi.SCE_C_TASKMARKER;
 
         /// <summary>
         /// Escape sequence style index.
         /// </summary>
-        public const int EscapeSequence = NativeMethods.SCE_C_ESCAPESEQUENCE;
+        public const int EscapeSequence = LexApi.SCE_C_ESCAPESEQUENCE;
     }
 
     #endregion Cpp
@@ -975,122 +981,122 @@ public class Style
         /// <summary>
         /// Default (whitespace) style index.
         /// </summary>
-        public const int Default = NativeMethods.SCE_CSS_DEFAULT;
+        public const int Default = LexApi.SCE_CSS_DEFAULT;
 
         /// <summary>
         /// Tag style index.
         /// </summary>
-        public const int Tag = NativeMethods.SCE_CSS_TAG;
+        public const int Tag = LexApi.SCE_CSS_TAG;
 
         /// <summary>
         /// Class style index.
         /// </summary>
-        public const int Class = NativeMethods.SCE_CSS_CLASS;
+        public const int Class = LexApi.SCE_CSS_CLASS;
 
         /// <summary>
         /// Pseudo class style index.
         /// </summary>
-        public const int PseudoClass = NativeMethods.SCE_CSS_PSEUDOCLASS;
+        public const int PseudoClass = LexApi.SCE_CSS_PSEUDOCLASS;
 
         /// <summary>
         /// Unknown pseudo class style index.
         /// </summary>
-        public const int UnknownPseudoClass = NativeMethods.SCE_CSS_UNKNOWN_PSEUDOCLASS;
+        public const int UnknownPseudoClass = LexApi.SCE_CSS_UNKNOWN_PSEUDOCLASS;
 
         /// <summary>
         /// Operator style index.
         /// </summary>
-        public const int Operator = NativeMethods.SCE_CSS_OPERATOR;
+        public const int Operator = LexApi.SCE_CSS_OPERATOR;
 
         /// <summary>
         /// Identifier style index.
         /// </summary>
-        public const int Identifier = NativeMethods.SCE_CSS_IDENTIFIER;
+        public const int Identifier = LexApi.SCE_CSS_IDENTIFIER;
 
         /// <summary>
         /// Unknown identifier style index.
         /// </summary>
-        public const int UnknownIdentifier = NativeMethods.SCE_CSS_UNKNOWN_IDENTIFIER;
+        public const int UnknownIdentifier = LexApi.SCE_CSS_UNKNOWN_IDENTIFIER;
 
         /// <summary>
         /// Value style index.
         /// </summary>
-        public const int Value = NativeMethods.SCE_CSS_VALUE;
+        public const int Value = LexApi.SCE_CSS_VALUE;
 
         /// <summary>
         /// Comment style index.
         /// </summary>
-        public const int Comment = NativeMethods.SCE_CSS_COMMENT;
+        public const int Comment = LexApi.SCE_CSS_COMMENT;
 
         /// <summary>
         /// ID style index.
         /// </summary>
-        public const int Id = NativeMethods.SCE_CSS_ID;
+        public const int Id = LexApi.SCE_CSS_ID;
 
         /// <summary>
         /// Important style index.
         /// </summary>
-        public const int Important = NativeMethods.SCE_CSS_IMPORTANT;
+        public const int Important = LexApi.SCE_CSS_IMPORTANT;
 
         /// <summary>
         /// Directive style index.
         /// </summary>
-        public const int Directive = NativeMethods.SCE_CSS_DIRECTIVE;
+        public const int Directive = LexApi.SCE_CSS_DIRECTIVE;
 
         /// <summary>
         /// Double-quoted string style index.
         /// </summary>
-        public const int DoubleString = NativeMethods.SCE_CSS_DOUBLESTRING;
+        public const int DoubleString = LexApi.SCE_CSS_DOUBLESTRING;
 
         /// <summary>
         /// Single-quoted string style index.
         /// </summary>
-        public const int SingleString = NativeMethods.SCE_CSS_SINGLESTRING;
+        public const int SingleString = LexApi.SCE_CSS_SINGLESTRING;
 
         /// <summary>
         /// Identifier style 2 index.
         /// </summary>
-        public const int Identifier2 = NativeMethods.SCE_CSS_IDENTIFIER2;
+        public const int Identifier2 = LexApi.SCE_CSS_IDENTIFIER2;
 
         /// <summary>
         /// Attribute style index.
         /// </summary>
-        public const int Attribute = NativeMethods.SCE_CSS_ATTRIBUTE;
+        public const int Attribute = LexApi.SCE_CSS_ATTRIBUTE;
 
         /// <summary>
         /// Identifier style 3 index.
         /// </summary>
-        public const int Identifier3 = NativeMethods.SCE_CSS_IDENTIFIER3;
+        public const int Identifier3 = LexApi.SCE_CSS_IDENTIFIER3;
 
         /// <summary>
         /// Pseudo element style index.
         /// </summary>
-        public const int PseudoElement = NativeMethods.SCE_CSS_PSEUDOELEMENT;
+        public const int PseudoElement = LexApi.SCE_CSS_PSEUDOELEMENT;
 
         /// <summary>
         /// Extended identifier style index.
         /// </summary>
-        public const int ExtendedIdentifier = NativeMethods.SCE_CSS_EXTENDED_IDENTIFIER;
+        public const int ExtendedIdentifier = LexApi.SCE_CSS_EXTENDED_IDENTIFIER;
 
         /// <summary>
         /// Extended pseudo class style index.
         /// </summary>
-        public const int ExtendedPseudoClass = NativeMethods.SCE_CSS_EXTENDED_PSEUDOCLASS;
+        public const int ExtendedPseudoClass = LexApi.SCE_CSS_EXTENDED_PSEUDOCLASS;
 
         /// <summary>
         /// Extended pseudo element style index.
         /// </summary>
-        public const int ExtendedPseudoElement = NativeMethods.SCE_CSS_EXTENDED_PSEUDOELEMENT;
+        public const int ExtendedPseudoElement = LexApi.SCE_CSS_EXTENDED_PSEUDOELEMENT;
 
         /// <summary>
-        /// Media style index.
+        /// Group rule style index.
         /// </summary>
-        public const int Media = NativeMethods.SCE_CSS_MEDIA;
+        public const int GroupRule = LexApi.SCE_CSS_GROUP_RULE;
 
         /// <summary>
         /// Variable style index.
         /// </summary>
-        public const int Variable = NativeMethods.SCE_CSS_VARIABLE;
+        public const int Variable = LexApi.SCE_CSS_VARIABLE;
     }
 
     #endregion Css
@@ -1105,77 +1111,77 @@ public class Style
         /// <summary>
         /// Default (whitespace) style index.
         /// </summary>
-        public const int Default = NativeMethods.SCE_F_DEFAULT;
+        public const int Default = LexApi.SCE_F_DEFAULT;
 
         /// <summary>
         /// Comment style index.
         /// </summary>
-        public const int Comment = NativeMethods.SCE_F_COMMENT;
+        public const int Comment = LexApi.SCE_F_COMMENT;
 
         /// <summary>
         /// Number style index.
         /// </summary>
-        public const int Number = NativeMethods.SCE_F_NUMBER;
+        public const int Number = LexApi.SCE_F_NUMBER;
 
         /// <summary>
         /// Single-quoted string style index.
         /// </summary>
-        public const int String1 = NativeMethods.SCE_F_STRING1;
+        public const int String1 = LexApi.SCE_F_STRING1;
 
         /// <summary>
         /// Double-quoted string style index.
         /// </summary>
-        public const int String2 = NativeMethods.SCE_F_STRING2;
+        public const int String2 = LexApi.SCE_F_STRING2;
 
         /// <summary>
         /// Unclosed string EOL style index.
         /// </summary>
-        public const int StringEol = NativeMethods.SCE_F_STRINGEOL;
+        public const int StringEol = LexApi.SCE_F_STRINGEOL;
 
         /// <summary>
         /// Operator style index.
         /// </summary>
-        public const int Operator = NativeMethods.SCE_F_OPERATOR;
+        public const int Operator = LexApi.SCE_F_OPERATOR;
 
         /// <summary>
         /// Identifier style index.
         /// </summary>
-        public const int Identifier = NativeMethods.SCE_F_IDENTIFIER;
+        public const int Identifier = LexApi.SCE_F_IDENTIFIER;
 
         /// <summary>
         /// Keyword (list 0) style index.
         /// </summary>
-        public const int Word = NativeMethods.SCE_F_WORD;
+        public const int Word = LexApi.SCE_F_WORD;
 
         /// <summary>
         /// Keyword 2 (list 1) style index.
         /// </summary>
-        public const int Word2 = NativeMethods.SCE_F_WORD2;
+        public const int Word2 = LexApi.SCE_F_WORD2;
 
         /// <summary>
         /// Keyword 3 (list 2) style index.
         /// </summary>
-        public const int Word3 = NativeMethods.SCE_F_WORD3;
+        public const int Word3 = LexApi.SCE_F_WORD3;
 
         /// <summary>
         /// Preprocessor style index.
         /// </summary>
-        public const int Preprocessor = NativeMethods.SCE_F_PREPROCESSOR;
+        public const int Preprocessor = LexApi.SCE_F_PREPROCESSOR;
 
         /// <summary>
         /// Operator 2 style index.
         /// </summary>
-        public const int Operator2 = NativeMethods.SCE_F_OPERATOR2;
+        public const int Operator2 = LexApi.SCE_F_OPERATOR2;
 
         /// <summary>
         /// Label string style index.
         /// </summary>
-        public const int Label = NativeMethods.SCE_F_LABEL;
+        public const int Label = LexApi.SCE_F_LABEL;
 
         /// <summary>
         /// Continuation style index.
         /// </summary>
-        public const int Continuation = NativeMethods.SCE_F_CONTINUATION;
+        public const int Continuation = LexApi.SCE_F_CONTINUATION;
     }
 
     #endregion Fortran
@@ -1190,117 +1196,117 @@ public class Style
         /// <summary>
         /// Default (whitespace) style index.
         /// </summary>
-        public const int Default = NativeMethods.SCE_B_DEFAULT;
+        public const int Default = LexApi.SCE_B_DEFAULT;
 
         /// <summary>
         /// Comment style index.
         /// </summary>
-        public const int Comment = NativeMethods.SCE_B_COMMENT;
+        public const int Comment = LexApi.SCE_B_COMMENT;
 
         /// <summary>
         /// Number style index.
         /// </summary>
-        public const int Number = NativeMethods.SCE_B_NUMBER;
+        public const int Number = LexApi.SCE_B_NUMBER;
 
         /// <summary>
         /// Keyword style index.
         /// </summary>
-        public const int Keyword = NativeMethods.SCE_B_KEYWORD;
+        public const int Keyword = LexApi.SCE_B_KEYWORD;
 
         /// <summary>
         /// String style index.
         /// </summary>
-        public const int String = NativeMethods.SCE_B_STRING;
+        public const int String = LexApi.SCE_B_STRING;
 
         /// <summary>
         /// Preprocessor style index.
         /// </summary>
-        public const int Preprocessor = NativeMethods.SCE_B_PREPROCESSOR;
+        public const int Preprocessor = LexApi.SCE_B_PREPROCESSOR;
 
         /// <summary>
         /// Operator style index.
         /// </summary>
-        public const int Operator = NativeMethods.SCE_B_OPERATOR;
+        public const int Operator = LexApi.SCE_B_OPERATOR;
 
         /// <summary>
         /// Identifier style index.
         /// </summary>
-        public const int Identifier = NativeMethods.SCE_B_IDENTIFIER;
+        public const int Identifier = LexApi.SCE_B_IDENTIFIER;
 
         /// <summary>
         /// Date style index.
         /// </summary>
-        public const int Date = NativeMethods.SCE_B_DATE;
+        public const int Date = LexApi.SCE_B_DATE;
 
         /// <summary>
         /// Unclosed string EOL style index.
         /// </summary>
-        public const int StringEol = NativeMethods.SCE_B_STRINGEOL;
+        public const int StringEol = LexApi.SCE_B_STRINGEOL;
 
         /// <summary>
         /// Keyword list 2 (index 1) style index.
         /// </summary>
-        public const int Keyword2 = NativeMethods.SCE_B_KEYWORD2;
+        public const int Keyword2 = LexApi.SCE_B_KEYWORD2;
 
         /// <summary>
         /// Keyword list 3 (index 2) style index.
         /// </summary>
-        public const int Keyword3 = NativeMethods.SCE_B_KEYWORD3;
+        public const int Keyword3 = LexApi.SCE_B_KEYWORD3;
 
         /// <summary>
         /// Keyword list 4 (index 3) style index.
         /// </summary>
-        public const int Keyword4 = NativeMethods.SCE_B_KEYWORD4;
+        public const int Keyword4 = LexApi.SCE_B_KEYWORD4;
 
         /// <summary>
         /// Constant style index.
         /// </summary>
-        public const int Constant = NativeMethods.SCE_B_CONSTANT;
+        public const int Constant = LexApi.SCE_B_CONSTANT;
 
         /// <summary>
         /// Inline assembler style index.
         /// </summary>
-        public const int Asm = NativeMethods.SCE_B_ASM;
+        public const int Asm = LexApi.SCE_B_ASM;
 
         /// <summary>
         /// Label style index.
         /// </summary>
-        public const int Label = NativeMethods.SCE_B_LABEL;
+        public const int Label = LexApi.SCE_B_LABEL;
 
         /// <summary>
         /// Error style index.
         /// </summary>
-        public const int Error = NativeMethods.SCE_B_ERROR;
+        public const int Error = LexApi.SCE_B_ERROR;
 
         /// <summary>
         /// Hexadecimal number style index.
         /// </summary>
-        public const int HexNumber = NativeMethods.SCE_B_HEXNUMBER;
+        public const int HexNumber = LexApi.SCE_B_HEXNUMBER;
 
         /// <summary>
         /// Binary number style index.
         /// </summary>
-        public const int BinNumber = NativeMethods.SCE_B_BINNUMBER;
+        public const int BinNumber = LexApi.SCE_B_BINNUMBER;
 
         /// <summary>
         /// Block comment style index.
         /// </summary>
-        public const int CommentBlock = NativeMethods.SCE_B_COMMENTBLOCK;
+        public const int CommentBlock = LexApi.SCE_B_COMMENTBLOCK;
 
         /// <summary>
         /// Documentation line style index.
         /// </summary>
-        public const int DocLine = NativeMethods.SCE_B_DOCLINE;
+        public const int DocLine = LexApi.SCE_B_DOCLINE;
 
         /// <summary>
         /// Documentation block style index.
         /// </summary>
-        public const int DocBlock = NativeMethods.SCE_B_DOCBLOCK;
+        public const int DocBlock = LexApi.SCE_B_DOCBLOCK;
 
         /// <summary>
         /// Documentation keyword style index.
         /// </summary>
-        public const int DocKeyword = NativeMethods.SCE_B_DOCKEYWORD;
+        public const int DocKeyword = LexApi.SCE_B_DOCKEYWORD;
     }
 
     #endregion FreeBasic
@@ -1315,107 +1321,107 @@ public class Style
         /// <summary>
         /// Content style index.
         /// </summary>
-        public const int Default = NativeMethods.SCE_H_DEFAULT;
+        public const int Default = LexApi.SCE_H_DEFAULT;
 
         /// <summary>
         /// Tag style index.
         /// </summary>
-        public const int Tag = NativeMethods.SCE_H_TAG;
+        public const int Tag = LexApi.SCE_H_TAG;
 
         /// <summary>
         /// Unknown tag style index.
         /// </summary>
-        public const int TagUnknown = NativeMethods.SCE_H_TAGUNKNOWN;
+        public const int TagUnknown = LexApi.SCE_H_TAGUNKNOWN;
 
         /// <summary>
         /// Attribute style index.
         /// </summary>
-        public const int Attribute = NativeMethods.SCE_H_ATTRIBUTE;
+        public const int Attribute = LexApi.SCE_H_ATTRIBUTE;
 
         /// <summary>
         /// Unknown attribute style index.
         /// </summary>
-        public const int AttributeUnknown = NativeMethods.SCE_H_ATTRIBUTEUNKNOWN;
+        public const int AttributeUnknown = LexApi.SCE_H_ATTRIBUTEUNKNOWN;
 
         /// <summary>
         /// Number style index.
         /// </summary>
-        public const int Number = NativeMethods.SCE_H_NUMBER;
+        public const int Number = LexApi.SCE_H_NUMBER;
 
         /// <summary>
         /// Double-quoted string style index.
         /// </summary>
-        public const int DoubleString = NativeMethods.SCE_H_DOUBLESTRING;
+        public const int DoubleString = LexApi.SCE_H_DOUBLESTRING;
 
         /// <summary>
         /// Single-quoted string style index.
         /// </summary>
-        public const int SingleString = NativeMethods.SCE_H_SINGLESTRING;
+        public const int SingleString = LexApi.SCE_H_SINGLESTRING;
 
         /// <summary>
         /// Other tag content (not elements or attributes) style index.
         /// </summary>
-        public const int Other = NativeMethods.SCE_H_OTHER;
+        public const int Other = LexApi.SCE_H_OTHER;
 
         /// <summary>
         /// Comment style index.
         /// </summary>
-        public const int Comment = NativeMethods.SCE_H_COMMENT;
+        public const int Comment = LexApi.SCE_H_COMMENT;
 
         /// <summary>
         /// Entity ($nnn;) name style index.
         /// </summary>
-        public const int Entity = NativeMethods.SCE_H_ENTITY;
+        public const int Entity = LexApi.SCE_H_ENTITY;
 
         /// <summary>
         /// End-tag style index.
         /// </summary>
-        public const int TagEnd = NativeMethods.SCE_H_TAGEND;
+        public const int TagEnd = LexApi.SCE_H_TAGEND;
 
         /// <summary>
         /// Start of XML declaration (&lt;?xml&gt;) style index.
         /// </summary>
-        public const int XmlStart = NativeMethods.SCE_H_XMLSTART;
+        public const int XmlStart = LexApi.SCE_H_XMLSTART;
 
         /// <summary>
         /// End of XML declaration (?&gt;) style index.
         /// </summary>
-        public const int XmlEnd = NativeMethods.SCE_H_XMLEND;
+        public const int XmlEnd = LexApi.SCE_H_XMLEND;
 
         /// <summary>
         /// Script tag (&lt;script&gt;) style index.
         /// </summary>
-        public const int Script = NativeMethods.SCE_H_SCRIPT;
+        public const int Script = LexApi.SCE_H_SCRIPT;
 
         /// <summary>
         /// ASP-like script engine block (&lt;%) style index.
         /// </summary>
-        public const int Asp = NativeMethods.SCE_H_ASP;
+        public const int Asp = LexApi.SCE_H_ASP;
 
         /// <summary>
         /// ASP-like language declaration (&lt;%@) style index.
         /// </summary>
-        public const int AspAt = NativeMethods.SCE_H_ASPAT;
+        public const int AspAt = LexApi.SCE_H_ASPAT;
 
         /// <summary>
         /// CDATA section style index.
         /// </summary>
-        public const int CData = NativeMethods.SCE_H_CDATA;
+        public const int CData = LexApi.SCE_H_CDATA;
 
         /// <summary>
         /// Question mark style index.
         /// </summary>
-        public const int Question = NativeMethods.SCE_H_QUESTION;
+        public const int Question = LexApi.SCE_H_QUESTION;
 
         /// <summary>
         /// Value style index.
         /// </summary>
-        public const int Value = NativeMethods.SCE_H_VALUE;
+        public const int Value = LexApi.SCE_H_VALUE;
 
         /// <summary>
         /// Script engine comment (&lt;%--) style index.
         /// </summary>
-        public const int XcComment = NativeMethods.SCE_H_XCCOMMENT;
+        public const int XcComment = LexApi.SCE_H_XCCOMMENT;
     }
 
     #endregion Html
@@ -1430,67 +1436,67 @@ public class Style
         /// <summary>
         /// Start style index (allows EOL filled background to not start on same line as SCRIPT tag).
         /// </summary>
-        public const int Start = NativeMethods.SCE_HJ_START;
+        public const int Start = LexApi.SCE_HJ_START;
 
         /// <summary>
         /// Default style index.
         /// </summary>
-        public const int Default = NativeMethods.SCE_HJ_DEFAULT;
+        public const int Default = LexApi.SCE_HJ_DEFAULT;
 
         /// <summary>
         /// Comment style index.
         /// </summary>
-        public const int Comment = NativeMethods.SCE_HJ_COMMENT;
+        public const int Comment = LexApi.SCE_HJ_COMMENT;
 
         /// <summary>
         /// Line comment style index.
         /// </summary>
-        public const int CommentLine = NativeMethods.SCE_HJ_COMMENTLINE;
+        public const int CommentLine = LexApi.SCE_HJ_COMMENTLINE;
 
         /// <summary>
         /// Doc comment style index.
         /// </summary>
-        public const int CommentDoc = NativeMethods.SCE_HJ_COMMENTDOC;
+        public const int CommentDoc = LexApi.SCE_HJ_COMMENTDOC;
 
         /// <summary>
         /// Number style index.
         /// </summary>
-        public const int Number = NativeMethods.SCE_HJ_NUMBER;
+        public const int Number = LexApi.SCE_HJ_NUMBER;
 
         /// <summary>
         /// Word style index.
         /// </summary>
-        public const int Word = NativeMethods.SCE_HJ_WORD;
+        public const int Word = LexApi.SCE_HJ_WORD;
 
         /// <summary>
         /// Keyword style index.
         /// </summary>
-        public const int Keyword = NativeMethods.SCE_HJ_KEYWORD;
+        public const int Keyword = LexApi.SCE_HJ_KEYWORD;
 
         /// <summary>
         /// Double-quoted string style index.
         /// </summary>
-        public const int DoubleString = NativeMethods.SCE_HJ_DOUBLESTRING;
+        public const int DoubleString = LexApi.SCE_HJ_DOUBLESTRING;
 
         /// <summary>
         /// Single-quoted string style index.
         /// </summary>
-        public const int SingleString = NativeMethods.SCE_HJ_SINGLESTRING;
+        public const int SingleString = LexApi.SCE_HJ_SINGLESTRING;
 
         /// <summary>
         /// Symbols style index.
         /// </summary>
-        public const int Symbols = NativeMethods.SCE_HJ_SYMBOLS;
+        public const int Symbols = LexApi.SCE_HJ_SYMBOLS;
 
         /// <summary>
         /// Unclosed string EOL style index.
         /// </summary>
-        public const int StringEol = NativeMethods.SCE_HJ_STRINGEOL;
+        public const int StringEol = LexApi.SCE_HJ_STRINGEOL;
 
         /// <summary>
         /// Regular expression style index.
         /// </summary>
-        public const int Regex = NativeMethods.SCE_HJ_REGEX;
+        public const int Regex = LexApi.SCE_HJ_REGEX;
     }
 
     #endregion JavaScript
@@ -1505,72 +1511,72 @@ public class Style
         /// <summary>
         /// Default (whitespace) style index.
         /// </summary>
-        public const int Default = NativeMethods.SCE_JSON_DEFAULT;
+        public const int Default = LexApi.SCE_JSON_DEFAULT;
 
         /// <summary>
         /// Number style index.
         /// </summary>
-        public const int Number = NativeMethods.SCE_JSON_NUMBER;
+        public const int Number = LexApi.SCE_JSON_NUMBER;
 
         /// <summary>
         /// String style index.
         /// </summary>
-        public const int String = NativeMethods.SCE_JSON_STRING;
+        public const int String = LexApi.SCE_JSON_STRING;
 
         /// <summary>
         /// Unclosed string EOL style index.
         /// </summary>
-        public const int StringEol = NativeMethods.SCE_JSON_STRINGEOL;
+        public const int StringEol = LexApi.SCE_JSON_STRINGEOL;
 
         /// <summary>
         /// Property name style index.
         /// </summary>
-        public const int PropertyName = NativeMethods.SCE_JSON_PROPERTYNAME;
+        public const int PropertyName = LexApi.SCE_JSON_PROPERTYNAME;
 
         /// <summary>
         /// Escape sequence style index.
         /// </summary>
-        public const int EscapeSequence = NativeMethods.SCE_JSON_ESCAPESEQUENCE;
+        public const int EscapeSequence = LexApi.SCE_JSON_ESCAPESEQUENCE;
 
         /// <summary>
         /// Line comment style index.
         /// </summary>
-        public const int LineComment = NativeMethods.SCE_JSON_LINECOMMENT;
+        public const int LineComment = LexApi.SCE_JSON_LINECOMMENT;
 
         /// <summary>
         /// Block comment style index.
         /// </summary>
-        public const int BlockComment = NativeMethods.SCE_JSON_BLOCKCOMMENT;
+        public const int BlockComment = LexApi.SCE_JSON_BLOCKCOMMENT;
 
         /// <summary>
         /// Operator style index.
         /// </summary>
-        public const int Operator = NativeMethods.SCE_JSON_OPERATOR;
+        public const int Operator = LexApi.SCE_JSON_OPERATOR;
 
         /// <summary>
         /// URI style index.
         /// </summary>
-        public const int Uri = NativeMethods.SCE_JSON_URI;
+        public const int Uri = LexApi.SCE_JSON_URI;
 
         /// <summary>
         /// Compact Internationalized Resource Identifier (IRI) style index.
         /// </summary>
-        public const int CompactIRI = NativeMethods.SCE_JSON_COMPACTIRI;
+        public const int CompactIRI = LexApi.SCE_JSON_COMPACTIRI;
 
         /// <summary>
         /// Keyword style index.
         /// </summary>
-        public const int Keyword = NativeMethods.SCE_JSON_KEYWORD;
+        public const int Keyword = LexApi.SCE_JSON_KEYWORD;
 
         /// <summary>
         /// Linked data (LD) keyword style index.
         /// </summary>
-        public const int LdKeyword = NativeMethods.SCE_JSON_LDKEYWORD;
+        public const int LdKeyword = LexApi.SCE_JSON_LDKEYWORD;
 
         /// <summary>
         /// Error style index.
         /// </summary>
-        public const int Error = NativeMethods.SCE_JSON_ERROR;
+        public const int Error = LexApi.SCE_JSON_ERROR;
     }
 
     #endregion Json
@@ -1585,62 +1591,62 @@ public class Style
         /// <summary>
         /// Default (whitespace) style index.
         /// </summary>
-        public const int Default = NativeMethods.SCE_LISP_DEFAULT;
+        public const int Default = LexApi.SCE_LISP_DEFAULT;
 
         /// <summary>
         /// Comment style index.
         /// </summary>
-        public const int Comment = NativeMethods.SCE_LISP_COMMENT;
+        public const int Comment = LexApi.SCE_LISP_COMMENT;
 
         /// <summary>
         /// Number style index.
         /// </summary>
-        public const int Number = NativeMethods.SCE_LISP_NUMBER;
+        public const int Number = LexApi.SCE_LISP_NUMBER;
 
         /// <summary>
         /// Functions and special operators (list 0) style index.
         /// </summary>
-        public const int Keyword = NativeMethods.SCE_LISP_KEYWORD;
+        public const int Keyword = LexApi.SCE_LISP_KEYWORD;
 
         /// <summary>
         /// Keywords (list 1) style index.
         /// </summary>
-        public const int KeywordKw = NativeMethods.SCE_LISP_KEYWORD_KW;
+        public const int KeywordKw = LexApi.SCE_LISP_KEYWORD_KW;
 
         /// <summary>
         /// Symbol style index.
         /// </summary>
-        public const int Symbol = NativeMethods.SCE_LISP_SYMBOL;
+        public const int Symbol = LexApi.SCE_LISP_SYMBOL;
 
         /// <summary>
         /// Double-quoted string style index.
         /// </summary>
-        public const int String = NativeMethods.SCE_LISP_STRING;
+        public const int String = LexApi.SCE_LISP_STRING;
 
         /// <summary>
         /// Unclosed string EOL style index.
         /// </summary>
-        public const int StringEol = NativeMethods.SCE_LISP_STRINGEOL;
+        public const int StringEol = LexApi.SCE_LISP_STRINGEOL;
 
         /// <summary>
         /// Identifier style index.
         /// </summary>
-        public const int Identifier = NativeMethods.SCE_LISP_IDENTIFIER;
+        public const int Identifier = LexApi.SCE_LISP_IDENTIFIER;
 
         /// <summary>
         /// Operator style index.
         /// </summary>
-        public const int Operator = NativeMethods.SCE_LISP_OPERATOR;
+        public const int Operator = LexApi.SCE_LISP_OPERATOR;
 
         /// <summary>
         /// Special character style index.
         /// </summary>
-        public const int Special = NativeMethods.SCE_LISP_SPECIAL;
+        public const int Special = LexApi.SCE_LISP_SPECIAL;
 
         /// <summary>
         /// Multi-line comment style index.
         /// </summary>
-        public const int MultiComment = NativeMethods.SCE_LISP_MULTI_COMMENT;
+        public const int MultiComment = LexApi.SCE_LISP_MULTI_COMMENT;
     }
 
     #endregion Lisp
@@ -1655,107 +1661,107 @@ public class Style
         /// <summary>
         /// Default style index.
         /// </summary>
-        public const int Default = NativeMethods.SCE_LUA_DEFAULT;
+        public const int Default = LexApi.SCE_LUA_DEFAULT;
 
         /// <summary>
         /// Comment style index.
         /// </summary>
-        public const int Comment = NativeMethods.SCE_LUA_COMMENT;
+        public const int Comment = LexApi.SCE_LUA_COMMENT;
 
         /// <summary>
         /// Line comment style index.
         /// </summary>
-        public const int CommentLine = NativeMethods.SCE_LUA_COMMENTLINE;
+        public const int CommentLine = LexApi.SCE_LUA_COMMENTLINE;
 
         /// <summary>
         /// Documentation comment style index.
         /// </summary>
-        public const int CommentDoc = NativeMethods.SCE_LUA_COMMENTDOC;
+        public const int CommentDoc = LexApi.SCE_LUA_COMMENTDOC;
 
         /// <summary>
         /// Number style index.
         /// </summary>
-        public const int Number = NativeMethods.SCE_LUA_NUMBER;
+        public const int Number = LexApi.SCE_LUA_NUMBER;
 
         /// <summary>
         /// Keyword list 1 (index 0) style index.
         /// </summary>
-        public const int Word = NativeMethods.SCE_LUA_WORD;
+        public const int Word = LexApi.SCE_LUA_WORD;
 
         /// <summary>
         /// Double-quoted string style index.
         /// </summary>
-        public const int String = NativeMethods.SCE_LUA_STRING;
+        public const int String = LexApi.SCE_LUA_STRING;
 
         /// <summary>
         /// Single-quoted string style index.
         /// </summary>
-        public const int Character = NativeMethods.SCE_LUA_CHARACTER;
+        public const int Character = LexApi.SCE_LUA_CHARACTER;
 
         /// <summary>
         /// Literal string style index.
         /// </summary>
-        public const int LiteralString = NativeMethods.SCE_LUA_LITERALSTRING;
+        public const int LiteralString = LexApi.SCE_LUA_LITERALSTRING;
 
         /// <summary>
         /// Preprocessor style index.
         /// </summary>
-        public const int Preprocessor = NativeMethods.SCE_LUA_PREPROCESSOR;
+        public const int Preprocessor = LexApi.SCE_LUA_PREPROCESSOR;
 
         /// <summary>
         /// Operator style index.
         /// </summary>
-        public const int Operator = NativeMethods.SCE_LUA_OPERATOR;
+        public const int Operator = LexApi.SCE_LUA_OPERATOR;
 
         /// <summary>
         /// Identifier style index.
         /// </summary>
-        public const int Identifier = NativeMethods.SCE_LUA_IDENTIFIER;
+        public const int Identifier = LexApi.SCE_LUA_IDENTIFIER;
 
         /// <summary>
         /// Unclosed string EOL style index.
         /// </summary>
-        public const int StringEol = NativeMethods.SCE_LUA_STRINGEOL;
+        public const int StringEol = LexApi.SCE_LUA_STRINGEOL;
 
         /// <summary>
         /// Keywords list 2 (index 1) style index.
         /// </summary>
-        public const int Word2 = NativeMethods.SCE_LUA_WORD2;
+        public const int Word2 = LexApi.SCE_LUA_WORD2;
 
         /// <summary>
         /// Keywords list 3 (index 2) style index.
         /// </summary>
-        public const int Word3 = NativeMethods.SCE_LUA_WORD3;
+        public const int Word3 = LexApi.SCE_LUA_WORD3;
 
         /// <summary>
         /// Keywords list 4 (index 3) style index.
         /// </summary>
-        public const int Word4 = NativeMethods.SCE_LUA_WORD4;
+        public const int Word4 = LexApi.SCE_LUA_WORD4;
 
         /// <summary>
         /// Keywords list 5 (index 4) style index.
         /// </summary>
-        public const int Word5 = NativeMethods.SCE_LUA_WORD5;
+        public const int Word5 = LexApi.SCE_LUA_WORD5;
 
         /// <summary>
         /// Keywords list 6 (index 5) style index.
         /// </summary>
-        public const int Word6 = NativeMethods.SCE_LUA_WORD6;
+        public const int Word6 = LexApi.SCE_LUA_WORD6;
 
         /// <summary>
         /// Keywords list 7 (index 6) style index.
         /// </summary>
-        public const int Word7 = NativeMethods.SCE_LUA_WORD7;
+        public const int Word7 = LexApi.SCE_LUA_WORD7;
 
         /// <summary>
         /// Keywords list 8 (index 7) style index.
         /// </summary>
-        public const int Word8 = NativeMethods.SCE_LUA_WORD8;
+        public const int Word8 = LexApi.SCE_LUA_WORD8;
 
         /// <summary>
         /// Label style index.
         /// </summary>
-        public const int Label = NativeMethods.SCE_LUA_LABEL;
+        public const int Label = LexApi.SCE_LUA_LABEL;
     }
 
     #endregion Lua
@@ -1770,47 +1776,47 @@ public class Style
         /// <summary>
         /// Default (whitespace) style index.
         /// </summary>
-        public const int Default = NativeMethods.SCE_MATLAB_DEFAULT;
+        public const int Default = LexApi.SCE_MATLAB_DEFAULT;
 
         /// <summary>
         /// Line comment style index.
         /// </summary>
-        public const int Comment = NativeMethods.SCE_MATLAB_COMMENT;
+        public const int Comment = LexApi.SCE_MATLAB_COMMENT;
 
         /// <summary>
         /// Number style index.
         /// </summary>
-        public const int Number = NativeMethods.SCE_MATLAB_NUMBER;
+        public const int Number = LexApi.SCE_MATLAB_NUMBER;
 
         /// <summary>
         /// String style index.
         /// </summary>
-        public const int String = NativeMethods.SCE_MATLAB_STRING;
+        public const int String = LexApi.SCE_MATLAB_STRING;
 
         /// <summary>
         /// Command style index.
         /// </summary>
-        public const int Command = NativeMethods.SCE_MATLAB_COMMAND;
+        public const int Command = LexApi.SCE_MATLAB_COMMAND;
 
         /// <summary>
         /// Keyword style index.
         /// </summary>
-        public const int Keyword = NativeMethods.SCE_MATLAB_KEYWORD;
+        public const int Keyword = LexApi.SCE_MATLAB_KEYWORD;
 
         /// <summary>
         /// Double quote string style index.
         /// </summary>
-        public const int DoubleQuoteString = NativeMethods.SCE_MATLAB_DOUBLEQUOTESTRING;
+        public const int DoubleQuoteString = LexApi.SCE_MATLAB_DOUBLEQUOTESTRING;
 
         /// <summary>
         /// Identifier style index.
         /// </summary>
-        public const int Identifier = NativeMethods.SCE_MATLAB_IDENTIFIER;
+        public const int Identifier = LexApi.SCE_MATLAB_IDENTIFIER;
 
         /// <summary>
         /// Operator style index.
         /// </summary>
-        public const int Operator = NativeMethods.SCE_MATLAB_OPERATOR;
+        public const int Operator = LexApi.SCE_MATLAB_OPERATOR;
     }
 
     #endregion Matlab
@@ -1825,77 +1831,77 @@ public class Style
         /// <summary>
         /// Default style index.
         /// </summary>
-        public const int Default = NativeMethods.SCE_PAS_DEFAULT;
+        public const int Default = LexApi.SCE_PAS_DEFAULT;
 
         /// <summary>
         /// Identifier style index.
         /// </summary>
-        public const int Identifier = NativeMethods.SCE_PAS_IDENTIFIER;
+        public const int Identifier = LexApi.SCE_PAS_IDENTIFIER;
 
         /// <summary>
         /// Comment style '{' index.
         /// </summary>
-        public const int Comment = NativeMethods.SCE_PAS_COMMENT;
+        public const int Comment = LexApi.SCE_PAS_COMMENT;
 
         /// <summary>
         /// Comment style 2 "(*" index.
         /// </summary>
-        public const int Comment2 = NativeMethods.SCE_PAS_COMMENT2;
+        public const int Comment2 = LexApi.SCE_PAS_COMMENT2;
 
         /// <summary>
         /// Comment line style "//" index.
         /// </summary>
-        public const int CommentLine = NativeMethods.SCE_PAS_COMMENTLINE;
+        public const int CommentLine = LexApi.SCE_PAS_COMMENTLINE;
 
         /// <summary>
         /// Preprocessor style "{$" index.
         /// </summary>
-        public const int Preprocessor = NativeMethods.SCE_PAS_PREPROCESSOR;
+        public const int Preprocessor = LexApi.SCE_PAS_PREPROCESSOR;
 
         /// <summary>
         /// Preprocessor style 2 "(*$" index.
         /// </summary>
-        public const int Preprocessor2 = NativeMethods.SCE_PAS_PREPROCESSOR2;
+        public const int Preprocessor2 = LexApi.SCE_PAS_PREPROCESSOR2;
 
         /// <summary>
         /// Number style index.
         /// </summary>
-        public const int Number = NativeMethods.SCE_PAS_NUMBER;
+        public const int Number = LexApi.SCE_PAS_NUMBER;
 
         /// <summary>
         /// Hexadecimal number style index.
         /// </summary>
-        public const int HexNumber = NativeMethods.SCE_PAS_HEXNUMBER;
+        public const int HexNumber = LexApi.SCE_PAS_HEXNUMBER;
 
         /// <summary>
         /// Word (keyword set 0) style index.
         /// </summary>
-        public const int Word = NativeMethods.SCE_PAS_WORD;
+        public const int Word = LexApi.SCE_PAS_WORD;
 
         /// <summary>
         /// Double-quoted string style index.
         /// </summary>
-        public const int String = NativeMethods.SCE_PAS_STRING;
+        public const int String = LexApi.SCE_PAS_STRING;
 
         /// <summary>
         /// Unclosed string EOL style index.
         /// </summary>
-        public const int StringEol = NativeMethods.SCE_PAS_STRINGEOL;
+        public const int StringEol = LexApi.SCE_PAS_STRINGEOL;
 
         /// <summary>
         /// Single-quoted string style index.
         /// </summary>
-        public const int Character = NativeMethods.SCE_PAS_CHARACTER;
+        public const int Character = LexApi.SCE_PAS_CHARACTER;
 
         /// <summary>
         /// Operator style index.
         /// </summary>
-        public const int Operator = NativeMethods.SCE_PAS_OPERATOR;
+        public const int Operator = LexApi.SCE_PAS_OPERATOR;
 
         /// <summary>
         /// Assembly style index.
         /// </summary>
-        public const int Asm = NativeMethods.SCE_PAS_ASM;
+        public const int Asm = LexApi.SCE_PAS_ASM;
     }
 
     #endregion Pascal
@@ -1910,224 +1916,224 @@ public class Style
         /// <summary>
         /// Default (whitespace) style index.
         /// </summary>
-        public const int Default = NativeMethods.SCE_PL_DEFAULT;
+        public const int Default = LexApi.SCE_PL_DEFAULT;
 
         /// <summary>
         /// Error style index.
         /// </summary>
-        public const int Error = NativeMethods.SCE_PL_ERROR;
+        public const int Error = LexApi.SCE_PL_ERROR;
 
         /// <summary>
         /// Line comment style index.
         /// </summary>
-        public const int CommentLine = NativeMethods.SCE_PL_COMMENTLINE;
+        public const int CommentLine = LexApi.SCE_PL_COMMENTLINE;
 
         /// <summary>
         /// POD style index.
         /// </summary>
-        public const int Pod = NativeMethods.SCE_PL_POD;
+        public const int Pod = LexApi.SCE_PL_POD;
 
         /// <summary>
         /// Number style index.
         /// </summary>
-        public const int Number = NativeMethods.SCE_PL_NUMBER;
+        public const int Number = LexApi.SCE_PL_NUMBER;
 
         /// <summary>
         /// Keyword style index.
         /// </summary>
-        public const int Word = NativeMethods.SCE_PL_WORD;
+        public const int Word = LexApi.SCE_PL_WORD;
 
         /// <summary>
         /// Double-quoted string style index.
         /// </summary>
-        public const int String = NativeMethods.SCE_PL_STRING;
+        public const int String = LexApi.SCE_PL_STRING;
 
         /// <summary>
         /// Single-quoted string style index.
         /// </summary>
-        public const int Character = NativeMethods.SCE_PL_CHARACTER;
+        public const int Character = LexApi.SCE_PL_CHARACTER;
 
         /// <summary>
         /// Punctuation style index.
         /// </summary>
-        public const int Punctuation = NativeMethods.SCE_PL_PUNCTUATION;
+        public const int Punctuation = LexApi.SCE_PL_PUNCTUATION;
 
         /// <summary>
         /// Preprocessor style index.
         /// </summary>
-        public const int Preprocessor = NativeMethods.SCE_PL_PREPROCESSOR;
+        public const int Preprocessor = LexApi.SCE_PL_PREPROCESSOR;
 
         /// <summary>
         /// Operator style index.
         /// </summary>
-        public const int Operator = NativeMethods.SCE_PL_OPERATOR;
+        public const int Operator = LexApi.SCE_PL_OPERATOR;
 
         /// <summary>
         /// Identifier style index.
         /// </summary>
-        public const int Identifier = NativeMethods.SCE_PL_IDENTIFIER;
+        public const int Identifier = LexApi.SCE_PL_IDENTIFIER;
 
         /// <summary>
         /// Scalar style index.
         /// </summary>
-        public const int Scalar = NativeMethods.SCE_PL_SCALAR;
+        public const int Scalar = LexApi.SCE_PL_SCALAR;
 
         /// <summary>
         /// Array style index.
         /// </summary>
-        public const int Array = NativeMethods.SCE_PL_ARRAY;
+        public const int Array = LexApi.SCE_PL_ARRAY;
 
         /// <summary>
         /// Hash style index.
         /// </summary>
-        public const int Hash = NativeMethods.SCE_PL_HASH;
+        public const int Hash = LexApi.SCE_PL_HASH;
 
         /// <summary>
         /// Symbol table style index.
         /// </summary>
-        public const int SymbolTable = NativeMethods.SCE_PL_SYMBOLTABLE;
+        public const int SymbolTable = LexApi.SCE_PL_SYMBOLTABLE;
 
         /// <summary>
         /// Variable indexer index.
         /// </summary>
-        public const int VariableIndexer = NativeMethods.SCE_PL_VARIABLE_INDEXER;
+        public const int VariableIndexer = LexApi.SCE_PL_VARIABLE_INDEXER;
 
         /// <summary>
         /// Regular expression style index.
         /// </summary>
-        public const int Regex = NativeMethods.SCE_PL_REGEX;
+        public const int Regex = LexApi.SCE_PL_REGEX;
 
         /// <summary>
         /// RegSubst style index.
         /// </summary>
-        public const int RegSubst = NativeMethods.SCE_PL_REGSUBST;
+        public const int RegSubst = LexApi.SCE_PL_REGSUBST;
 
-        // public const int LongQuote = NativeMethods.SCE_PL_LONGQUOTE;
+        // public const int LongQuote = LexApi.SCE_PL_LONGQUOTE;
 
         /// <summary>
         /// Backtick (grave accent, backquote) style index.
         /// </summary>
-        public const int BackTicks = NativeMethods.SCE_PL_BACKTICKS;
+        public const int BackTicks = LexApi.SCE_PL_BACKTICKS;
 
         /// <summary>
         /// Data section style index.
         /// </summary>
-        public const int DataSection = NativeMethods.SCE_PL_DATASECTION;
+        public const int DataSection = LexApi.SCE_PL_DATASECTION;
 
         /// <summary>
         /// HereDoc delimiter style index.
         /// </summary>
-        public const int HereDelim = NativeMethods.SCE_PL_HERE_DELIM;
+        public const int HereDelim = LexApi.SCE_PL_HERE_DELIM;
 
         /// <summary>
         /// HereDoc single-quote style index.
         /// </summary>
-        public const int HereQ = NativeMethods.SCE_PL_HERE_Q;
+        public const int HereQ = LexApi.SCE_PL_HERE_Q;
 
         /// <summary>
         /// HereDoc double-quote style index.
         /// </summary>
-        public const int HereQq = NativeMethods.SCE_PL_HERE_QQ;
+        public const int HereQq = LexApi.SCE_PL_HERE_QQ;
 
         /// <summary>
         /// HereDoc backtick style index.
         /// </summary>
-        public const int HereQx = NativeMethods.SCE_PL_HERE_QX;
+        public const int HereQx = LexApi.SCE_PL_HERE_QX;
 
         /// <summary>
         /// Q quote style index.
         /// </summary>
-        public const int StringQ = NativeMethods.SCE_PL_STRING_Q;
+        public const int StringQ = LexApi.SCE_PL_STRING_Q;
 
         /// <summary>
         /// QQ quote style index.
         /// </summary>
-        public const int StringQq = NativeMethods.SCE_PL_STRING_QQ;
+        public const int StringQq = LexApi.SCE_PL_STRING_QQ;
 
         /// <summary>
         /// QZ quote style index.
         /// </summary>
-        public const int StringQx = NativeMethods.SCE_PL_STRING_QX;
+        public const int StringQx = LexApi.SCE_PL_STRING_QX;
 
         /// <summary>
         /// QR quote style index.
         /// </summary>
-        public const int StringQr = NativeMethods.SCE_PL_STRING_QR;
+        public const int StringQr = LexApi.SCE_PL_STRING_QR;
 
         /// <summary>
         /// QW quote style index.
         /// </summary>
-        public const int StringQw = NativeMethods.SCE_PL_STRING_QW;
+        public const int StringQw = LexApi.SCE_PL_STRING_QW;
 
         /// <summary>
         /// POD verbatim style index.
         /// </summary>
-        public const int PodVerb = NativeMethods.SCE_PL_POD_VERB;
+        public const int PodVerb = LexApi.SCE_PL_POD_VERB;
 
         /// <summary>
         /// Subroutine prototype style index.
         /// </summary>
-        public const int SubPrototype = NativeMethods.SCE_PL_SUB_PROTOTYPE;
+        public const int SubPrototype = LexApi.SCE_PL_SUB_PROTOTYPE;
 
         /// <summary>
         /// Format identifier style index.
         /// </summary>
-        public const int FormatIdent = NativeMethods.SCE_PL_FORMAT_IDENT;
+        public const int FormatIdent = LexApi.SCE_PL_FORMAT_IDENT;
 
         /// <summary>
         /// Format style index.
         /// </summary>
-        public const int Format = NativeMethods.SCE_PL_FORMAT;
+        public const int Format = LexApi.SCE_PL_FORMAT;
 
         /// <summary>
         /// String variable style index.
         /// </summary>
-        public const int StringVar = NativeMethods.SCE_PL_STRING_VAR;
+        public const int StringVar = LexApi.SCE_PL_STRING_VAR;
 
         /// <summary>
         /// XLAT style index.
         /// </summary>
-        public const int XLat = NativeMethods.SCE_PL_XLAT;
+        public const int XLat = LexApi.SCE_PL_XLAT;
 
         /// <summary>
         /// Regular expression variable style index.
         /// </summary>
-        public const int RegexVar = NativeMethods.SCE_PL_REGEX_VAR;
+        public const int RegexVar = LexApi.SCE_PL_REGEX_VAR;
 
         /// <summary>
         /// RegSubst variable style index.
         /// </summary>
-        public const int RegSubstVar = NativeMethods.SCE_PL_REGSUBST_VAR;
+        public const int RegSubstVar = LexApi.SCE_PL_REGSUBST_VAR;
 
         /// <summary>
         /// Backticks variable style index.
         /// </summary>
-        public const int BackticksVar = NativeMethods.SCE_PL_BACKTICKS_VAR;
+        public const int BackticksVar = LexApi.SCE_PL_BACKTICKS_VAR;
 
         /// <summary>
         /// HereDoc QQ quote variable style index.
         /// </summary>
-        public const int HereQqVar = NativeMethods.SCE_PL_HERE_QQ_VAR;
+        public const int HereQqVar = LexApi.SCE_PL_HERE_QQ_VAR;
 
         /// <summary>
         /// HereDoc QX quote variable style index.
         /// </summary>
-        public const int HereQxVar = NativeMethods.SCE_PL_HERE_QX_VAR;
+        public const int HereQxVar = LexApi.SCE_PL_HERE_QX_VAR;
 
         /// <summary>
         /// QQ quote variable style index.
         /// </summary>
-        public const int StringQqVar = NativeMethods.SCE_PL_STRING_QQ_VAR;
+        public const int StringQqVar = LexApi.SCE_PL_STRING_QQ_VAR;
 
         /// <summary>
         /// QX quote variable style index.
         /// </summary>
-        public const int StringQxVar = NativeMethods.SCE_PL_STRING_QX_VAR;
+        public const int StringQxVar = LexApi.SCE_PL_STRING_QX_VAR;
 
         /// <summary>
         /// QR quote variable style index.
         /// </summary>
-        public const int StringQrVar = NativeMethods.SCE_PL_STRING_QR_VAR;
+        public const int StringQrVar = LexApi.SCE_PL_STRING_QR_VAR;
     }
 
     #endregion Perl
@@ -2142,57 +2148,57 @@ public class Style
         /// <summary>
         /// Complex Variable style index.
         /// </summary>
-        public const int ComplexVariable = NativeMethods.SCE_HPHP_COMPLEX_VARIABLE;
+        public const int ComplexVariable = LexApi.SCE_HPHP_COMPLEX_VARIABLE;
 
         /// <summary>
         /// Default (whitespace) style index.
         /// </summary>
-        public const int Default = NativeMethods.SCE_HPHP_DEFAULT;
+        public const int Default = LexApi.SCE_HPHP_DEFAULT;
 
         /// <summary>
         /// Double-quoted string style index.
         /// </summary>
-        public const int HString = NativeMethods.SCE_HPHP_HSTRING;
+        public const int HString = LexApi.SCE_HPHP_HSTRING;
 
         /// <summary>
         /// Single-quoted string style index.
         /// </summary>
-        public const int SimpleString = NativeMethods.SCE_HPHP_SIMPLESTRING;
+        public const int SimpleString = LexApi.SCE_HPHP_SIMPLESTRING;
 
         /// <summary>
         /// Keyword style index.
         /// </summary>
-        public const int Word = NativeMethods.SCE_HPHP_WORD;
+        public const int Word = LexApi.SCE_HPHP_WORD;
 
         /// <summary>
         /// Number style index.
         /// </summary>
-        public const int Number = NativeMethods.SCE_HPHP_NUMBER;
+        public const int Number = LexApi.SCE_HPHP_NUMBER;
 
         /// <summary>
         /// Variable style index.
         /// </summary>
-        public const int Variable = NativeMethods.SCE_HPHP_VARIABLE;
+        public const int Variable = LexApi.SCE_HPHP_VARIABLE;
 
         /// <summary>
         /// Comment style index.
         /// </summary>
-        public const int Comment = NativeMethods.SCE_HPHP_COMMENT;
+        public const int Comment = LexApi.SCE_HPHP_COMMENT;
 
         /// <summary>
         /// Line comment style index.
         /// </summary>
-        public const int CommentLine = NativeMethods.SCE_HPHP_COMMENTLINE;
+        public const int CommentLine = LexApi.SCE_HPHP_COMMENTLINE;
 
         /// <summary>
         /// Double-quoted string variable style index.
         /// </summary>
-        public const int HStringVariable = NativeMethods.SCE_HPHP_HSTRING_VARIABLE;
+        public const int HStringVariable = LexApi.SCE_HPHP_HSTRING_VARIABLE;
 
         /// <summary>
         /// Operator style index.
         /// </summary>
-        public const int Operator = NativeMethods.SCE_HPHP_OPERATOR;
+        public const int Operator = LexApi.SCE_HPHP_OPERATOR;
     }
 
     #endregion PhpScript
@@ -2207,87 +2213,87 @@ public class Style
         /// <summary>
         /// Default (whitespace) style index.
         /// </summary>
-        public const int Default = NativeMethods.SCE_POWERSHELL_DEFAULT;
+        public const int Default = LexApi.SCE_POWERSHELL_DEFAULT;
 
         /// <summary>
         /// Line comment style index
         /// </summary>
-        public const int Comment = NativeMethods.SCE_POWERSHELL_COMMENT;
+        public const int Comment = LexApi.SCE_POWERSHELL_COMMENT;
 
         /// <summary>
         /// String style index.
         /// </summary>
-        public const int String = NativeMethods.SCE_POWERSHELL_STRING;
+        public const int String = LexApi.SCE_POWERSHELL_STRING;
 
         /// <summary>
         /// Character style index.
         /// </summary>
-        public const int Character = NativeMethods.SCE_POWERSHELL_CHARACTER;
+        public const int Character = LexApi.SCE_POWERSHELL_CHARACTER;
 
         /// <summary>
         /// Number style index.
         /// </summary>
-        public const int Number = NativeMethods.SCE_POWERSHELL_NUMBER;
+        public const int Number = LexApi.SCE_POWERSHELL_NUMBER;
 
         /// <summary>
         /// Variable style index.
         /// </summary>
-        public const int Variable = NativeMethods.SCE_POWERSHELL_VARIABLE;
+        public const int Variable = LexApi.SCE_POWERSHELL_VARIABLE;
 
         /// <summary>
         /// Operator style index.
         /// </summary>
-        public const int Operator = NativeMethods.SCE_POWERSHELL_OPERATOR;
+        public const int Operator = LexApi.SCE_POWERSHELL_OPERATOR;
 
         /// <summary>
         /// Identifier style index.
         /// </summary>
-        public const int Identifier = NativeMethods.SCE_POWERSHELL_IDENTIFIER;
+        public const int Identifier = LexApi.SCE_POWERSHELL_IDENTIFIER;
 
         /// <summary>
         /// Keyword (set 0) style index.
         /// </summary>
-        public const int Keyword = NativeMethods.SCE_POWERSHELL_KEYWORD;
+        public const int Keyword = LexApi.SCE_POWERSHELL_KEYWORD;
 
         /// <summary>
         /// Cmdlet (set 1) style index.
         /// </summary>
-        public const int Cmdlet = NativeMethods.SCE_POWERSHELL_CMDLET;
+        public const int Cmdlet = LexApi.SCE_POWERSHELL_CMDLET;
 
         /// <summary>
         /// Alias (set 2) style index.
         /// </summary>
-        public const int Alias = NativeMethods.SCE_POWERSHELL_ALIAS;
+        public const int Alias = LexApi.SCE_POWERSHELL_ALIAS;
 
         /// <summary>
         /// Function (set 3) style index.
         /// </summary>
-        public const int Function = NativeMethods.SCE_POWERSHELL_FUNCTION;
+        public const int Function = LexApi.SCE_POWERSHELL_FUNCTION;
 
         /// <summary>
         /// User word (set 4) style index.
         /// </summary>
-        public const int User1 = NativeMethods.SCE_POWERSHELL_USER1;
+        public const int User1 = LexApi.SCE_POWERSHELL_USER1;
 
         /// <summary>
         /// Multi-line comment style index.
         /// </summary>
-        public const int CommentStream = NativeMethods.SCE_POWERSHELL_COMMENTSTREAM;
+        public const int CommentStream = LexApi.SCE_POWERSHELL_COMMENTSTREAM;
 
         /// <summary>
         /// Here string style index.
         /// </summary>
-        public const int HereString = NativeMethods.SCE_POWERSHELL_HERE_STRING;
+        public const int HereString = LexApi.SCE_POWERSHELL_HERE_STRING;
 
         /// <summary>
         /// Here character style index.
         /// </summary>
-        public const int HereCharacter = NativeMethods.SCE_POWERSHELL_HERE_CHARACTER;
+        public const int HereCharacter = LexApi.SCE_POWERSHELL_HERE_CHARACTER;
 
         /// <summary>
         /// Comment based help keyword style index.
         /// </summary>
-        public const int CommentDocKeyword = NativeMethods.SCE_POWERSHELL_COMMENTDOCKEYWORD;
+        public const int CommentDocKeyword = LexApi.SCE_POWERSHELL_COMMENTDOCKEYWORD;
     }
 
     #endregion PowerShell
@@ -2302,32 +2308,32 @@ public class Style
         /// <summary>
         /// Default (whitespace) style index.
         /// </summary>
-        public const int Default = NativeMethods.SCE_PROPS_DEFAULT;
+        public const int Default = LexApi.SCE_PROPS_DEFAULT;
 
         /// <summary>
         /// Comment style index.
         /// </summary>
-        public const int Comment = NativeMethods.SCE_PROPS_COMMENT;
+        public const int Comment = LexApi.SCE_PROPS_COMMENT;
 
         /// <summary>
         /// Section style index.
         /// </summary>
-        public const int Section = NativeMethods.SCE_PROPS_SECTION;
+        public const int Section = LexApi.SCE_PROPS_SECTION;
 
         /// <summary>
         /// Assignment operator index.
         /// </summary>
-        public const int Assignment = NativeMethods.SCE_PROPS_ASSIGNMENT;
+        public const int Assignment = LexApi.SCE_PROPS_ASSIGNMENT;
 
         /// <summary>
         /// Default (registry-only) value index.
         /// </summary>
-        public const int DefVal = NativeMethods.SCE_PROPS_DEFVAL;
+        public const int DefVal = LexApi.SCE_PROPS_DEFVAL;
 
         /// <summary>
         /// Key style index.
         /// </summary>
-        public const int Key = NativeMethods.SCE_PROPS_KEY;
+        public const int Key = LexApi.SCE_PROPS_KEY;
     }
 
     #endregion Properties
@@ -2342,117 +2348,117 @@ public class Style
         /// <summary>
         /// Default (whitespace) style index.
         /// </summary>
-        public const int Default = NativeMethods.SCE_B_DEFAULT;
+        public const int Default = LexApi.SCE_B_DEFAULT;
 
         /// <summary>
         /// Comment style index.
         /// </summary>
-        public const int Comment = NativeMethods.SCE_B_COMMENT;
+        public const int Comment = LexApi.SCE_B_COMMENT;
 
         /// <summary>
         /// Number style index.
         /// </summary>
-        public const int Number = NativeMethods.SCE_B_NUMBER;
+        public const int Number = LexApi.SCE_B_NUMBER;
 
         /// <summary>
         /// Keyword style index.
         /// </summary>
-        public const int Keyword = NativeMethods.SCE_B_KEYWORD;
+        public const int Keyword = LexApi.SCE_B_KEYWORD;
 
         /// <summary>
         /// String style index.
         /// </summary>
-        public const int String = NativeMethods.SCE_B_STRING;
+        public const int String = LexApi.SCE_B_STRING;
 
         /// <summary>
         /// Preprocessor style index.
         /// </summary>
-        public const int Preprocessor = NativeMethods.SCE_B_PREPROCESSOR;
+        public const int Preprocessor = LexApi.SCE_B_PREPROCESSOR;
 
         /// <summary>
         /// Operator style index.
         /// </summary>
-        public const int Operator = NativeMethods.SCE_B_OPERATOR;
+        public const int Operator = LexApi.SCE_B_OPERATOR;
 
         /// <summary>
         /// Identifier style index.
         /// </summary>
-        public const int Identifier = NativeMethods.SCE_B_IDENTIFIER;
+        public const int Identifier = LexApi.SCE_B_IDENTIFIER;
 
         /// <summary>
         /// Date style index.
         /// </summary>
-        public const int Date = NativeMethods.SCE_B_DATE;
+        public const int Date = LexApi.SCE_B_DATE;
 
         /// <summary>
         /// Unclosed string EOL style index.
         /// </summary>
-        public const int StringEol = NativeMethods.SCE_B_STRINGEOL;
+        public const int StringEol = LexApi.SCE_B_STRINGEOL;
 
         /// <summary>
         /// Keyword list 2 (index 1) style index.
         /// </summary>
-        public const int Keyword2 = NativeMethods.SCE_B_KEYWORD2;
+        public const int Keyword2 = LexApi.SCE_B_KEYWORD2;
 
         /// <summary>
         /// Keyword list 3 (index 2) style index.
         /// </summary>
-        public const int Keyword3 = NativeMethods.SCE_B_KEYWORD3;
+        public const int Keyword3 = LexApi.SCE_B_KEYWORD3;
 
         /// <summary>
         /// Keyword list 4 (index 3) style index.
         /// </summary>
-        public const int Keyword4 = NativeMethods.SCE_B_KEYWORD4;
+        public const int Keyword4 = LexApi.SCE_B_KEYWORD4;
 
         /// <summary>
         /// Constant style index.
         /// </summary>
-        public const int Constant = NativeMethods.SCE_B_CONSTANT;
+        public const int Constant = LexApi.SCE_B_CONSTANT;
 
         /// <summary>
         /// Inline assembler style index.
         /// </summary>
-        public const int Asm = NativeMethods.SCE_B_ASM;
+        public const int Asm = LexApi.SCE_B_ASM;
 
         /// <summary>
         /// Label style index.
         /// </summary>
-        public const int Label = NativeMethods.SCE_B_LABEL;
+        public const int Label = LexApi.SCE_B_LABEL;
 
         /// <summary>
         /// Error style index.
         /// </summary>
-        public const int Error = NativeMethods.SCE_B_ERROR;
+        public const int Error = LexApi.SCE_B_ERROR;
 
         /// <summary>
         /// Hexadecimal number style index.
         /// </summary>
-        public const int HexNumber = NativeMethods.SCE_B_HEXNUMBER;
+        public const int HexNumber = LexApi.SCE_B_HEXNUMBER;
 
         /// <summary>
         /// Binary number style index.
         /// </summary>
-        public const int BinNumber = NativeMethods.SCE_B_BINNUMBER;
+        public const int BinNumber = LexApi.SCE_B_BINNUMBER;
 
         /// <summary>
         /// Block comment style index.
         /// </summary>
-        public const int CommentBlock = NativeMethods.SCE_B_COMMENTBLOCK;
+        public const int CommentBlock = LexApi.SCE_B_COMMENTBLOCK;
 
         /// <summary>
         /// Documentation line style index.
         /// </summary>
-        public const int DocLine = NativeMethods.SCE_B_DOCLINE;
+        public const int DocLine = LexApi.SCE_B_DOCLINE;
 
         /// <summary>
         /// Documentation block style index.
         /// </summary>
-        public const int DocBlock = NativeMethods.SCE_B_DOCBLOCK;
+        public const int DocBlock = LexApi.SCE_B_DOCBLOCK;
 
         /// <summary>
         /// Documentation keyword style index.
         /// </summary>
-        public const int DocKeyword = NativeMethods.SCE_B_DOCKEYWORD;
+        public const int DocKeyword = LexApi.SCE_B_DOCKEYWORD;
     }
 
     #endregion PureBasic
@@ -2467,82 +2473,82 @@ public class Style
         /// <summary>
         /// Default (whitespace) style index.
         /// </summary>
-        public const int Default = NativeMethods.SCE_P_DEFAULT;
+        public const int Default = LexApi.SCE_P_DEFAULT;
 
         /// <summary>
         /// Line comment style index.
         /// </summary>
-        public const int CommentLine = NativeMethods.SCE_P_COMMENTLINE;
+        public const int CommentLine = LexApi.SCE_P_COMMENTLINE;
 
         /// <summary>
         /// Number style index.
         /// </summary>
-        public const int Number = NativeMethods.SCE_P_NUMBER;
+        public const int Number = LexApi.SCE_P_NUMBER;
 
         /// <summary>
         /// String style index.
         /// </summary>
-        public const int String = NativeMethods.SCE_P_STRING;
+        public const int String = LexApi.SCE_P_STRING;
 
         /// <summary>
         /// Single-quote style index.
         /// </summary>
-        public const int Character = NativeMethods.SCE_P_CHARACTER;
+        public const int Character = LexApi.SCE_P_CHARACTER;
 
         /// <summary>
         /// Keyword style index.
         /// </summary>
-        public const int Word = NativeMethods.SCE_P_WORD;
+        public const int Word = LexApi.SCE_P_WORD;
 
         /// <summary>
         /// Triple single-quote style index.
         /// </summary>
-        public const int Triple = NativeMethods.SCE_P_TRIPLE;
+        public const int Triple = LexApi.SCE_P_TRIPLE;
 
         /// <summary>
         /// Triple double-quote style index.
         /// </summary>
-        public const int TripleDouble = NativeMethods.SCE_P_TRIPLEDOUBLE;
+        public const int TripleDouble = LexApi.SCE_P_TRIPLEDOUBLE;
 
         /// <summary>
         /// Class name style index.
         /// </summary>
-        public const int ClassName = NativeMethods.SCE_P_CLASSNAME;
+        public const int ClassName = LexApi.SCE_P_CLASSNAME;
 
         /// <summary>
         /// Function or method name style index.
         /// </summary>
-        public const int DefName = NativeMethods.SCE_P_DEFNAME;
+        public const int DefName = LexApi.SCE_P_DEFNAME;
 
         /// <summary>
         /// Operator style index.
         /// </summary>
-        public const int Operator = NativeMethods.SCE_P_OPERATOR;
+        public const int Operator = LexApi.SCE_P_OPERATOR;
 
         /// <summary>
         /// Identifier style index.
         /// </summary>
-        public const int Identifier = NativeMethods.SCE_P_IDENTIFIER;
+        public const int Identifier = LexApi.SCE_P_IDENTIFIER;
 
         /// <summary>
         /// Block comment style index.
         /// </summary>
-        public const int CommentBlock = NativeMethods.SCE_P_COMMENTBLOCK;
+        public const int CommentBlock = LexApi.SCE_P_COMMENTBLOCK;
 
         /// <summary>
         /// Unclosed string EOL style index.
         /// </summary>
-        public const int StringEol = NativeMethods.SCE_P_STRINGEOL;
+        public const int StringEol = LexApi.SCE_P_STRINGEOL;
 
         /// <summary>
         /// Keyword style 2 index.
         /// </summary>
-        public const int Word2 = NativeMethods.SCE_P_WORD2;
+        public const int Word2 = LexApi.SCE_P_WORD2;
 
         /// <summary>
         /// Decorator style index.
         /// </summary>
-        public const int Decorator = NativeMethods.SCE_P_DECORATOR;
+        public const int Decorator = LexApi.SCE_P_DECORATOR;
     }
 
     #endregion Python
@@ -2557,169 +2563,169 @@ public class Style
         /// <summary>
         /// Default (whitespace) style index.
         /// </summary>
-        public const int Default = NativeMethods.SCE_RB_DEFAULT;
+        public const int Default = LexApi.SCE_RB_DEFAULT;
 
         /// <summary>
         /// Error style index.
         /// </summary>
-        public const int Error = NativeMethods.SCE_RB_ERROR;
+        public const int Error = LexApi.SCE_RB_ERROR;
 
         /// <summary>
         /// Line comment style index.
         /// </summary>
-        public const int CommentLine = NativeMethods.SCE_RB_COMMENTLINE;
+        public const int CommentLine = LexApi.SCE_RB_COMMENTLINE;
 
         /// <summary>
         /// POD style index.
         /// </summary>
-        public const int Pod = NativeMethods.SCE_RB_POD;
+        public const int Pod = LexApi.SCE_RB_POD;
 
         /// <summary>
         /// Number style index.
         /// </summary>
-        public const int Number = NativeMethods.SCE_RB_NUMBER;
+        public const int Number = LexApi.SCE_RB_NUMBER;
 
         /// <summary>
         /// Keyword style index.
         /// </summary>
-        public const int Word = NativeMethods.SCE_RB_WORD;
+        public const int Word = LexApi.SCE_RB_WORD;
 
         /// <summary>
         /// Double-quoted string style index.
         /// </summary>
-        public const int String = NativeMethods.SCE_RB_STRING;
+        public const int String = LexApi.SCE_RB_STRING;
 
         /// <summary>
         /// Single-quoted string style index.
         /// </summary>
-        public const int Character = NativeMethods.SCE_RB_CHARACTER;
+        public const int Character = LexApi.SCE_RB_CHARACTER;
 
         /// <summary>
         /// Class name style index.
         /// </summary>
-        public const int ClassName = NativeMethods.SCE_RB_CLASSNAME;
+        public const int ClassName = LexApi.SCE_RB_CLASSNAME;
 
         /// <summary>
         /// Definition style index.
         /// </summary>
-        public const int DefName = NativeMethods.SCE_RB_DEFNAME;
+        public const int DefName = LexApi.SCE_RB_DEFNAME;
 
         /// <summary>
         /// Operator style index.
         /// </summary>
-        public const int Operator = NativeMethods.SCE_RB_OPERATOR;
+        public const int Operator = LexApi.SCE_RB_OPERATOR;
 
         /// <summary>
         /// Identifier style index.
         /// </summary>
-        public const int Identifier = NativeMethods.SCE_RB_IDENTIFIER;
+        public const int Identifier = LexApi.SCE_RB_IDENTIFIER;
 
         /// <summary>
         /// Regular expression style index.
         /// </summary>
-        public const int Regex = NativeMethods.SCE_RB_REGEX;
+        public const int Regex = LexApi.SCE_RB_REGEX;
 
         /// <summary>
         /// Global style index.
         /// </summary>
-        public const int Global = NativeMethods.SCE_RB_GLOBAL;
+        public const int Global = LexApi.SCE_RB_GLOBAL;
 
         /// <summary>
         /// Symbol style index.
         /// </summary>
-        public const int Symbol = NativeMethods.SCE_RB_SYMBOL;
+        public const int Symbol = LexApi.SCE_RB_SYMBOL;
 
         /// <summary>
         /// Module name style index.
         /// </summary>
-        public const int ModuleName = NativeMethods.SCE_RB_MODULE_NAME;
+        public const int ModuleName = LexApi.SCE_RB_MODULE_NAME;
 
         /// <summary>
         /// Instance variable style index.
         /// </summary>
-        public const int InstanceVar = NativeMethods.SCE_RB_INSTANCE_VAR;
+        public const int InstanceVar = LexApi.SCE_RB_INSTANCE_VAR;
 
         /// <summary>
         /// Class variable style index.
         /// </summary>
-        public const int ClassVar = NativeMethods.SCE_RB_CLASS_VAR;
+        public const int ClassVar = LexApi.SCE_RB_CLASS_VAR;
 
         /// <summary>
         /// Backticks style index.
         /// </summary>
-        public const int BackTicks = NativeMethods.SCE_RB_BACKTICKS;
+        public const int BackTicks = LexApi.SCE_RB_BACKTICKS;
 
         /// <summary>
         /// Data section style index.
         /// </summary>
-        public const int DataSection = NativeMethods.SCE_RB_DATASECTION;
+        public const int DataSection = LexApi.SCE_RB_DATASECTION;
 
         /// <summary>
         /// HereDoc delimiter style index.
         /// </summary>
-        public const int HereDelim = NativeMethods.SCE_RB_HERE_DELIM;
+        public const int HereDelim = LexApi.SCE_RB_HERE_DELIM;
 
         /// <summary>
         /// HereDoc Q quote style index.
         /// </summary>
-        public const int HereQ = NativeMethods.SCE_RB_HERE_Q;
+        public const int HereQ = LexApi.SCE_RB_HERE_Q;
 
         /// <summary>
         /// HereDoc QQ quote style index.
         /// </summary>
-        public const int HereQq = NativeMethods.SCE_RB_HERE_QQ;
+        public const int HereQq = LexApi.SCE_RB_HERE_QQ;
 
         /// <summary>
         /// HereDoc QX quote style index.
         /// </summary>
-        public const int HereQx = NativeMethods.SCE_RB_HERE_QX;
+        public const int HereQx = LexApi.SCE_RB_HERE_QX;
 
         /// <summary>
         /// Q quote string style index.
         /// </summary>
-        public const int StringQ = NativeMethods.SCE_RB_STRING_Q;
+        public const int StringQ = LexApi.SCE_RB_STRING_Q;
 
         /// <summary>
         /// QQ quote string style index.
         /// </summary>
-        public const int StringQq = NativeMethods.SCE_RB_STRING_QQ;
+        public const int StringQq = LexApi.SCE_RB_STRING_QQ;
 
         /// <summary>
         /// QX quote string style index.
         /// </summary>
-        public const int StringQx = NativeMethods.SCE_RB_STRING_QX;
+        public const int StringQx = LexApi.SCE_RB_STRING_QX;
 
         /// <summary>
         /// QR quote string style index.
         /// </summary>
-        public const int StringQr = NativeMethods.SCE_RB_STRING_QR;
+        public const int StringQr = LexApi.SCE_RB_STRING_QR;
 
         /// <summary>
         /// QW quote style index.
         /// </summary>
-        public const int StringQw = NativeMethods.SCE_RB_STRING_QW;
+        public const int StringQw = LexApi.SCE_RB_STRING_QW;
 
         /// <summary>
         /// Demoted keyword style index.
         /// </summary>
-        public const int WordDemoted = NativeMethods.SCE_RB_WORD_DEMOTED;
+        public const int WordDemoted = LexApi.SCE_RB_WORD_DEMOTED;
 
         /// <summary>
         /// Standard-in style index.
         /// </summary>
-        public const int StdIn = NativeMethods.SCE_RB_STDIN;
+        public const int StdIn = LexApi.SCE_RB_STDIN;
 
         /// <summary>
         /// Standard-out style index.
         /// </summary>
-        public const int StdOut = NativeMethods.SCE_RB_STDOUT;
+        public const int StdOut = LexApi.SCE_RB_STDOUT;
 
         /// <summary>
         /// Standard-error style index.
         /// </summary>
-        public const int StdErr = NativeMethods.SCE_RB_STDERR;
+        public const int StdErr = LexApi.SCE_RB_STDERR;
 
-        // public const int UpperBound = NativeMethods.SCE_RB_UPPER_BOUND;
+        // public const int UpperBound = LexApi.SCE_RB_UPPER_BOUND;
     }
 
     #endregion Ruby
@@ -2734,87 +2740,87 @@ public class Style
         /// <summary>
         /// Default (whitespace) style index.
         /// </summary>
-        public const int Default = NativeMethods.SCE_ST_DEFAULT;
+        public const int Default = LexApi.SCE_ST_DEFAULT;
 
         /// <summary>
         /// Double-quoted string style index.
         /// </summary>
-        public const int String = NativeMethods.SCE_ST_STRING;
+        public const int String = LexApi.SCE_ST_STRING;
 
         /// <summary>
         /// Number style index.
         /// </summary>
-        public const int Number = NativeMethods.SCE_ST_NUMBER;
+        public const int Number = LexApi.SCE_ST_NUMBER;
 
         /// <summary>
         /// Comment style index.
         /// </summary>
-        public const int Comment = NativeMethods.SCE_ST_COMMENT;
+        public const int Comment = LexApi.SCE_ST_COMMENT;
 
         /// <summary>
         /// Symbol style index.
         /// </summary>
-        public const int Symbol = NativeMethods.SCE_ST_SYMBOL;
+        public const int Symbol = LexApi.SCE_ST_SYMBOL;
 
         /// <summary>
         /// Binary style index.
         /// </summary>
-        public const int Binary = NativeMethods.SCE_ST_BINARY;
+        public const int Binary = LexApi.SCE_ST_BINARY;
 
         /// <summary>
         /// Bool style index.
         /// </summary>
-        public const int Bool = NativeMethods.SCE_ST_BOOL;
+        public const int Bool = LexApi.SCE_ST_BOOL;
 
         /// <summary>
         /// Self style index.
         /// </summary>
-        public const int Self = NativeMethods.SCE_ST_SELF;
+        public const int Self = LexApi.SCE_ST_SELF;
 
         /// <summary>
         /// Super style index.
         /// </summary>
-        public const int Super = NativeMethods.SCE_ST_SUPER;
+        public const int Super = LexApi.SCE_ST_SUPER;
 
         /// <summary>
         /// NIL style index.
         /// </summary>
-        public const int Nil = NativeMethods.SCE_ST_NIL;
+        public const int Nil = LexApi.SCE_ST_NIL;
 
         /// <summary>
         /// Global style index.
         /// </summary>
-        public const int Global = NativeMethods.SCE_ST_GLOBAL;
+        public const int Global = LexApi.SCE_ST_GLOBAL;
 
         /// <summary>
         /// Return style index.
         /// </summary>
-        public const int Return = NativeMethods.SCE_ST_RETURN;
+        public const int Return = LexApi.SCE_ST_RETURN;
 
         /// <summary>
         /// Special style index.
         /// </summary>
-        public const int Special = NativeMethods.SCE_ST_SPECIAL;
+        public const int Special = LexApi.SCE_ST_SPECIAL;
 
         /// <summary>
         /// KWS End style index.
         /// </summary>
-        public const int KwsEnd = NativeMethods.SCE_ST_KWSEND;
+        public const int KwsEnd = LexApi.SCE_ST_KWSEND;
 
         /// <summary>
         /// Assign style index.
         /// </summary>
-        public const int Assign = NativeMethods.SCE_ST_ASSIGN;
+        public const int Assign = LexApi.SCE_ST_ASSIGN;
 
         /// <summary>
         /// Single-quoted string style index.
         /// </summary>
-        public const int Character = NativeMethods.SCE_ST_CHARACTER;
+        public const int Character = LexApi.SCE_ST_CHARACTER;
 
         /// <summary>
         /// Special selector style index.
         /// </summary>
-        public const int SpecSel = NativeMethods.SCE_ST_SPEC_SEL;
+        public const int SpecSel = LexApi.SCE_ST_SPEC_SEL;
     }
 
     #endregion Smalltalk
@@ -2829,117 +2835,117 @@ public class Style
         /// <summary>
         /// Default (whitespace) style index.
         /// </summary>
-        public const int Default = NativeMethods.SCE_SQL_DEFAULT;
+        public const int Default = LexApi.SCE_SQL_DEFAULT;
 
         /// <summary>
         /// Comment style index.
         /// </summary>
-        public const int Comment = NativeMethods.SCE_SQL_COMMENT;
+        public const int Comment = LexApi.SCE_SQL_COMMENT;
 
         /// <summary>
         /// Line comment style index.
         /// </summary>
-        public const int CommentLine = NativeMethods.SCE_SQL_COMMENTLINE;
+        public const int CommentLine = LexApi.SCE_SQL_COMMENTLINE;
 
         /// <summary>
         /// Documentation comment style index.
         /// </summary>
-        public const int CommentDoc = NativeMethods.SCE_SQL_COMMENTDOC;
+        public const int CommentDoc = LexApi.SCE_SQL_COMMENTDOC;
 
         /// <summary>
         /// Number style index.
         /// </summary>
-        public const int Number = NativeMethods.SCE_SQL_NUMBER;
+        public const int Number = LexApi.SCE_SQL_NUMBER;
 
         /// <summary>
         /// Keyword list 1 (index 0) style index.
         /// </summary>
-        public const int Word = NativeMethods.SCE_SQL_WORD;
+        public const int Word = LexApi.SCE_SQL_WORD;
 
         /// <summary>
         /// Double-quoted string style index.
         /// </summary>
-        public const int String = NativeMethods.SCE_SQL_STRING;
+        public const int String = LexApi.SCE_SQL_STRING;
 
         /// <summary>
         /// Single-quoted string style index.
         /// </summary>
-        public const int Character = NativeMethods.SCE_SQL_CHARACTER;
+        public const int Character = LexApi.SCE_SQL_CHARACTER;
 
         /// <summary>
         /// Keyword from the SQL*Plus list (index 3) style index.
         /// </summary>
-        public const int SqlPlus = NativeMethods.SCE_SQL_SQLPLUS;
+        public const int SqlPlus = LexApi.SCE_SQL_SQLPLUS;
 
         /// <summary>
         /// SQL*Plus prompt style index.
         /// </summary>
-        public const int SqlPlusPrompt = NativeMethods.SCE_SQL_SQLPLUS_PROMPT;
+        public const int SqlPlusPrompt = LexApi.SCE_SQL_SQLPLUS_PROMPT;
 
         /// <summary>
         /// Operator style index.
         /// </summary>
-        public const int Operator = NativeMethods.SCE_SQL_OPERATOR;
+        public const int Operator = LexApi.SCE_SQL_OPERATOR;
 
         /// <summary>
         /// Identifier style index.
         /// </summary>
-        public const int Identifier = NativeMethods.SCE_SQL_IDENTIFIER;
+        public const int Identifier = LexApi.SCE_SQL_IDENTIFIER;
 
         /// <summary>
         /// SQL*Plus comment style index.
         /// </summary>
-        public const int SqlPlusComment = NativeMethods.SCE_SQL_SQLPLUS_COMMENT;
+        public const int SqlPlusComment = LexApi.SCE_SQL_SQLPLUS_COMMENT;
 
         /// <summary>
         /// Documentation line comment style index.
         /// </summary>
-        public const int CommentLineDoc = NativeMethods.SCE_SQL_COMMENTLINEDOC;
+        public const int CommentLineDoc = LexApi.SCE_SQL_COMMENTLINEDOC;
 
         /// <summary>
         /// Keyword list 2 (index 1) style index.
         /// </summary>
-        public const int Word2 = NativeMethods.SCE_SQL_WORD2;
+        public const int Word2 = LexApi.SCE_SQL_WORD2;
 
         /// <summary>
         /// Documentation (Doxygen) keyword style index.
         /// </summary>
-        public const int CommentDocKeyword = NativeMethods.SCE_SQL_COMMENTDOCKEYWORD;
+        public const int CommentDocKeyword = LexApi.SCE_SQL_COMMENTDOCKEYWORD;
 
         /// <summary>
         /// Documentation (Doxygen) keyword error style index.
         /// </summary>
-        public const int CommentDocKeywordError = NativeMethods.SCE_SQL_COMMENTDOCKEYWORDERROR;
+        public const int CommentDocKeywordError = LexApi.SCE_SQL_COMMENTDOCKEYWORDERROR;
 
         /// <summary>
         /// Keyword user-list 1 (index 4) style index.
         /// </summary>
-        public const int User1 = NativeMethods.SCE_SQL_USER1;
+        public const int User1 = LexApi.SCE_SQL_USER1;
 
         /// <summary>
         /// Keyword user-list 2 (index 5) style index.
         /// </summary>
-        public const int User2 = NativeMethods.SCE_SQL_USER2;
+        public const int User2 = LexApi.SCE_SQL_USER2;
 
         /// <summary>
         /// Keyword user-list 3 (index 6) style index.
         /// </summary>
-        public const int User3 = NativeMethods.SCE_SQL_USER3;
+        public const int User3 = LexApi.SCE_SQL_USER3;
 
         /// <summary>
         /// Keyword user-list 4 (index 7) style index.
         /// </summary>
-        public const int User4 = NativeMethods.SCE_SQL_USER4;
+        public const int User4 = LexApi.SCE_SQL_USER4;
 
         /// <summary>
         /// Quoted identifier style index.
         /// </summary>
-        public const int QuotedIdentifier = NativeMethods.SCE_SQL_QUOTEDIDENTIFIER;
+        public const int QuotedIdentifier = LexApi.SCE_SQL_QUOTEDIDENTIFIER;
 
         /// <summary>
         /// Q operator style index.
         /// </summary>
-        public const int QOperator = NativeMethods.SCE_SQL_QOPERATOR;
+        public const int QOperator = LexApi.SCE_SQL_QOPERATOR;
     }
 
     #endregion Sql
@@ -2954,112 +2960,112 @@ public class Style
         /// <summary>
         /// Default text style index.
         /// </summary>
-        public const int Default = NativeMethods.SCE_MARKDOWN_DEFAULT;
+        public const int Default = LexApi.SCE_MARKDOWN_DEFAULT;
 
         /// <summary>
         /// Line begin style index.
         /// </summary>
-        public const int LineBegin = NativeMethods.SCE_MARKDOWN_LINE_BEGIN;
+        public const int LineBegin = LexApi.SCE_MARKDOWN_LINE_BEGIN;
 
         /// <summary>
         /// Strong type 1 style index.
         /// </summary>
-        public const int Strong1 = NativeMethods.SCE_MARKDOWN_STRONG1;
+        public const int Strong1 = LexApi.SCE_MARKDOWN_STRONG1;
 
         /// <summary>
         /// Strong type 2 style index.
         /// </summary>
-        public const int Strong2 = NativeMethods.SCE_MARKDOWN_STRONG2;
+        public const int Strong2 = LexApi.SCE_MARKDOWN_STRONG2;
 
         /// <summary>
         /// Empasis type 1 style index.
         /// </summary>
-        public const int Em1 = NativeMethods.SCE_MARKDOWN_EM1;
+        public const int Em1 = LexApi.SCE_MARKDOWN_EM1;
 
         /// <summary>
         /// Empasis type 2 style index.
         /// </summary>
-        public const int Em2 = NativeMethods.SCE_MARKDOWN_EM2;
+        public const int Em2 = LexApi.SCE_MARKDOWN_EM2;
 
         /// <summary>
         /// Header type 1 style index.
         /// </summary>
-        public const int Header1 = NativeMethods.SCE_MARKDOWN_HEADER1;
+        public const int Header1 = LexApi.SCE_MARKDOWN_HEADER1;
 
         /// <summary>
         /// Header type 2 style index.
         /// </summary>
-        public const int Header2 = NativeMethods.SCE_MARKDOWN_HEADER2;
+        public const int Header2 = LexApi.SCE_MARKDOWN_HEADER2;
 
         /// <summary>
         /// Header type 3 style index.
         /// </summary>
-        public const int Header3 = NativeMethods.SCE_MARKDOWN_HEADER3;
+        public const int Header3 = LexApi.SCE_MARKDOWN_HEADER3;
 
         /// <summary>
         /// Header type 4 style index.
         /// </summary>
-        public const int Header4 = NativeMethods.SCE_MARKDOWN_HEADER4;
+        public const int Header4 = LexApi.SCE_MARKDOWN_HEADER4;
 
         /// <summary>
         /// Header type 5 style index.
         /// </summary>
-        public const int Header5 = NativeMethods.SCE_MARKDOWN_HEADER5;
+        public const int Header5 = LexApi.SCE_MARKDOWN_HEADER5;
 
         /// <summary>
         /// Header type 6 style index.
         /// </summary>
-        public const int Header6 = NativeMethods.SCE_MARKDOWN_HEADER6;
+        public const int Header6 = LexApi.SCE_MARKDOWN_HEADER6;
 
         /// <summary>
         /// Pre char style index.
         /// </summary>
-        public const int PreChar = NativeMethods.SCE_MARKDOWN_PRECHAR;
+        public const int PreChar = LexApi.SCE_MARKDOWN_PRECHAR;
 
         /// <summary>
         /// Unordered list style index.
         /// </summary>
-        public const int UListItem = NativeMethods.SCE_MARKDOWN_ULIST_ITEM;
+        public const int UListItem = LexApi.SCE_MARKDOWN_ULIST_ITEM;
 
         /// <summary>
         /// Ordered list style index.
         /// </summary>
-        public const int OListItem = NativeMethods.SCE_MARKDOWN_OLIST_ITEM;
+        public const int OListItem = LexApi.SCE_MARKDOWN_OLIST_ITEM;
 
         /// <summary>
         /// Blockquote style index.
         /// </summary>
-        public const int BlockQuote = NativeMethods.SCE_MARKDOWN_BLOCKQUOTE;
+        public const int BlockQuote = LexApi.SCE_MARKDOWN_BLOCKQUOTE;
 
         /// <summary>
         /// Strikeout style index.
         /// </summary>
-        public const int Strikeout = NativeMethods.SCE_MARKDOWN_STRIKEOUT;
+        public const int Strikeout = LexApi.SCE_MARKDOWN_STRIKEOUT;
 
         /// <summary>
         /// Horizontal rule style index.
         /// </summary>
-        public const int HRule = NativeMethods.SCE_MARKDOWN_HRULE;
+        public const int HRule = LexApi.SCE_MARKDOWN_HRULE;
 
         /// <summary>
         /// Link style index.
         /// </summary>
-        public const int Link = NativeMethods.SCE_MARKDOWN_LINK;
+        public const int Link = LexApi.SCE_MARKDOWN_LINK;
 
         /// <summary>
         /// Code type 1 style index.
         /// </summary>
-        public const int Code = NativeMethods.SCE_MARKDOWN_CODE;
+        public const int Code = LexApi.SCE_MARKDOWN_CODE;
 
         /// <summary>
         /// Code type 2 style index.
         /// </summary>
-        public const int Code2 = NativeMethods.SCE_MARKDOWN_CODE2;
+        public const int Code2 = LexApi.SCE_MARKDOWN_CODE2;
 
         /// <summary>
         /// Code block style index.
         /// </summary>
-        public const int CodeBk = NativeMethods.SCE_MARKDOWN_CODEBK;
+        public const int CodeBk = LexApi.SCE_MARKDOWN_CODEBK;
     }
 
     #endregion Markdown
@@ -3074,62 +3080,62 @@ public class Style
         /// <summary>
         /// Default style index.
         /// </summary>
-        public const int Default = NativeMethods.SCE_R_DEFAULT;
+        public const int Default = LexApi.SCE_R_DEFAULT;
 
         /// <summary>
         /// Comment style index.
         /// </summary>
-        public const int Comment = NativeMethods.SCE_R_COMMENT;
+        public const int Comment = LexApi.SCE_R_COMMENT;
 
         /// <summary>
         /// Keyword (set 0) style index.
         /// </summary>
-        public const int KWord = NativeMethods.SCE_R_KWORD;
+        public const int KWord = LexApi.SCE_R_KWORD;
 
         /// <summary>
         /// Base keyword (set 1) style index.
         /// </summary>
-        public const int BaseKWord = NativeMethods.SCE_R_BASEKWORD;
+        public const int BaseKWord = LexApi.SCE_R_BASEKWORD;
 
         /// <summary>
         /// Other keyword (set 2) style index.
         /// </summary>
-        public const int OtherKWord = NativeMethods.SCE_R_OTHERKWORD;
+        public const int OtherKWord = LexApi.SCE_R_OTHERKWORD;
 
         /// <summary>
         /// Number style index.
         /// </summary>
-        public const int Number = NativeMethods.SCE_R_NUMBER;
+        public const int Number = LexApi.SCE_R_NUMBER;
 
         /// <summary>
         /// Double-quoted string style index.
         /// </summary>
-        public const int String = NativeMethods.SCE_R_STRING;
+        public const int String = LexApi.SCE_R_STRING;
 
         /// <summary>
         /// Single-quoted string style index.
         /// </summary>
-        public const int String2 = NativeMethods.SCE_R_STRING2;
+        public const int String2 = LexApi.SCE_R_STRING2;
 
         /// <summary>
         /// Operator style index.
         /// </summary>
-        public const int Operator = NativeMethods.SCE_R_OPERATOR;
+        public const int Operator = LexApi.SCE_R_OPERATOR;
 
         /// <summary>
         /// Identifier style index.
         /// </summary>
-        public const int Identifier = NativeMethods.SCE_R_IDENTIFIER;
+        public const int Identifier = LexApi.SCE_R_IDENTIFIER;
 
         /// <summary>
         /// Infix style index.
         /// </summary>
-        public const int Infix = NativeMethods.SCE_R_INFIX;
+        public const int Infix = LexApi.SCE_R_INFIX;
 
         /// <summary>
         /// Unclosed infix EOL style index.
         /// </summary>
-        public const int InfixEol = NativeMethods.SCE_R_INFIXEOL;
+        public const int InfixEol = LexApi.SCE_R_INFIXEOL;
     }
 
     #endregion R
@@ -3144,117 +3150,117 @@ public class Style
         /// <summary>
         /// Default (whitespace) style index.
         /// </summary>
-        public const int Default = NativeMethods.SCE_B_DEFAULT;
+        public const int Default = LexApi.SCE_B_DEFAULT;
 
         /// <summary>
         /// Comment style index.
         /// </summary>
-        public const int Comment = NativeMethods.SCE_B_COMMENT;
+        public const int Comment = LexApi.SCE_B_COMMENT;
 
         /// <summary>
         /// Number style index.
         /// </summary>
-        public const int Number = NativeMethods.SCE_B_NUMBER;
+        public const int Number = LexApi.SCE_B_NUMBER;
 
         /// <summary>
         /// Keyword style index.
         /// </summary>
-        public const int Keyword = NativeMethods.SCE_B_KEYWORD;
+        public const int Keyword = LexApi.SCE_B_KEYWORD;
 
         /// <summary>
         /// String style index.
         /// </summary>
-        public const int String = NativeMethods.SCE_B_STRING;
+        public const int String = LexApi.SCE_B_STRING;
 
         /// <summary>
         /// Preprocessor style index.
         /// </summary>
-        public const int Preprocessor = NativeMethods.SCE_B_PREPROCESSOR;
+        public const int Preprocessor = LexApi.SCE_B_PREPROCESSOR;
 
         /// <summary>
         /// Operator style index.
         /// </summary>
-        public const int Operator = NativeMethods.SCE_B_OPERATOR;
+        public const int Operator = LexApi.SCE_B_OPERATOR;
 
         /// <summary>
         /// Identifier style index.
         /// </summary>
-        public const int Identifier = NativeMethods.SCE_B_IDENTIFIER;
+        public const int Identifier = LexApi.SCE_B_IDENTIFIER;
 
         /// <summary>
         /// Date style index.
         /// </summary>
-        public const int Date = NativeMethods.SCE_B_DATE;
+        public const int Date = LexApi.SCE_B_DATE;
 
         /// <summary>
         /// Unclosed string EOL style index.
         /// </summary>
-        public const int StringEol = NativeMethods.SCE_B_STRINGEOL;
+        public const int StringEol = LexApi.SCE_B_STRINGEOL;
 
         /// <summary>
         /// Keyword list 2 (index 1) style index.
         /// </summary>
-        public const int Keyword2 = NativeMethods.SCE_B_KEYWORD2;
+        public const int Keyword2 = LexApi.SCE_B_KEYWORD2;
 
         /// <summary>
         /// Keyword list 3 (index 2) style index.
         /// </summary>
-        public const int Keyword3 = NativeMethods.SCE_B_KEYWORD3;
+        public const int Keyword3 = LexApi.SCE_B_KEYWORD3;
 
         /// <summary>
         /// Keyword list 4 (index 3) style index.
         /// </summary>
-        public const int Keyword4 = NativeMethods.SCE_B_KEYWORD4;
+        public const int Keyword4 = LexApi.SCE_B_KEYWORD4;
 
         /// <summary>
         /// Constant style index.
         /// </summary>
-        public const int Constant = NativeMethods.SCE_B_CONSTANT;
+        public const int Constant = LexApi.SCE_B_CONSTANT;
 
         /// <summary>
         /// Inline assembler style index.
         /// </summary>
-        public const int Asm = NativeMethods.SCE_B_ASM;
+        public const int Asm = LexApi.SCE_B_ASM;
 
         /// <summary>
         /// Label style index.
         /// </summary>
-        public const int Label = NativeMethods.SCE_B_LABEL;
+        public const int Label = LexApi.SCE_B_LABEL;
 
         /// <summary>
         /// Error style index.
         /// </summary>
-        public const int Error = NativeMethods.SCE_B_ERROR;
+        public const int Error = LexApi.SCE_B_ERROR;
 
         /// <summary>
         /// Hexadecimal number style index.
         /// </summary>
-        public const int HexNumber = NativeMethods.SCE_B_HEXNUMBER;
+        public const int HexNumber = LexApi.SCE_B_HEXNUMBER;
 
         /// <summary>
         /// Binary number style index.
         /// </summary>
-        public const int BinNumber = NativeMethods.SCE_B_BINNUMBER;
+        public const int BinNumber = LexApi.SCE_B_BINNUMBER;
 
         /// <summary>
         /// Block comment style index.
         /// </summary>
-        public const int CommentBlock = NativeMethods.SCE_B_COMMENTBLOCK;
+        public const int CommentBlock = LexApi.SCE_B_COMMENTBLOCK;
 
         /// <summary>
         /// Documentation line style index.
         /// </summary>
-        public const int DocLine = NativeMethods.SCE_B_DOCLINE;
+        public const int DocLine = LexApi.SCE_B_DOCLINE;
 
         /// <summary>
         /// Documentation block style index.
         /// </summary>
-        public const int DocBlock = NativeMethods.SCE_B_DOCBLOCK;
+        public const int DocBlock = LexApi.SCE_B_DOCBLOCK;
 
         /// <summary>
         /// Documentation keyword style index.
         /// </summary>
-        public const int DocKeyword = NativeMethods.SCE_B_DOCKEYWORD;
+        public const int DocKeyword = LexApi.SCE_B_DOCKEYWORD;
     }
 
     #endregion Vb
@@ -3269,117 +3275,117 @@ public class Style
         /// <summary>
         /// Default (whitespace) style index.
         /// </summary>
-        public const int Default = NativeMethods.SCE_B_DEFAULT;
+        public const int Default = LexApi.SCE_B_DEFAULT;
 
         /// <summary>
         /// Comment style index.
         /// </summary>
-        public const int Comment = NativeMethods.SCE_B_COMMENT;
+        public const int Comment = LexApi.SCE_B_COMMENT;
 
         /// <summary>
         /// Number style index.
         /// </summary>
-        public const int Number = NativeMethods.SCE_B_NUMBER;
+        public const int Number = LexApi.SCE_B_NUMBER;
 
         /// <summary>
         /// Keyword style index.
         /// </summary>
-        public const int Keyword = NativeMethods.SCE_B_KEYWORD;
+        public const int Keyword = LexApi.SCE_B_KEYWORD;
 
         /// <summary>
         /// String style index.
         /// </summary>
-        public const int String = NativeMethods.SCE_B_STRING;
+        public const int String = LexApi.SCE_B_STRING;
 
         /// <summary>
         /// Preprocessor style index.
         /// </summary>
-        public const int Preprocessor = NativeMethods.SCE_B_PREPROCESSOR;
+        public const int Preprocessor = LexApi.SCE_B_PREPROCESSOR;
 
         /// <summary>
         /// Operator style index.
         /// </summary>
-        public const int Operator = NativeMethods.SCE_B_OPERATOR;
+        public const int Operator = LexApi.SCE_B_OPERATOR;
 
         /// <summary>
         /// Identifier style index.
         /// </summary>
-        public const int Identifier = NativeMethods.SCE_B_IDENTIFIER;
+        public const int Identifier = LexApi.SCE_B_IDENTIFIER;
 
         /// <summary>
         /// Date style index.
         /// </summary>
-        public const int Date = NativeMethods.SCE_B_DATE;
+        public const int Date = LexApi.SCE_B_DATE;
 
         /// <summary>
         /// Unclosed string EOL style index.
         /// </summary>
-        public const int StringEol = NativeMethods.SCE_B_STRINGEOL;
+        public const int StringEol = LexApi.SCE_B_STRINGEOL;
 
         /// <summary>
         /// Keyword list 2 (index 1) style index.
         /// </summary>
-        public const int Keyword2 = NativeMethods.SCE_B_KEYWORD2;
+        public const int Keyword2 = LexApi.SCE_B_KEYWORD2;
 
         /// <summary>
         /// Keyword list 3 (index 2) style index.
         /// </summary>
-        public const int Keyword3 = NativeMethods.SCE_B_KEYWORD3;
+        public const int Keyword3 = LexApi.SCE_B_KEYWORD3;
 
         /// <summary>
         /// Keyword list 4 (index 3) style index.
         /// </summary>
-        public const int Keyword4 = NativeMethods.SCE_B_KEYWORD4;
+        public const int Keyword4 = LexApi.SCE_B_KEYWORD4;
 
         /// <summary>
         /// Constant style index.
         /// </summary>
-        public const int Constant = NativeMethods.SCE_B_CONSTANT;
+        public const int Constant = LexApi.SCE_B_CONSTANT;
 
         /// <summary>
         /// Inline assembler style index.
         /// </summary>
-        public const int Asm = NativeMethods.SCE_B_ASM;
+        public const int Asm = LexApi.SCE_B_ASM;
 
         /// <summary>
         /// Label style index.
         /// </summary>
-        public const int Label = NativeMethods.SCE_B_LABEL;
+        public const int Label = LexApi.SCE_B_LABEL;
 
         /// <summary>
         /// Error style index.
         /// </summary>
-        public const int Error = NativeMethods.SCE_B_ERROR;
+        public const int Error = LexApi.SCE_B_ERROR;
 
         /// <summary>
         /// Hexadecimal number style index.
         /// </summary>
-        public const int HexNumber = NativeMethods.SCE_B_HEXNUMBER;
+        public const int HexNumber = LexApi.SCE_B_HEXNUMBER;
 
         /// <summary>
         /// Binary number style index.
         /// </summary>
-        public const int BinNumber = NativeMethods.SCE_B_BINNUMBER;
+        public const int BinNumber = LexApi.SCE_B_BINNUMBER;
 
         /// <summary>
         /// Block comment style index.
         /// </summary>
-        public const int CommentBlock = NativeMethods.SCE_B_COMMENTBLOCK;
+        public const int CommentBlock = LexApi.SCE_B_COMMENTBLOCK;
 
         /// <summary>
         /// Documentation line style index.
         /// </summary>
-        public const int DocLine = NativeMethods.SCE_B_DOCLINE;
+        public const int DocLine = LexApi.SCE_B_DOCLINE;
 
         /// <summary>
         /// Documentation block style index.
         /// </summary>
-        public const int DocBlock = NativeMethods.SCE_B_DOCBLOCK;
+        public const int DocBlock = LexApi.SCE_B_DOCBLOCK;
 
         /// <summary>
         /// Documentation keyword style index.
         /// </summary>
-        public const int DocKeyword = NativeMethods.SCE_B_DOCKEYWORD;
+        public const int DocKeyword = LexApi.SCE_B_DOCKEYWORD;
     }
 
     #endregion VbScript
@@ -3394,97 +3400,97 @@ public class Style
         /// <summary>
         /// Default (whitespace) style index.
         /// </summary>
-        public const int Default = NativeMethods.SCE_V_DEFAULT;
+        public const int Default = LexApi.SCE_V_DEFAULT;
 
         /// <summary>
         /// Comment style index.
         /// </summary>
-        public const int Comment = NativeMethods.SCE_V_COMMENT;
+        public const int Comment = LexApi.SCE_V_COMMENT;
 
         /// <summary>
         /// Comment line style index.
         /// </summary>
-        public const int CommentLine = NativeMethods.SCE_V_COMMENTLINE;
+        public const int CommentLine = LexApi.SCE_V_COMMENTLINE;
 
         /// <summary>
         /// Comment line bang (exclamation) style index.
         /// </summary>
-        public const int CommentLineBang = NativeMethods.SCE_V_COMMENTLINEBANG;
+        public const int CommentLineBang = LexApi.SCE_V_COMMENTLINEBANG;
 
         /// <summary>
         /// Number style index.
         /// </summary>
-        public const int Number = NativeMethods.SCE_V_NUMBER;
+        public const int Number = LexApi.SCE_V_NUMBER;
 
         /// <summary>
         /// Keyword (set 0) style index.
         /// </summary>
-        public const int Word = NativeMethods.SCE_V_WORD;
+        public const int Word = LexApi.SCE_V_WORD;
 
         /// <summary>
         /// String style index.
         /// </summary>
-        public const int String = NativeMethods.SCE_V_STRING;
+        public const int String = LexApi.SCE_V_STRING;
 
         /// <summary>
         /// Keyword (set 1) style index.
         /// </summary>
-        public const int Word2 = NativeMethods.SCE_V_WORD2;
+        public const int Word2 = LexApi.SCE_V_WORD2;
 
         /// <summary>
         /// Keyword (set 2) style index.
         /// </summary>
-        public const int Word3 = NativeMethods.SCE_V_WORD3;
+        public const int Word3 = LexApi.SCE_V_WORD3;
 
         /// <summary>
         /// Preprocessor style index.
         /// </summary>
-        public const int Preprocessor = NativeMethods.SCE_V_PREPROCESSOR;
+        public const int Preprocessor = LexApi.SCE_V_PREPROCESSOR;
 
         /// <summary>
         /// Operator style index.
         /// </summary>
-        public const int Operator = NativeMethods.SCE_V_OPERATOR;
+        public const int Operator = LexApi.SCE_V_OPERATOR;
 
         /// <summary>
         /// Identifier style index.
         /// </summary>
-        public const int Identifier = NativeMethods.SCE_V_IDENTIFIER;
+        public const int Identifier = LexApi.SCE_V_IDENTIFIER;
 
         /// <summary>
         /// Unclosed string EOL style index.
         /// </summary>
-        public const int StringEol = NativeMethods.SCE_V_STRINGEOL;
+        public const int StringEol = LexApi.SCE_V_STRINGEOL;
 
         /// <summary>
         /// User word (set 3) style index.
         /// </summary>
-        public const int User = NativeMethods.SCE_V_USER;
+        public const int User = LexApi.SCE_V_USER;
 
         /// <summary>
         /// Comment word (set 4) style index.
         /// </summary>
-        public const int CommentWord = NativeMethods.SCE_V_COMMENT_WORD;
+        public const int CommentWord = LexApi.SCE_V_COMMENT_WORD;
 
         /// <summary>
         /// Input style index.
         /// </summary>
-        public const int Input = NativeMethods.SCE_V_INPUT;
+        public const int Input = LexApi.SCE_V_INPUT;
 
         /// <summary>
         /// Output style index.
         /// </summary>
-        public const int Output = NativeMethods.SCE_V_OUTPUT;
+        public const int Output = LexApi.SCE_V_OUTPUT;
 
         /// <summary>
         /// In-out style index.
         /// </summary>
-        public const int InOut = NativeMethods.SCE_V_INOUT;
+        public const int InOut = LexApi.SCE_V_INOUT;
 
         /// <summary>
         /// Port connect style index.
         /// </summary>
-        public const int PortConnect = NativeMethods.SCE_V_PORT_CONNECT;
+        public const int PortConnect = LexApi.SCE_V_PORT_CONNECT;
     }
 
     #endregion Verilog
@@ -3499,107 +3505,107 @@ public class Style
         /// <summary>
         /// Content style index.
         /// </summary>
-        public const int Default = NativeMethods.SCE_H_DEFAULT;
+        public const int Default = LexApi.SCE_H_DEFAULT;
 
         /// <summary>
         /// Tag style index.
         /// </summary>
-        public const int Tag = NativeMethods.SCE_H_TAG;
+        public const int Tag = LexApi.SCE_H_TAG;
 
         /// <summary>
         /// Unknown tag style index.
         /// </summary>
-        public const int TagUnknown = NativeMethods.SCE_H_TAGUNKNOWN;
+        public const int TagUnknown = LexApi.SCE_H_TAGUNKNOWN;
 
         /// <summary>
         /// Attribute style index.
         /// </summary>
-        public const int Attribute = NativeMethods.SCE_H_ATTRIBUTE;
+        public const int Attribute = LexApi.SCE_H_ATTRIBUTE;
 
         /// <summary>
         /// Unknown attribute style index.
         /// </summary>
-        public const int AttributeUnknown = NativeMethods.SCE_H_ATTRIBUTEUNKNOWN;
+        public const int AttributeUnknown = LexApi.SCE_H_ATTRIBUTEUNKNOWN;
 
         /// <summary>
         /// Number style index.
         /// </summary>
-        public const int Number = NativeMethods.SCE_H_NUMBER;
+        public const int Number = LexApi.SCE_H_NUMBER;
 
         /// <summary>
         /// Double-quoted string style index.
         /// </summary>
-        public const int DoubleString = NativeMethods.SCE_H_DOUBLESTRING;
+        public const int DoubleString = LexApi.SCE_H_DOUBLESTRING;
 
         /// <summary>
         /// Single-quoted string style index.
         /// </summary>
-        public const int SingleString = NativeMethods.SCE_H_SINGLESTRING;
+        public const int SingleString = LexApi.SCE_H_SINGLESTRING;
 
         /// <summary>
         /// Other tag content (not elements or attributes) style index.
         /// </summary>
-        public const int Other = NativeMethods.SCE_H_OTHER;
+        public const int Other = LexApi.SCE_H_OTHER;
 
         /// <summary>
         /// Comment style index.
         /// </summary>
-        public const int Comment = NativeMethods.SCE_H_COMMENT;
+        public const int Comment = LexApi.SCE_H_COMMENT;
 
         /// <summary>
         /// Entity ($nnn;) name style index.
         /// </summary>
-        public const int Entity = NativeMethods.SCE_H_ENTITY;
+        public const int Entity = LexApi.SCE_H_ENTITY;
 
         /// <summary>
         /// End-tag style index.
         /// </summary>
-        public const int TagEnd = NativeMethods.SCE_H_TAGEND;
+        public const int TagEnd = LexApi.SCE_H_TAGEND;
 
         /// <summary>
         /// Start of XML declaration (&lt;?xml&gt;) style index.
         /// </summary>
-        public const int XmlStart = NativeMethods.SCE_H_XMLSTART;
+        public const int XmlStart = LexApi.SCE_H_XMLSTART;
 
         /// <summary>
         /// End of XML declaration (?&gt;) style index.
         /// </summary>
-        public const int XmlEnd = NativeMethods.SCE_H_XMLEND;
+        public const int XmlEnd = LexApi.SCE_H_XMLEND;
 
         /// <summary>
         /// Script tag (&lt;script&gt;) style index.
         /// </summary>
-        public const int Script = NativeMethods.SCE_H_SCRIPT;
+        public const int Script = LexApi.SCE_H_SCRIPT;
 
         /// <summary>
         /// ASP-like script engine block (&lt;%) style index.
         /// </summary>
-        public const int Asp = NativeMethods.SCE_H_ASP;
+        public const int Asp = LexApi.SCE_H_ASP;
 
         /// <summary>
         /// ASP-like language declaration (&lt;%@) style index.
         /// </summary>
-        public const int AspAt = NativeMethods.SCE_H_ASPAT;
+        public const int AspAt = LexApi.SCE_H_ASPAT;
 
         /// <summary>
         /// CDATA section style index.
         /// </summary>
-        public const int CData = NativeMethods.SCE_H_CDATA;
+        public const int CData = LexApi.SCE_H_CDATA;
 
         /// <summary>
         /// Question mark style index.
         /// </summary>
-        public const int Question = NativeMethods.SCE_H_QUESTION;
+        public const int Question = LexApi.SCE_H_QUESTION;
 
         /// <summary>
         /// Value style index.
         /// </summary>
-        public const int Value = NativeMethods.SCE_H_VALUE;
+        public const int Value = LexApi.SCE_H_VALUE;
 
         /// <summary>
         /// Script engine comment (&lt;%--) style index.
         /// </summary>
-        public const int XcComment = NativeMethods.SCE_H_XCCOMMENT;
+        public const int XcComment = LexApi.SCE_H_XCCOMMENT;
     }
 
     #endregion Xml

@@ -32,8 +32,8 @@ public class BeforeModificationEventArgs : EventArgs
     /// <summary>
     /// Gets the source of the modification.
     /// </summary>
-    /// <returns>One of the <see cref="ModificationSource" /> enum values.</returns>
-    public ModificationSource Source { get; private set; }
+    /// <returns>One of the <see cref="ModificationFlags" /> enum values.</returns>
+    public ModificationFlags Source { get; private set; }
 
     /// <summary>
     /// Gets the text being inserted or deleted.
@@ -51,7 +51,7 @@ public class BeforeModificationEventArgs : EventArgs
                 // SC_MOD_BEFOREDELETE... but we can get it from the document.
                 if (this.textPtr == IntPtr.Zero)
                 {
-                    IntPtr ptr = this.scintilla.DirectMessage(NativeMethods.SCI_GETRANGEPOINTER, new IntPtr(this.bytePosition), new IntPtr(this.byteLength));
+                    IntPtr ptr = this.scintilla.DirectMessage(SciApi.SCI_GETRANGEPOINTER, new IntPtr(this.bytePosition), new IntPtr(this.byteLength));
                     CachedText = new string((sbyte*)ptr, 0, this.byteLength, this.scintilla.Encoding);
                 }
                 else
@@ -72,7 +72,7 @@ public class BeforeModificationEventArgs : EventArgs
     /// <param name="bytePosition">The zero-based byte position within the document where text is being modified.</param>
     /// <param name="byteLength">The length in bytes of the text being modified.</param>
     /// <param name="text">A pointer to the text being inserted.</param>
-    public BeforeModificationEventArgs(Scintilla scintilla, ModificationSource source, int bytePosition, int byteLength, IntPtr text)
+    public BeforeModificationEventArgs(Scintilla scintilla, ModificationFlags source, int bytePosition, int byteLength, IntPtr text)
     {
         this.scintilla = scintilla;
         this.bytePosition = bytePosition;

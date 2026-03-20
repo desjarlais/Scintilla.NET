@@ -8,10 +8,10 @@ public enum TabDrawMode
     /// <summary>
     /// The default mode of an arrow stretching until the tabstop.
     /// </summary>
-    LongArrow = NativeMethods.SCTD_LONGARROW,
+    LongArrow = SciApi.SCTD_LONGARROW,
 
     /// <summary>
     /// A horizontal line stretching until the tabstop.
     /// </summary>
-    Strikeout = NativeMethods.SCTD_STRIKEOUT,
+    Strikeout = SciApi.SCTD_STRIKEOUT,
 }

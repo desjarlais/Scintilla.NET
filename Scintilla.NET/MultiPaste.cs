@@ -8,10 +8,10 @@ public enum MultiPaste
     /// <summary>
     /// Pasting into multiple selections only pastes to the main selection. This is the default.
     /// </summary>
-    Once = NativeMethods.SC_MULTIPASTE_ONCE,
+    Once = SciApi.SC_MULTIPASTE_ONCE,
 
     /// <summary>
     /// Pasting into multiple selections pastes into each selection.
     /// </summary>
-    Each = NativeMethods.SC_MULTIPASTE_EACH,
+    Each = SciApi.SC_MULTIPASTE_EACH,
 }

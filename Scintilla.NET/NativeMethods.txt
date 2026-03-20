@@ -8,6 +8,7 @@ GetWindowRect
 LoadLibrary
 GetModuleHandleEx
 OpenClipboard
+CLIPBOARD_FORMAT
 RegisterClipboardFormat
 ReleaseDC
 RevokeDragDrop
@@ -19,3 +20,4 @@ WINDOW_STYLE
 RGN_COMBINE_MODE
 WINDOW_EX_STYLE
 HWND_*
+RECT

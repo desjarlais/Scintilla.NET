@@ -8,15 +8,15 @@ public enum Order
     /// <summary>
     /// Requires that an autocompletion lists be sorted in alphabetical order. This is the default.
     /// </summary>
-    Presorted = NativeMethods.SC_ORDER_PRESORTED,
+    Presorted = SciApi.SC_ORDER_PRESORTED,
 
     /// <summary>
     /// Instructs a <see cref="Scintilla" /> control to perform an alphabetical sort of autocompletion lists.
     /// </summary>
-    PerformSort = NativeMethods.SC_ORDER_PERFORMSORT,
+    PerformSort = SciApi.SC_ORDER_PERFORMSORT,
 
     /// <summary>
     /// User-defined order.
     /// </summary>
-    Custom = NativeMethods.SC_ORDER_CUSTOM,
+    Custom = SciApi.SC_ORDER_CUSTOM,
 }

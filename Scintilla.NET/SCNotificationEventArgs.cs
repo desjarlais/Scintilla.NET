@@ -5,9 +5,9 @@ namespace ScintillaNET;
 // For internal use only
 internal sealed class SCNotificationEventArgs : EventArgs
 {
-    public NativeMethods.SCNotification SCNotification { get; private set; }
+    public SciApi.SCNotification SCNotification { get; private set; }
 
-    public SCNotificationEventArgs(NativeMethods.SCNotification scn)
+    public SCNotificationEventArgs(SciApi.SCNotification scn)
     {
         SCNotification = scn;
     }

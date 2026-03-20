@@ -1,6 +1,4 @@
-﻿using System.Windows.Forms;
-
-namespace ScintillaNET;
+﻿namespace ScintillaNET;
 
 /// <summary>
 /// Specifies the border style for a control.
@@ -26,7 +24,7 @@ public enum BorderStyle
     Fixed3D,
 
     /// <summary>
-    /// A three-dimensional border. When visual styles are enabled, the border is displayed like that of a <see cref="TextBox"/>.
+    /// A three-dimensional border. When visual styles are enabled, the border is displayed like that of a <see cref="System.Windows.Forms.TextBox"/>.
     /// When visual styles are not enabled, this is equivalent to <see cref="Fixed3D"/>.
     /// </summary>
     Fixed3DVisualStyles,

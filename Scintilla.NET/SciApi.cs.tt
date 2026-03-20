@@ -1,0 +1,224 @@
+﻿<#@ template debug="false" hostspecific="true" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ assembly name="netstandard, Version=2.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51" #>
+<#@ assembly name="$(MSBuildProjectDirectory)\..\ApiToolkit\bin\$(Configuration)\netstandard2.0\ApiToolkit.dll" #>
+<#@ import namespace="System.IO" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="ApiToolkit" #>
+<#@ output extension="" #>
+using System;
+using System.Runtime.InteropServices;
+using Windows.Win32.Foundation;
+
+namespace ScintillaNET;
+
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
+
+public static class SciApi
+{
+    public delegate IntPtr Scintilla_DirectFunction(IntPtr ptr, int iMessage, IntPtr wParam, IntPtr lParam);
+    
+    [StructLayout(LayoutKind.Sequential)]
+    public struct Sci_CharacterRange
+    {
+        public int cpMin;
+        public int cpMax;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct Sci_CharacterRangeFull
+    {
+        public nint cpMin;
+        public nint cpMax;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct Sci_TextRange
+    {
+        public Sci_CharacterRange chrg;
+        public IntPtr lpstrText;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct Sci_TextRangeFull
+    {
+        public Sci_CharacterRangeFull chrg;
+        public IntPtr lpstrText;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct Sci_TextToFind
+    {
+        public Sci_CharacterRange chrg;
+        public IntPtr lpstrText;
+        public Sci_CharacterRange chrgText;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct Sci_TextToFindFull
+    {
+        public Sci_CharacterRangeFull chrg;
+        public IntPtr lpstrText;
+        public Sci_CharacterRangeFull chrgText;
+    }
+    
+    [StructLayout(LayoutKind.Sequential)]
+    struct Sci_RangeToFormat
+    {
+        IntPtr hdc;
+        IntPtr hdcTarget;
+        RECT rc;
+        RECT rcPage;
+        Sci_CharacterRange chrg;
+    }
+    
+    [StructLayout(LayoutKind.Sequential)]
+    struct Sci_RangeToFormatFull
+    {
+        IntPtr hdc;
+        IntPtr hdcTarget;
+        RECT rc;
+        RECT rcPage;
+        Sci_CharacterRangeFull chrg;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct Sci_NotifyHeader
+    {
+        // Compatible with Windows NMHDR.
+        // hwndFrom is really an environment specific window handle or pointer
+        // but most clients of Scintilla.h do not have this type visible.
+        public IntPtr hwndFrom;
+        public UIntPtr idFrom;
+        public uint code;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct SCNotification
+    {
+        public Sci_NotifyHeader nmhdr;
+
+        /// <summary>
+        /// Used by: SCN_STYLENEEDED, SCN_DOUBLECLICK, SCN_MODIFIED, SCN_MARGINCLICK, SCN_MARGINRIGHTCLICK, SCN_NEEDSHOWN, SCN_DWELLSTART, SCN_DWELLEND, SCN_CALLTIPCLICK, SCN_HOTSPOTCLICK, SCN_HOTSPOTDOUBLECLICK, SCN_HOTSPOTRELEASECLICK, SCN_INDICATORCLICK, SCN_INDICATORRELEASE, SCN_USERLISTSELECTION, SCN_AUTOCCOMPLETED, SCN_AUTOCSELECTION, SCN_AUTOCSELECTIONCHANGE
+        /// </summary>
+        public IntPtr position;
+
+        /// <summary>
+        /// Used by: SCN_CHARADDED, SCN_KEY, SCN_AUTOCCOMPLETED, SCN_AUTOCSELECTION, SCN_USERLISTSELECTION
+        /// </summary>
+        public int ch;
+
+        /// <summary>
+        /// Used by: SCN_KEY, SCN_DOUBLECLICK, SCN_HOTSPOTCLICK, SCN_HOTSPOTDOUBLECLICK, SCN_HOTSPOTRELEASECLICK, SCN_INDICATORCLICK, SCN_INDICATORRELEASE, SCN_MARGINCLICK, SCN_MARGINRIGHTCLICK
+        /// </summary>
+        public int modifiers;
+
+        /// <summary>
+        /// Used by: SCN_MODIFIED
+        /// </summary>
+        public int modificationType;
+
+        /// <summary>
+        /// Used by: SCN_MODIFIED, SCN_USERLISTSELECTION, SCN_URIDROPPED, SCN_AUTOCCOMPLETED, SCN_AUTOCSELECTION, SCN_AUTOCSELECTIONCHANGE
+        /// </summary>
+        public IntPtr text;
+
+        /// <summary>
+        /// Used by: SCN_MODIFIED
+        /// </summary>
+        public IntPtr length;
+
+        /// <summary>
+        /// Used by: SCN_MODIFIED
+        /// </summary>
+        public IntPtr linesAdded;
+
+        /// <summary>
+        /// Used by: SCN_MACRORECORD
+        /// </summary>
+        public int message;
+
+        /// <summary>
+        /// Used by: SCN_MACRORECORD
+        /// </summary>
+        public UIntPtr wParam;
+
+        /// <summary>
+        /// Used by: SCN_MACRORECORD
+        /// </summary>
+        public IntPtr lParam;
+
+        /// <summary>
+        /// Used by: SCN_MODIFIED
+        /// </summary>
+        public IntPtr line;
+
+        /// <summary>
+        /// Used by: SCN_MODIFIED
+        /// </summary>
+        public int foldLevelNow;
+
+        /// <summary>
+        /// Used by: SCN_MODIFIED
+        /// </summary>
+        public int foldLevelPrev;
+
+        /// <summary>
+        /// Used by: SCN_MARGINCLICK, SCN_MARGINRIGHTCLICK
+        /// </summary>
+        public int margin;
+
+        /// <summary>
+        /// Used by: SCN_USERLISTSELECTION, SCN_AUTOCSELECTIONCHANGE
+        /// </summary>
+        public int listType;
+
+        /// <summary>
+        /// Used by: SCN_DWELLSTART, SCN_DWELLEND
+        /// </summary>
+        public int x;
+
+        /// <summary>
+        /// Used by: SCN_DWELLSTART, SCN_DWELLEND
+        /// </summary>
+        public int y;
+
+        /// <summary>
+        /// Used by: SCN_MODIFIED with SC_MOD_CONTAINER
+        /// </summary>
+        public int token;
+
+        /// <summary>
+        /// Used by: SCN_MODIFIED with SC_MOD_CHANGEANNOTATION
+        /// </summary>
+        public IntPtr annotationLinesAdded;
+
+        /// <summary>
+        /// Used by: SCN_UPDATEUI
+        /// </summary>
+        public int updated;
+
+        /// <summary>
+        /// Used by: SCN_AUTOCSELECTION, SCN_AUTOCCOMPLETED, SCN_USERLISTSELECTION
+        /// </summary>
+        public int listCompletionMethod;
+
+        /// <summary>
+        /// Used by: SCN_CHARADDED
+        /// </summary>
+        public int characterSource;
+    }
+
+<#
+using (StreamReader s = new(this.Host.ResolvePath("Scintilla.iface")))
+{
+    foreach (var code in ApiTools.GenerateConstants(ApiTools.Read(s)))
+    {
+#>    <#=code#>
+<#
+    }
+}
+#>
+}

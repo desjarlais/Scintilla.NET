@@ -8,20 +8,20 @@ public enum StyleCase
     /// <summary>
     /// Display the text normally.
     /// </summary>
-    Mixed = NativeMethods.SC_CASE_MIXED,
+    Mixed = SciApi.SC_CASE_MIXED,
 
     /// <summary>
     /// Display the text in upper case.
     /// </summary>
-    Upper = NativeMethods.SC_CASE_UPPER,
+    Upper = SciApi.SC_CASE_UPPER,
 
     /// <summary>
     /// Display the text in lower case.
     /// </summary>
-    Lower = NativeMethods.SC_CASE_LOWER,
+    Lower = SciApi.SC_CASE_LOWER,
 
     /// <summary>
     /// Display the text in camel case.
     /// </summary>
-    Camel = NativeMethods.SC_CASE_CAMEL,
+    Camel = SciApi.SC_CASE_CAMEL,
 }

@@ -42,7 +42,7 @@ public class ModificationEventArgs : BeforeModificationEventArgs
     /// <param name="byteLength">The length in bytes of the inserted or deleted text.</param>
     /// <param name="text">>A pointer to the text inserted or deleted.</param>
     /// <param name="linesAdded">The number of lines added or removed (delta).</param>
-    public ModificationEventArgs(Scintilla scintilla, ModificationSource source, int bytePosition, int byteLength, IntPtr text, int linesAdded) : base(scintilla, source, bytePosition, byteLength, text)
+    public ModificationEventArgs(Scintilla scintilla, ModificationFlags source, int bytePosition, int byteLength, IntPtr text, int linesAdded) : base(scintilla, source, bytePosition, byteLength, text)
     {
         this.scintilla = scintilla;
         this.bytePosition = bytePosition;

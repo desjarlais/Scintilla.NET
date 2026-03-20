@@ -7,25 +7,30 @@ namespace ScintillaNET;
 /// </summary>
 /// <remarks>This enumeration has a FlagsAttribute attribute that allows a bitwise combination of its member values.</remarks>
 [Flags]
-public enum UpdateChange
+public enum UpdateChange : uint
 {
     /// <summary>
-    /// Contents, styling or markers have been changed.
+    /// Value without any changes.
     /// </summary>
-    Content = NativeMethods.SC_UPDATE_CONTENT,
+    None = SciApi.SC_UPDATE_NONE,
 
     /// <summary>
-    /// Selection has been changed.
+    /// Contents, styling or markers may have been changed.
     /// </summary>
-    Selection = NativeMethods.SC_UPDATE_SELECTION,
+    Content = SciApi.SC_UPDATE_CONTENT,
 
     /// <summary>
-    /// Scrolled vertically.
+    /// Selection may have been changed.
     /// </summary>
-    VScroll = NativeMethods.SC_UPDATE_V_SCROLL,
+    Selection = SciApi.SC_UPDATE_SELECTION,
 
     /// <summary>
-    /// Scrolled horizontally.
+    /// May have scrolled vertically.
     /// </summary>
-    HScroll = NativeMethods.SC_UPDATE_H_SCROLL,
+    VScroll = SciApi.SC_UPDATE_V_SCROLL,
+
+    /// <summary>
+    /// May have scrolled horizontally.
+    /// </summary>
+    HScroll = SciApi.SC_UPDATE_H_SCROLL,
 }
