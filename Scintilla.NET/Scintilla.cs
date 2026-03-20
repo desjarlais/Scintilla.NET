@@ -1880,20 +1880,6 @@ namespace ScintillaNET
         }
 
         /// <summary>
-        /// Loads a <see cref="Scintilla" /> compatible lexer from an external DLL.
-        /// </summary>
-        /// <param name="path">The path to the external lexer DLL.</param>
-        public unsafe void LoadLexerLibrary(string path)
-        {
-            if (string.IsNullOrEmpty(path))
-                return;
-
-            byte[] bytes = Helpers.GetBytes(path, Encoding.Default, zeroTerminated: true);
-            fixed (byte* bp = bytes)
-                DirectMessage(NativeMethods.SCI_LOADLEXERLIBRARY, IntPtr.Zero, new IntPtr(bp));
-        }
-
-        /// <summary>
         /// Removes the specified marker from all lines.
         /// </summary>
         /// <param name="marker">The zero-based <see cref="Marker" /> index to remove from all lines, or -1 to remove all markers from all lines.</param>
@@ -5368,19 +5354,6 @@ namespace ScintillaNET
                 {
                     DirectMessage(NativeMethods.SCI_GETLEXERLANGUAGE, IntPtr.Zero, new IntPtr(bp));
                     return Helpers.GetString(new IntPtr(bp), length, Encoding.ASCII);
-                }
-            }
-            set
-            {
-                if (string.IsNullOrEmpty(value))
-                {
-                    DirectMessage(NativeMethods.SCI_SETLEXERLANGUAGE, IntPtr.Zero, IntPtr.Zero);
-                }
-                else
-                {
-                    byte[] bytes = Helpers.GetBytes(value, Encoding.ASCII, zeroTerminated: true);
-                    fixed (byte* bp = bytes)
-                        DirectMessage(NativeMethods.SCI_SETLEXERLANGUAGE, IntPtr.Zero, new IntPtr(bp));
                 }
             }
         }
