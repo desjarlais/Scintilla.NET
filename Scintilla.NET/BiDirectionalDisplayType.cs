@@ -1,4 +1,4 @@
-namespace ScintillaNET;
+﻿namespace ScintillaNET;
 
 /// <summary>
 /// The display type for the <see cref="Scintilla.BiDirectionality"/> property.

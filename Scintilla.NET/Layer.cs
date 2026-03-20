@@ -1,4 +1,4 @@
-namespace ScintillaNET;
+﻿namespace ScintillaNET;
 
 /// <summary>
 /// The layer on which a <see cref="Scintilla"/> control will draw elements like for example the text selection.
