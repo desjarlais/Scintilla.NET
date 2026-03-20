@@ -2020,9 +2020,6 @@ public static class NativeMethods
     public static string GetMessageBoxString(uint msgId) =>
         Marshal.PtrToStringUni(MB_GetString(msgId));
 
-    [DllImport("kernel32.dll", EntryPoint = "RtlMoveMemory", SetLastError = true)]
-    public static extern void MoveMemory(IntPtr dest, IntPtr src, int length);
-
     #endregion Functions
 
     #region Structures
