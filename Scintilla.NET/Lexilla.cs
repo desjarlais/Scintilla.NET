@@ -31,8 +31,7 @@ public class Lexilla
                 new Win32Exception()); // Calls GetLastError
         }
 
-        createLexer = (NativeMethods.CreateLexer)Marshal.GetDelegateForFunctionPointer(
-            functionPointer, typeof(NativeMethods.CreateLexer));
+        createLexer = Marshal.GetDelegateForFunctionPointer<NativeMethods.CreateLexer>(functionPointer);
 
         lpProcName = nameof(NativeMethods.GetLexerName);
 
@@ -43,8 +42,7 @@ public class Lexilla
                 new Win32Exception()); // Calls GetLastError
         }
 
-        getLexerName = (NativeMethods.GetLexerName)Marshal.GetDelegateForFunctionPointer(
-            functionPointer, typeof(NativeMethods.GetLexerName));
+        getLexerName = Marshal.GetDelegateForFunctionPointer<NativeMethods.GetLexerName>(functionPointer);
 
         lpProcName = nameof(NativeMethods.GetLexerCount);
 
@@ -55,9 +53,9 @@ public class Lexilla
                 new Win32Exception()); // Calls GetLastError
         }
 
-        getLexerCount = (NativeMethods.GetLexerCount)Marshal.GetDelegateForFunctionPointer(
-            functionPointer, typeof(NativeMethods.GetLexerCount));
+        getLexerCount = Marshal.GetDelegateForFunctionPointer<NativeMethods.GetLexerCount>(functionPointer);
 
+        #pragma warning disable CS0618 // Type or member is obsolete
         lpProcName = nameof(NativeMethods.LexerNameFromID);
 
         functionPointer = PInvoke.GetProcAddress(lexillaHandle, lpProcName);
@@ -67,8 +65,8 @@ public class Lexilla
                 new Win32Exception()); // Calls GetLastError
         }
 
-        lexerNameFromId = (NativeMethods.LexerNameFromID)Marshal.GetDelegateForFunctionPointer(
-            functionPointer, typeof(NativeMethods.LexerNameFromID));
+        lexerNameFromId = Marshal.GetDelegateForFunctionPointer<NativeMethods.LexerNameFromID>(functionPointer);
+        #pragma warning restore CS0618 // Type or member is obsolete
 
         //initialized = true;
     }
