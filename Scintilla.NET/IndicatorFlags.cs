@@ -19,5 +19,5 @@ public enum IndicatorFlags
     /// and will use that instead of the value specified in the <see cref="Indicator.ForeColor" /> property. This allows
     /// an indicator to display more than one color.
     /// </summary>
-    ValueFore = NativeMethods.SC_INDICFLAG_VALUEFORE
+    ValueFore = NativeMethods.SC_INDICFLAG_VALUEFORE,
 }

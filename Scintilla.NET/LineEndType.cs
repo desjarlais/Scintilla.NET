@@ -19,5 +19,5 @@ public enum LineEndType
     /// <summary>
     /// Unicode line endings. Next Line (0x0085); Line Separator (0x2028); Paragraph Separator (0x2029).
     /// </summary>
-    Unicode = NativeMethods.SC_LINE_END_TYPE_UNICODE
+    Unicode = NativeMethods.SC_LINE_END_TYPE_UNICODE,
 }

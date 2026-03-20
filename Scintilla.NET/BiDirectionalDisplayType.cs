@@ -18,5 +18,5 @@ public enum BiDirectionalDisplayType
     /// <summary>
     /// The bi-directional display type is right-to-left.
     /// </summary>
-    RightToLeft = NativeMethods.SC_BIDIRECTIONAL_R2L
+    RightToLeft = NativeMethods.SC_BIDIRECTIONAL_R2L,
 }

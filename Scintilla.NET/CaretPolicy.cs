@@ -37,5 +37,5 @@ public enum CaretPolicy
     /// the beginning of lines, where most code reside, and the lines after the caret, for example,
     /// the body of a function.
     /// </summary>
-    Even = NativeMethods.CARET_EVEN
+    Even = NativeMethods.CARET_EVEN,
 }

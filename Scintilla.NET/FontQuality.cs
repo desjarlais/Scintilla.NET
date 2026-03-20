@@ -24,5 +24,5 @@ public enum FontQuality
     /// <summary>
     /// Specifies that ClearType anti-aliasing should be used when rendering text, if the font supports it.
     /// </summary>
-    LcdOptimized = NativeMethods.SC_EFF_QUALITY_LCD_OPTIMIZED
+    LcdOptimized = NativeMethods.SC_EFF_QUALITY_LCD_OPTIMIZED,
 }

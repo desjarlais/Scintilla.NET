@@ -19,5 +19,5 @@ public enum Phases
     /// Drawing is done in multiple phases; once for each feature. This is the slowest but allows
     /// extreme ascenders and descenders to overflow into adjacent lines.
     /// </summary>
-    Multiple = NativeMethods.SC_PHASES_MULTIPLE
+    Multiple = NativeMethods.SC_PHASES_MULTIPLE,
 }

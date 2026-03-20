@@ -18,5 +18,5 @@ public enum FoldAction
     /// <summary>
     /// Toggle between contracted and expanded.
     /// </summary>
-    Toggle = NativeMethods.SC_FOLDACTION_TOGGLE
+    Toggle = NativeMethods.SC_FOLDACTION_TOGGLE,
 }

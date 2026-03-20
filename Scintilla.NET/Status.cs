@@ -23,5 +23,5 @@ public enum Status
     /// <summary>
     /// Regular expression is invalid.
     /// </summary>
-    WarnRegex = NativeMethods.SC_STATUS_WARN_REGEX
+    WarnRegex = NativeMethods.SC_STATUS_WARN_REGEX,
 }

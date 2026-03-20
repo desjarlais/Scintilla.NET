@@ -19,5 +19,5 @@ public enum Layer
     /// <summary>
     /// Draw the selection background translucently over the text.
     /// </summary>
-    OverText = NativeMethods.SC_LAYER_OVER_TEXT
+    OverText = NativeMethods.SC_LAYER_OVER_TEXT,
 }

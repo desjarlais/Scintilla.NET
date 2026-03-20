@@ -18,5 +18,5 @@ public enum PropertyType
     /// <summary>
     /// A string property.
     /// </summary>
-    String = NativeMethods.SC_TYPE_STRING
+    String = NativeMethods.SC_TYPE_STRING,
 }

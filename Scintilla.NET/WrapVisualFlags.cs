@@ -27,5 +27,5 @@ public enum WrapVisualFlags
     /// <summary>
     /// A visual indicator is displayed in the number margin.
     /// </summary>
-    Margin = NativeMethods.SC_WRAPVISUALFLAG_MARGIN
+    Margin = NativeMethods.SC_WRAPVISUALFLAG_MARGIN,
 }

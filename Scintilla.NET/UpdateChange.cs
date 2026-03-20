@@ -27,5 +27,5 @@ public enum UpdateChange
     /// <summary>
     /// Scrolled horizontally.
     /// </summary>
-    HScroll = NativeMethods.SC_UPDATE_H_SCROLL
+    HScroll = NativeMethods.SC_UPDATE_H_SCROLL,
 }

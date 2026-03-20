@@ -27,5 +27,5 @@ public enum AutomaticFold
     /// <summary>
     /// Show lines as needed when the fold structure is changed.
     /// </summary>
-    Change = NativeMethods.SC_AUTOMATICFOLD_CHANGE
+    Change = NativeMethods.SC_AUTOMATICFOLD_CHANGE,
 }

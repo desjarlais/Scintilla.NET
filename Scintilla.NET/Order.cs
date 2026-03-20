@@ -18,5 +18,5 @@ public enum Order
     /// <summary>
     /// User-defined order.
     /// </summary>
-    Custom = NativeMethods.SC_ORDER_CUSTOM
+    Custom = NativeMethods.SC_ORDER_CUSTOM,
 }

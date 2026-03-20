@@ -23,5 +23,5 @@ public enum WrapMode
     /// <summary>
     /// Lines are wrapped on whitespace.
     /// </summary>
-    Whitespace = NativeMethods.SC_WRAP_WHITESPACE
+    Whitespace = NativeMethods.SC_WRAP_WHITESPACE,
 }

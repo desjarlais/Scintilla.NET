@@ -18,5 +18,5 @@ public enum CaretStyle
     /// <summary>
     /// The caret is drawn as a block.
     /// </summary>
-    Block = NativeMethods.CARETSTYLE_BLOCK
+    Block = NativeMethods.CARETSTYLE_BLOCK,
 }

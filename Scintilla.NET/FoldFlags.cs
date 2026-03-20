@@ -38,5 +38,5 @@ public enum FoldFlags
     /// Displays the hexadecimal line state in the margin to aid with debugging. This flag
     /// cannot be used at the same time as the <see cref="LevelNumbers" /> flag.
     /// </summary>
-    LineState = NativeMethods.SC_FOLDFLAG_LINESTATE
+    LineState = NativeMethods.SC_FOLDFLAG_LINESTATE,
 }

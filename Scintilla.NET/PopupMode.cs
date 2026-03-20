@@ -21,5 +21,5 @@ public enum PopupMode
     /// </summary>
     /// <remarks>To receive the <see cref="Scintilla.MarginRightClick" /> event, this value must be used.</remarks>
     /// <seealso cref="Scintilla.MarginRightClick" />
-    Text = NativeMethods.SC_POPUP_TEXT
+    Text = NativeMethods.SC_POPUP_TEXT,
 }

@@ -19,5 +19,5 @@ public enum WrapIndentMode
     /// <summary>
     /// Wrapped sublines are aligned to first subline indent plus one more level of indentation.
     /// </summary>
-    Indent = NativeMethods.SC_WRAPINDENT_INDENT
+    Indent = NativeMethods.SC_WRAPINDENT_INDENT,
 }

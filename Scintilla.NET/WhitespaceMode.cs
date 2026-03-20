@@ -24,5 +24,5 @@ public enum WhitespaceMode
     /// <summary>
     /// Whitespace used for indentation is displayed as dots and arrows.
     /// </summary>
-    VisibleOnlyIndent = NativeMethods.SCWS_VISIBLEONLYININDENT
+    VisibleOnlyIndent = NativeMethods.SCWS_VISIBLEONLYININDENT,
 }

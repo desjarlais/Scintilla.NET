@@ -13,5 +13,5 @@ public enum MultiPaste
     /// <summary>
     /// Pasting into multiple selections pastes into each selection.
     /// </summary>
-    Each = NativeMethods.SC_MULTIPASTE_EACH
+    Each = NativeMethods.SC_MULTIPASTE_EACH,
 }

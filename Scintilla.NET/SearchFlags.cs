@@ -49,5 +49,5 @@ public enum SearchFlags
     /// Regular expressions will only match ranges within a single line, never matching over multiple lines.
     /// Must also have <see cref="Regex"/> set.
     /// </summary>
-    Cxx11Regex = NativeMethods.SCFIND_CXX11REGEX
+    Cxx11Regex = NativeMethods.SCFIND_CXX11REGEX,
 }

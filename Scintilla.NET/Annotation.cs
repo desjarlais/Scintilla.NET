@@ -23,5 +23,5 @@ public enum Annotation
     /// <summary>
     /// Annotations are indented to match the text.
     /// </summary>
-    Indented = NativeMethods.ANNOTATION_INDENTED
+    Indented = NativeMethods.ANNOTATION_INDENTED,
 }

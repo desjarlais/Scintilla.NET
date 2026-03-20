@@ -23,5 +23,5 @@ public enum StyleCase
     /// <summary>
     /// Display the text in camel case.
     /// </summary>
-    Camel = NativeMethods.SC_CASE_CAMEL
+    Camel = NativeMethods.SC_CASE_CAMEL,
 }

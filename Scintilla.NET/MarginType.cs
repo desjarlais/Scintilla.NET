@@ -38,5 +38,5 @@ public enum MarginType
     /// <summary>
     /// Margin can display symbols and has a background color specified using the <see cref="Margin.BackColor" /> property.
     /// </summary>
-    Color = NativeMethods.SC_MARGIN_COLOUR
+    Color = NativeMethods.SC_MARGIN_COLOUR,
 }

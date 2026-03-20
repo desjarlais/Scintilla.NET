@@ -13,5 +13,5 @@ public enum MarginCursor
     /// <summary>
     /// A reversed arrow.
     /// </summary>
-    ReverseArrow = NativeMethods.SC_CURSORREVERSEARROW
+    ReverseArrow = NativeMethods.SC_CURSORREVERSEARROW,
 }

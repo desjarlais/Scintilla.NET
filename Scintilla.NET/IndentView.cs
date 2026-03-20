@@ -27,5 +27,5 @@ public enum IndentView
     /// Indentation guides are shown beyond the actual indentation up to the level of the next non-empty line or previous non-empty line whichever is the greater.
     /// This setting is good for most languages.
     /// </summary>
-    LookBoth = NativeMethods.SC_IV_LOOKBOTH
+    LookBoth = NativeMethods.SC_IV_LOOKBOTH,
 }

@@ -27,5 +27,5 @@ public enum VirtualSpace
     /// <summary>
     /// Prevents left arrow movement and selection from wrapping to the previous line.
     /// </summary>
-    NoWrapLineStart = NativeMethods.SCVS_NOWRAPLINESTART
+    NoWrapLineStart = NativeMethods.SCVS_NOWRAPLINESTART,
 }

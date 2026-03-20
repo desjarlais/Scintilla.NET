@@ -17,5 +17,5 @@ public enum MarginOptions
     /// <summary>
     /// Lines selected by clicking on the margin will select only the subline of wrapped text.
     /// </summary>
-    SublineSelect = NativeMethods.SC_MARGINOPTION_SUBLINESELECT
+    SublineSelect = NativeMethods.SC_MARGINOPTION_SUBLINESELECT,
 }

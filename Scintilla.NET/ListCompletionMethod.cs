@@ -29,5 +29,5 @@ public enum ListCompletionMethod
     /// <summary>
     /// The <see cref="Scintilla.AutoCSelect" /> method triggered the completion.
     /// </summary>
-    Command = NativeMethods.SC_AC_COMMAND
+    Command = NativeMethods.SC_AC_COMMAND,
 }

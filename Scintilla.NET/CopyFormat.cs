@@ -21,5 +21,5 @@ public enum CopyFormat
     /// <summary>
     /// Copies text to the clipboard in HyperText Markup Language (HTML) format.
     /// </summary>
-    Html = 1 << 2
+    Html = 1 << 2,
 }

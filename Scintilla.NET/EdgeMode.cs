@@ -24,5 +24,5 @@ public enum EdgeMode
     /// Similar to <see cref="Line" /> except allows for multiple vertical lines to be visible using the <see cref="Scintilla.MultiEdgeAddLine" /> method.
     /// </summary>
     /// <remarks><see cref="Line" /> and <see cref="Scintilla.EdgeColumn" /> are completely independant of this mode.</remarks>
-    MultiLine = NativeMethods.EDGE_MULTILINE
+    MultiLine = NativeMethods.EDGE_MULTILINE,
 }

@@ -29,5 +29,5 @@ public enum BorderStyle
     /// A three-dimensional border. When visual styles are enabled, the border is displayed like that of a <see cref="TextBox"/>.
     /// When visual styles are not enabled, this is equivalent to <see cref="Fixed3D"/>.
     /// </summary>
-    Fixed3DVisualStyles
+    Fixed3DVisualStyles,
 }

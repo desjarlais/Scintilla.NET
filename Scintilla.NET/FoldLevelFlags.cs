@@ -17,5 +17,5 @@ public enum FoldLevelFlags
     /// <summary>
     /// Indicates that the line is a header (fold point).
     /// </summary>
-    Header = NativeMethods.SC_FOLDLEVELHEADERFLAG
+    Header = NativeMethods.SC_FOLDLEVELHEADERFLAG,
 }
