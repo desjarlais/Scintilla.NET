@@ -1016,15 +1016,23 @@ namespace ScintillaNET
                     if (IsHandleCreated)
                         DestroyHandle();
                 }
+            }
 
-                if (this.fillUpChars != IntPtr.Zero)
-                {
-                    Marshal.FreeHGlobal(this.fillUpChars);
-                    this.fillUpChars = IntPtr.Zero;
-                }
+            if (this.fillUpChars != IntPtr.Zero)
+            {
+                Marshal.FreeHGlobal(this.fillUpChars);
+                this.fillUpChars = IntPtr.Zero;
             }
 
             base.Dispose(disposing);
+        }
+
+        /// <summary>
+        /// Releases unmanaged resources held by this instance.
+        /// </summary>
+        ~Scintilla()
+        {
+            Dispose(false);
         }
 
         /// <summary>
