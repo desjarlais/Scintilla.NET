@@ -77,7 +77,7 @@ internal sealed unsafe class NativeMemoryStream : Stream
         if (this.position + count > this.capacity)
         {
             // Realloc buffer
-            int minCapacity = this.position + count;
+            int minCapacity = checked(this.position + count);
             int newCapacity = checked(this.capacity * 2);
             if (newCapacity < minCapacity)
                 newCapacity = minCapacity;
