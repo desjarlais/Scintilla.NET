@@ -69,7 +69,7 @@ internal sealed unsafe class NativeMemoryStream : Stream
         if (count < 0)
             throw new ArgumentOutOfRangeException(nameof(count), "Non-negative number required.");
         if (buffer.Length - offset < count)
-            throw new ArgumentException("Offset and length were out of bounds for the array or count is greater than the number of elements from index to the end of the source collection.");
+            throw new ArgumentOutOfRangeException($"{nameof(offset)} + {nameof(count)} is outside the bounds of {nameof(buffer)}.");
 
         if (count == 0)
             return;
