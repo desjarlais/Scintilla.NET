@@ -62,11 +62,25 @@ internal sealed unsafe class NativeMemoryStream : Stream
 
     public override void Write(byte[] buffer, int offset, int count)
     {
+        if (buffer is null)
+            throw new ArgumentNullException(nameof(buffer));
+        if (offset < 0)
+            throw new ArgumentOutOfRangeException(nameof(offset), "Non-negative number required.");
+        if (count < 0)
+            throw new ArgumentOutOfRangeException(nameof(count), "Non-negative number required.");
+        if (buffer.Length - offset < count)
+            throw new ArgumentException("Offset and length were out of bounds for the array or count is greater than the number of elements from index to the end of the source collection.");
+
+        if (count == 0)
+            return;
+
         if (this.position + count > this.capacity)
         {
             // Realloc buffer
             int minCapacity = this.position + count;
-            int newCapacity = this.capacity * 2;
+            int newCapacity = this.capacity >= int.MaxValue / 2
+                ? int.MaxValue
+                : checked(this.capacity * 2);
             if (newCapacity < minCapacity)
                 newCapacity = minCapacity;
 
