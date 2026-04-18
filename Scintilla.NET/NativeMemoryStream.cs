@@ -82,11 +82,7 @@ internal sealed unsafe class NativeMemoryStream : Stream
             if (newCapacity < minCapacity)
                 newCapacity = minCapacity;
 
-            IntPtr newPtr = Marshal.AllocHGlobal(newCapacity);
-            NativeMethods.MoveMemory(newPtr, Pointer, this.length);
-            Marshal.FreeHGlobal(Pointer);
-
-            Pointer = newPtr;
+            Pointer = Marshal.ReAllocHGlobal(Pointer, new IntPtr(newCapacity));
             this.capacity = newCapacity;
         }
 
