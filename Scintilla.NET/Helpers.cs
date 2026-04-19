@@ -455,6 +455,7 @@ internal static class Helpers
             // Yes, we swallow any exceptions. That may seem like code smell but this matches
             // the behavior of the Clipboard class, Windows Forms controls, and native Scintilla.
             Debug.Fail(ex.Message, ex.ToString());
+            Trace.TraceError("[ScintillaNET] CopyHtml failed: {0}", ex);
         }
     }
 
@@ -738,6 +739,7 @@ internal static class Helpers
             // Yes, we swallow any exceptions. That may seem like code smell but this matches
             // the behavior of the Clipboard class, Windows Forms controls, and native Scintilla.
             Debug.Fail(ex.Message, ex.ToString());
+            Trace.TraceError("[ScintillaNET] CopyRtf failed: {0}", ex);
         }
     }
 
