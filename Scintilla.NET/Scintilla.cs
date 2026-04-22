@@ -26,10 +26,25 @@ namespace ScintillaNET
             List<string> searchedPathList = [];
             foreach (string path in EnumerateSatelliteLibrarySearchPaths())
             {
+
                 string scintillaDllPath = Path.Combine(path, "Scintilla.dll");
                 string lexillaDllPath = Path.Combine(path, "Lexilla.dll");
                 if (File.Exists(scintillaDllPath) && File.Exists(lexillaDllPath))
                 {
+
+                    // Verify Authenticode signatures before trusting native DLLs
+                    if (!AuthenticodeHelper.HasValidSignature(scintillaDllPath))
+                    {
+                        searchedPathList.Add(path + " (Scintilla.dll signature invalid)");
+                        continue;
+                    }
+
+                    if (!AuthenticodeHelper.HasValidSignature(lexillaDllPath))
+                    {
+                        searchedPathList.Add(path + " (Lexilla.dll signature invalid)");
+                        continue;
+                    }
+
                     modulePathScintilla = scintillaDllPath;
                     modulePathLexilla = lexillaDllPath;
                     try
