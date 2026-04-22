@@ -62,19 +62,27 @@ internal sealed unsafe class NativeMemoryStream : Stream
 
     public override void Write(byte[] buffer, int offset, int count)
     {
+        if (buffer is null)
+            throw new ArgumentNullException(nameof(buffer));
+        if (offset < 0)
+            throw new ArgumentOutOfRangeException(nameof(offset), "Non-negative number required.");
+        if (count < 0)
+            throw new ArgumentOutOfRangeException(nameof(count), "Non-negative number required.");
+        if (buffer.Length - offset < count)
+            throw new ArgumentOutOfRangeException($"{nameof(offset)} + {nameof(count)} is outside the bounds of {nameof(buffer)}.");
+
+        if (count == 0)
+            return;
+
         if (this.position + count > this.capacity)
         {
             // Realloc buffer
-            int minCapacity = this.position + count;
-            int newCapacity = this.capacity * 2;
+            int minCapacity = checked(this.position + count);
+            int newCapacity = checked(this.capacity * 2);
             if (newCapacity < minCapacity)
                 newCapacity = minCapacity;
 
-            IntPtr newPtr = Marshal.AllocHGlobal(newCapacity);
-            NativeMethods.MoveMemory(newPtr, Pointer, this.length);
-            Marshal.FreeHGlobal(Pointer);
-
-            Pointer = newPtr;
+            Pointer = Marshal.ReAllocHGlobal(Pointer, new IntPtr(newCapacity));
             this.capacity = newCapacity;
         }
 
