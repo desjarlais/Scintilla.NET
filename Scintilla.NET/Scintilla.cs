@@ -1045,14 +1045,6 @@ public class Scintilla : Control
     }
 
     /// <summary>
-    /// Releases unmanaged resources held by this instance.
-    /// </summary>
-    ~Scintilla()
-    {
-        Dispose(false);
-    }
-
-    /// <summary>
     /// Returns the zero-based document line index from the specified display line index.
     /// </summary>
     /// <param name="displayLine">The zero-based display line index.</param>
