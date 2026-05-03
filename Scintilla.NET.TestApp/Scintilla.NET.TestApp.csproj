@@ -1,8 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net462</TargetFramework>
+    <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
   </PropertyGroup>
   <Import Project="Scintilla.NET.TestApp-Common.targets" />
+  <ItemGroup>
+    <PackageReference Include="System.Resources.Extensions" Version="10.0.7" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Scintilla.NET\Scintilla.NET.csproj" />
   </ItemGroup>
