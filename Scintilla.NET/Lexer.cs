@@ -1,4 +1,4 @@
-namespace ScintillaNET;
+﻿namespace ScintillaNET;
 
 /// <summary>
 /// Supported lexer names helper.

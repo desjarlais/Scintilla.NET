@@ -37,7 +37,7 @@ public class SelectionCollection : IEnumerable<Selection>
     {
         get
         {
-            return this.scintilla.DirectMessage(NativeMethods.SCI_GETSELECTIONS).ToInt32();
+            return this.scintilla.DirectMessage(SciApi.SCI_GETSELECTIONS).ToInt32();
         }
     }
 
@@ -49,7 +49,7 @@ public class SelectionCollection : IEnumerable<Selection>
     {
         get
         {
-            return this.scintilla.DirectMessage(NativeMethods.SCI_GETSELECTIONEMPTY) != IntPtr.Zero;
+            return this.scintilla.DirectMessage(SciApi.SCI_GETSELECTIONEMPTY) != IntPtr.Zero;
         }
     }
 

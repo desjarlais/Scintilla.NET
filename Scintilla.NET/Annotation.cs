@@ -8,20 +8,20 @@ public enum Annotation
     /// <summary>
     /// Annotations are not displayed. This is the default.
     /// </summary>
-    Hidden = NativeMethods.ANNOTATION_HIDDEN,
+    Hidden = SciApi.ANNOTATION_HIDDEN,
 
     /// <summary>
     /// Annotations are drawn left justified with no adornment.
     /// </summary>
-    Standard = NativeMethods.ANNOTATION_STANDARD,
+    Standard = SciApi.ANNOTATION_STANDARD,
 
     /// <summary>
     /// Annotations are indented to match the text and are surrounded by a box.
     /// </summary>
-    Boxed = NativeMethods.ANNOTATION_BOXED,
+    Boxed = SciApi.ANNOTATION_BOXED,
 
     /// <summary>
     /// Annotations are indented to match the text.
     /// </summary>
-    Indented = NativeMethods.ANNOTATION_INDENTED
+    Indented = SciApi.ANNOTATION_INDENTED,
 }

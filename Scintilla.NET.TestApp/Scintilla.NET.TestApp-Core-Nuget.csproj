@@ -1,0 +1,10 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <ForceDesignerDpiUnaware>true</ForceDesignerDpiUnaware>
+  </PropertyGroup>
+  <Import Project="Scintilla.NET.TestApp-Common.targets" />
+  <ItemGroup>
+    <PackageReference Include="Scintilla5.NET" Version="*-*" />
+  </ItemGroup>
+</Project>

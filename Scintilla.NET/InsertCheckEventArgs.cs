@@ -47,7 +47,7 @@ public class InsertCheckEventArgs : EventArgs
 
             byte[] bytes = Helpers.GetBytes(CachedText, this.scintilla.Encoding, zeroTerminated: false);
             fixed (byte* bp = bytes)
-                this.scintilla.DirectMessage(NativeMethods.SCI_CHANGEINSERTION, new IntPtr(bytes.Length), new IntPtr(bp));
+                this.scintilla.DirectMessage(SciApi.SCI_CHANGEINSERTION, new IntPtr(bytes.Length), new IntPtr(bp));
         }
     }
 

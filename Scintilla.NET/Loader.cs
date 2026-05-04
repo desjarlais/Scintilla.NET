@@ -20,7 +20,7 @@ internal sealed class Loader : ILoader
             fixed (byte* bp = bytes)
             {
                 int status = IntPtr.Size == 4 ? this.loader32.AddData(this.self, bp, bytes.Length) : this.loader64.AddData(this.self, bp, bytes.Length);
-                if (status != NativeMethods.SC_STATUS_OK)
+                if (status != SciApi.SC_STATUS_OK)
                     return false;
             }
         }

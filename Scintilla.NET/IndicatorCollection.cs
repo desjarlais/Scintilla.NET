@@ -39,7 +39,7 @@ public class IndicatorCollection : IEnumerable<Indicator>
     {
         get
         {
-            return NativeMethods.INDICATOR_MAX + 1;
+            return SciApi.INDICATOR_MAX + 1;
         }
     }
 

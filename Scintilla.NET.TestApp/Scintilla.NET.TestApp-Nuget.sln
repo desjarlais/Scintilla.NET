@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.9.34728.123
+# Visual Studio Version 18
+VisualStudioVersion = 18.3.11527.330
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Scintilla.NET.TestApp", "Scintilla.NET.TestApp-Nuget.csproj", "{F25685EC-098A-4080-95A9-445268609806}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Scintilla.NET.TestApp", "Scintilla.NET.TestApp-Nuget.csproj", "{F25685EC-098A-4080-95A9-445268609806}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

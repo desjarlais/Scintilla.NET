@@ -20,12 +20,12 @@ public class Indicator
     /// An OR mask to use with <see cref="Scintilla.IndicatorValue" /> and <see cref="IndicatorFlags.ValueFore" /> to indicate
     /// that the user-defined indicator value should be treated as a RGB color.
     /// </summary>
-    public const int ValueBit = NativeMethods.SC_INDICVALUEBIT;
+    public const uint ValueBit = SciApi.SC_INDICVALUEBIT;
 
     /// <summary>
     /// An AND mask to use with <see cref="Indicator.ValueAt" /> to retrieve the user-defined value as a RGB color when being treated as such.
     /// </summary>
-    public const int ValueMask = NativeMethods.SC_INDICVALUEMASK;
+    public const uint ValueMask = SciApi.SC_INDICVALUEMASK;
 
     #endregion Constants
 
@@ -46,7 +46,7 @@ public class Indicator
     {
         position = Helpers.Clamp(position, 0, this.scintilla.TextLength);
         position = this.scintilla.Lines.CharToBytePosition(position).BytePosition;
-        position = this.scintilla.DirectMessage(NativeMethods.SCI_INDICATOREND, new IntPtr(Index), new IntPtr(position)).ToInt32();
+        position = this.scintilla.DirectMessage(SciApi.SCI_INDICATOREND, new IntPtr(Index), new IntPtr(position)).ToInt32();
         return this.scintilla.Lines.ByteToCharPosition(position);
     }
 
@@ -65,7 +65,7 @@ public class Indicator
     {
         position = Helpers.Clamp(position, 0, this.scintilla.TextLength);
         position = this.scintilla.Lines.CharToBytePosition(position).RoundToNext;
-        position = this.scintilla.DirectMessage(NativeMethods.SCI_INDICATORSTART, new IntPtr(Index), new IntPtr(position)).ToInt32();
+        position = this.scintilla.DirectMessage(SciApi.SCI_INDICATORSTART, new IntPtr(Index), new IntPtr(position)).ToInt32();
         return this.scintilla.Lines.ByteToCharPosition(position);
     }
 
@@ -79,7 +79,7 @@ public class Indicator
         position = Helpers.Clamp(position, 0, this.scintilla.TextLength);
         position = this.scintilla.Lines.CharToBytePosition(position).BytePosition;
 
-        return this.scintilla.DirectMessage(NativeMethods.SCI_INDICATORVALUEAT, new IntPtr(Index), new IntPtr(position)).ToInt32();
+        return this.scintilla.DirectMessage(SciApi.SCI_INDICATORVALUEAT, new IntPtr(Index), new IntPtr(position)).ToInt32();
     }
 
     #endregion Methods
@@ -97,12 +97,12 @@ public class Indicator
     {
         get
         {
-            return this.scintilla.DirectMessage(NativeMethods.SCI_INDICGETALPHA, new IntPtr(Index)).ToInt32();
+            return this.scintilla.DirectMessage(SciApi.SCI_INDICGETALPHA, new IntPtr(Index)).ToInt32();
         }
         set
         {
             value = Helpers.Clamp(value, 0, 255);
-            this.scintilla.DirectMessage(NativeMethods.SCI_INDICSETALPHA, new IntPtr(Index), new IntPtr(value));
+            this.scintilla.DirectMessage(SciApi.SCI_INDICSETALPHA, new IntPtr(Index), new IntPtr(value));
         }
     }
 
@@ -117,12 +117,12 @@ public class Indicator
     {
         get
         {
-            return (IndicatorFlags)this.scintilla.DirectMessage(NativeMethods.SCI_INDICGETFLAGS, new IntPtr(Index));
+            return (IndicatorFlags)this.scintilla.DirectMessage(SciApi.SCI_INDICGETFLAGS, new IntPtr(Index));
         }
         set
         {
             int flags = (int)value;
-            this.scintilla.DirectMessage(NativeMethods.SCI_INDICSETFLAGS, new IntPtr(Index), new IntPtr(flags));
+            this.scintilla.DirectMessage(SciApi.SCI_INDICSETFLAGS, new IntPtr(Index), new IntPtr(flags));
         }
     }
 
@@ -136,13 +136,13 @@ public class Indicator
     {
         get
         {
-            int color = this.scintilla.DirectMessage(NativeMethods.SCI_INDICGETFORE, new IntPtr(Index)).ToInt32();
+            int color = this.scintilla.DirectMessage(SciApi.SCI_INDICGETFORE, new IntPtr(Index)).ToInt32();
             return HelperMethods.FromWin32ColorOpaque(color);
         }
         set
         {
             int color = HelperMethods.ToWin32ColorOpaque(value);
-            this.scintilla.DirectMessage(NativeMethods.SCI_INDICSETFORE, new IntPtr(Index), new IntPtr(color));
+            this.scintilla.DirectMessage(SciApi.SCI_INDICSETFORE, new IntPtr(Index), new IntPtr(color));
         }
     }
 
@@ -159,13 +159,13 @@ public class Indicator
     {
         get
         {
-            int color = this.scintilla.DirectMessage(NativeMethods.SCI_INDICGETHOVERFORE, new IntPtr(Index)).ToInt32();
+            int color = this.scintilla.DirectMessage(SciApi.SCI_INDICGETHOVERFORE, new IntPtr(Index)).ToInt32();
             return HelperMethods.FromWin32ColorOpaque(color);
         }
         set
         {
             int color = HelperMethods.ToWin32ColorOpaque(value);
-            this.scintilla.DirectMessage(NativeMethods.SCI_INDICSETHOVERFORE, new IntPtr(Index), new IntPtr(color));
+            this.scintilla.DirectMessage(SciApi.SCI_INDICSETHOVERFORE, new IntPtr(Index), new IntPtr(color));
         }
     }
 
@@ -182,12 +182,12 @@ public class Indicator
     {
         get
         {
-            return (IndicatorStyle)this.scintilla.DirectMessage(NativeMethods.SCI_INDICGETHOVERSTYLE, new IntPtr(Index));
+            return (IndicatorStyle)this.scintilla.DirectMessage(SciApi.SCI_INDICGETHOVERSTYLE, new IntPtr(Index));
         }
         set
         {
             int style = (int)value;
-            this.scintilla.DirectMessage(NativeMethods.SCI_INDICSETHOVERSTYLE, new IntPtr(Index), new IntPtr(style));
+            this.scintilla.DirectMessage(SciApi.SCI_INDICSETHOVERSTYLE, new IntPtr(Index), new IntPtr(style));
         }
     }
 
@@ -208,12 +208,12 @@ public class Indicator
     {
         get
         {
-            return this.scintilla.DirectMessage(NativeMethods.SCI_INDICGETOUTLINEALPHA, new IntPtr(Index)).ToInt32();
+            return this.scintilla.DirectMessage(SciApi.SCI_INDICGETOUTLINEALPHA, new IntPtr(Index)).ToInt32();
         }
         set
         {
             value = Helpers.Clamp(value, 0, 255);
-            this.scintilla.DirectMessage(NativeMethods.SCI_INDICSETOUTLINEALPHA, new IntPtr(Index), new IntPtr(value));
+            this.scintilla.DirectMessage(SciApi.SCI_INDICSETOUTLINEALPHA, new IntPtr(Index), new IntPtr(value));
         }
     }
 
@@ -227,12 +227,12 @@ public class Indicator
     {
         get
         {
-            return (IndicatorStyle)this.scintilla.DirectMessage(NativeMethods.SCI_INDICGETSTYLE, new IntPtr(Index));
+            return (IndicatorStyle)this.scintilla.DirectMessage(SciApi.SCI_INDICGETSTYLE, new IntPtr(Index));
         }
         set
         {
             int style = (int)value;
-            this.scintilla.DirectMessage(NativeMethods.SCI_INDICSETSTYLE, new IntPtr(Index), new IntPtr(style));
+            this.scintilla.DirectMessage(SciApi.SCI_INDICSETSTYLE, new IntPtr(Index), new IntPtr(style));
         }
     }
 
@@ -245,12 +245,12 @@ public class Indicator
     {
         get
         {
-            return this.scintilla.DirectMessage(NativeMethods.SCI_INDICGETUNDER, new IntPtr(Index)) != IntPtr.Zero;
+            return this.scintilla.DirectMessage(SciApi.SCI_INDICGETUNDER, new IntPtr(Index)) != IntPtr.Zero;
         }
         set
         {
             IntPtr under = value ? new IntPtr(1) : IntPtr.Zero;
-            this.scintilla.DirectMessage(NativeMethods.SCI_INDICSETUNDER, new IntPtr(Index), under);
+            this.scintilla.DirectMessage(SciApi.SCI_INDICSETUNDER, new IntPtr(Index), under);
         }
     }
 

@@ -1,22 +1,50 @@
-﻿namespace ScintillaNET;
+﻿using System;
+
+namespace ScintillaNET;
 
 /// <summary>
 /// The caret visual style.
 /// </summary>
-public enum CaretStyle
+[Flags]
+public enum CaretStyle : uint
 {
     /// <summary>
-    /// The caret is not displayed.
+    /// Carets are not drawn at all.
     /// </summary>
-    Invisible = NativeMethods.CARETSTYLE_INVISIBLE,
+    Invisible = SciApi.CARETSTYLE_INVISIBLE,
 
     /// <summary>
-    /// The caret is drawn as a vertical line.
+    /// Draws insertion carets as lines. This is the default for insert mode.
     /// </summary>
-    Line = NativeMethods.CARETSTYLE_LINE,
+    Line = SciApi.CARETSTYLE_LINE,
 
     /// <summary>
-    /// The caret is drawn as a block.
+    /// Draws insertion carets as blocks.
     /// </summary>
-    Block = NativeMethods.CARETSTYLE_BLOCK
+    Block = SciApi.CARETSTYLE_BLOCK,
+
+    /// <summary>
+    /// Bit mask for styles used in insert mode.
+    /// </summary>
+    InsertMask = SciApi.CARETSTYLE_INS_MASK,
+
+    /// <summary>
+    /// Draws an overstrike caret as a bar. This is the default for overtype mode.
+    /// </summary>
+    OverstrikeBar = SciApi.CARETSTYLE_OVERSTRIKE_BAR,
+
+    /// <summary>
+    /// Draws an overstrike caret as a block. This should be ored with one of the first three styles.
+    /// </summary>
+    OverstrikeBlock = SciApi.CARETSTYLE_OVERSTRIKE_BLOCK,
+
+    /// <summary>
+    /// Draws carets that cannot be drawn in a curses (terminal) environment (such as additional carets), and draws them as blocks. The main caret is left to be drawn by the terminal itself. This setting is typically a standalone setting.
+    /// </summary>
+    Curses = SciApi.CARETSTYLE_CURSES,
+
+    /// <summary>
+    /// When the caret end of a range is at the end and a block caret style is chosen, draws the block outside the selection instead of inside. This can be ored with <see cref="SciApi.CARETSTYLE_BLOCK"/> or <see cref="SciApi.CARETSTYLE_CURSES"/>.
+    /// </summary>
+    BlockAfter = SciApi.CARETSTYLE_BLOCK_AFTER,
 }

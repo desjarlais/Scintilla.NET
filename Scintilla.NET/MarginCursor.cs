@@ -8,10 +8,10 @@ public enum MarginCursor
     /// <summary>
     /// A normal arrow.
     /// </summary>
-    Arrow = NativeMethods.SC_CURSORARROW,
+    Arrow = SciApi.SC_CURSORARROW,
 
     /// <summary>
     /// A reversed arrow.
     /// </summary>
-    ReverseArrow = NativeMethods.SC_CURSORREVERSEARROW
+    ReverseArrow = SciApi.SC_CURSORREVERSEARROW,
 }

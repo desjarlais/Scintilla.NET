@@ -36,7 +36,7 @@ public class MarkerCollection : IEnumerable<Marker>
     {
         get
         {
-            return NativeMethods.MARKER_MAX + 1;
+            return SciApi.MARKER_MAX + 1;
         }
     }
 

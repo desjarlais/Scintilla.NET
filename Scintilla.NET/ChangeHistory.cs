@@ -11,20 +11,20 @@ public enum ChangeHistory : int
     /// <summary>
     /// The default: change history turned off.
     /// </summary>
-    Disabled = NativeMethods.SC_CHANGE_HISTORY_DISABLED,
+    Disabled = SciApi.SC_CHANGE_HISTORY_DISABLED,
 
     /// <summary>
     /// Track changes to the document.
     /// </summary>
-    Enabled = NativeMethods.SC_CHANGE_HISTORY_ENABLED,
+    Enabled = SciApi.SC_CHANGE_HISTORY_ENABLED,
 
     /// <summary>
     /// Display changes in the margin using the SC_MARKNUM_HISTORY markers.
     /// </summary>
-    Markers = NativeMethods.SC_CHANGE_HISTORY_MARKERS,
+    Markers = SciApi.SC_CHANGE_HISTORY_MARKERS,
 
     /// <summary>
     /// Display changes in the text using the INDICATOR_HISTORY indicators.
     /// </summary>
-    Indicators = NativeMethods.SC_CHANGE_HISTORY_INDICATORS,
+    Indicators = SciApi.SC_CHANGE_HISTORY_INDICATORS,
 }

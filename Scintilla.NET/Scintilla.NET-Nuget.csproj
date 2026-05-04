@@ -1,0 +1,13 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="Scintilla.NET-Common.targets" />
+  <ItemGroup>
+    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+  </ItemGroup>
+  <Target Name="PostPack" AfterTargets="Pack">
+    <Exec Command="powershell .\nupkg.ps1 -Clean -MSBuildProjectDirectory '$(MSBuildProjectDirectory)' -NuGetPackageRoot '$(NuGetPackageRoot)' -SolutionDir '$(SolutionDir)' -PackageOutputPath '$(PackageOutputPath)' -PackageId '$(PackageId)' -PackageVersion '$(PackageVersion)'" />
+    <Exec Command="powershell .\nupkg.ps1 -Add -MSBuildProjectDirectory '$(MSBuildProjectDirectory)' -SolutionDir '$(SolutionDir)' -PackageOutputPath '$(PackageOutputPath)' -PackageId '$(PackageId)' -PackageVersion '$(PackageVersion)'" />
+  </Target>
+  <Target Name="PostClean" AfterTargets="Clean">
+    <Exec Command="powershell .\nupkg.ps1 -Clean -MSBuildProjectDirectory '$(MSBuildProjectDirectory)' -NuGetPackageRoot '$(NuGetPackageRoot)' -SolutionDir '$(SolutionDir)' -PackageOutputPath '$(PackageOutputPath)' -PackageId '$(PackageId)' -PackageVersion '$(PackageVersion)'" />
+  </Target>
+</Project>

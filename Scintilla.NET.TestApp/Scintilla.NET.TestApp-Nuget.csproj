@@ -1,4 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net462</TargetFramework>
+  </PropertyGroup>
   <Import Project="Scintilla.NET.TestApp-Common.targets" />
   <ItemGroup>
     <PackageReference Include="Scintilla5.NET" Version="*-*" />

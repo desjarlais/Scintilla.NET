@@ -1,0 +1,41 @@
+﻿<#@ template debug="false" hostspecific="true" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ assembly name="netstandard, Version=2.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51" #>
+<#@ assembly name="$(MSBuildProjectDirectory)\..\ApiToolkit\bin\$(Configuration)\netstandard2.0\ApiToolkit.dll" #>
+<#@ import namespace="System.IO" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="ApiToolkit" #>
+<#@ output extension="" #>
+using System;
+using System.Runtime.InteropServices;
+
+namespace ScintillaNET;
+
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
+
+public static class LexApi
+{
+    public delegate IntPtr LexerFactoryFunction();
+    
+    public delegate IntPtr CreateLexer(string lexerName);
+    public delegate int GetLexerCount();
+    public unsafe delegate void GetLexerName(uint index, byte* name, int bufferLength);
+    [Obsolete("Deprecated")] public delegate string LexerNameFromID(int identifier);
+    public delegate LexerFactoryFunction GetLexerFactory(uint index);
+    public delegate string GetLibraryPropertyNames();
+    public delegate void SetLibraryProperty(string key, string value);
+    public delegate string GetNameSpace();
+
+<#
+using (StreamReader s = new(this.Host.ResolvePath("LexicalStyles.iface")))
+{
+    foreach (var code in ApiTools.GenerateConstants(ApiTools.Read(s)))
+    {
+#>    <#=code#>
+<#
+    }
+}
+#>
+}

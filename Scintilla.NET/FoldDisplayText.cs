@@ -8,15 +8,15 @@ public enum FoldDisplayText
     /// <summary>
     /// Do not display the text tags. This is the default.
     /// </summary>
-    Hidden = NativeMethods.SC_FOLDDISPLAYTEXT_HIDDEN,
+    Hidden = SciApi.SC_FOLDDISPLAYTEXT_HIDDEN,
 
     /// <summary>
     /// Display the text tags.
     /// </summary>
-    Standard = NativeMethods.SC_FOLDDISPLAYTEXT_STANDARD,
+    Standard = SciApi.SC_FOLDDISPLAYTEXT_STANDARD,
 
     /// <summary>
     /// Display the text tags with a box drawn around them.
     /// </summary>
-    Boxed = NativeMethods.SC_FOLDDISPLAYTEXT_BOXED
+    Boxed = SciApi.SC_FOLDDISPLAYTEXT_BOXED,
 }
