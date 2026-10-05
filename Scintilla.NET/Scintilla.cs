@@ -4615,12 +4615,12 @@ public class Scintilla : Control
     /// </summary>
     /// <returns>The width of the caret in pixels. The default is 1 pixel.</returns>
     /// <remarks>
-    /// The caret width can only be set to a value of 0, 1, 2 or 3 pixels and is only effective
+    /// The caret width can only be set to a value between 0 and 20 pixels and is only effective
     /// when the <see cref="CaretStyle" /> property is set to <see cref="ScintillaNET.CaretStyle.Line" />.
     /// </remarks>
     [DefaultValue(1)]
     [Category("Caret")]
-    [Description("The width of the caret line measured in pixels (between 0 and 3).")]
+    [Description("The width of the caret line measured in pixels (between 0 and 20).")]
     public int CaretWidth
     {
         get
@@ -4629,7 +4629,6 @@ public class Scintilla : Control
         }
         set
         {
-            value = Helpers.Clamp(value, 0, 3);
             DirectMessage(SciApi.SCI_SETCARETWIDTH, new IntPtr(value));
         }
     }
