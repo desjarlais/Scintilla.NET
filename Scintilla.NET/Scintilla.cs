@@ -4505,6 +4505,26 @@ public class Scintilla : Control
     }
 
     /// <summary>
+    /// Gets or sets whether to highlight only the subline containing the caret instead of the whole line.
+    /// </summary>
+    /// <returns>true if the only subline is highlighted; otherwise, false. The default is false.</returns>
+    [DefaultValue(false)]
+    [Category("Caret")]
+    [Description("Determines whether to highlight only the subline containing the caret instead of the whole line.")]
+    public bool CaretLineHighlightSubline
+    {
+        get
+        {
+            return DirectMessage(SciApi.SCI_GETCARETLINEHIGHLIGHTSUBLINE) != IntPtr.Zero;
+        }
+        set
+        {
+            IntPtr highlightSubline = value ? new IntPtr(1) : IntPtr.Zero;
+            DirectMessage(SciApi.SCI_SETCARETLINEHIGHLIGHTSUBLINE, highlightSubline);
+        }
+    }
+
+    /// <summary>
     /// Gets or sets whether the caret line is visible (highlighted).
     /// </summary>
     /// <returns>true if the caret line is visible; otherwise, false. The default is true.</returns>
