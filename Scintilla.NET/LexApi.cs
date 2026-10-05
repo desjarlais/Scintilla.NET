@@ -881,6 +881,7 @@ public static class LexApi
     public const int SCE_ASM_STRINGEOL = 13;
     public const int SCE_ASM_EXTINSTRUCTION = 14;
     public const int SCE_ASM_COMMENTDIRECTIVE = 15;
+    public const int SCE_ASM_STRINGBACKQUOTE = 16;
     
     // Fortran
     // F77
@@ -1785,6 +1786,7 @@ public static class LexApi
     public const int SCE_PAS_CHARACTER = 12;
     public const int SCE_PAS_OPERATOR = 13;
     public const int SCE_PAS_ASM = 14;
+    public const int SCE_PAS_MULTILINESTRING = 15;
     
     // SORCUS
     // ======
