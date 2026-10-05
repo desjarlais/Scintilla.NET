@@ -1374,6 +1374,20 @@ public class Scintilla : Control
         return DirectMessage(SciApi.SCI_GETSTYLEFROMSUBSTYLE, new IntPtr(subStyle)).ToInt32();
     }
 
+    /// <inheritdoc cref="Scintilla.GetStyleAt(int)"/>
+    /// <remarks>
+    /// <see cref="Scintilla.GetStyleAt(int)" /> may return a negative number for styles over 127 whereas
+    /// this method will only return positive numbers. This method should be preferred as it handles styles
+    /// more consistently and may avoid problems with lexers that define more than 128 styles.
+    /// </remarks>
+    public int GetStyleIndexAt(int position)
+    {
+        position = Helpers.Clamp(position, 0, TextLength);
+        position = Lines.CharToBytePosition(position).BytePosition;
+
+        return DirectMessage(SciApi.SCI_GETSTYLEINDEXAT, new IntPtr(position)).ToInt32();
+    }
+
     /// <summary>
     /// Gets the length of the number of substyles allocated for a given lexer base style.
     /// </summary>
