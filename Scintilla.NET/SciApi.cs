@@ -391,6 +391,7 @@ public static class SciApi
     // ===========
     public const int SCTD_LONGARROW = 0;
     public const int SCTD_STRIKEOUT = 1;
+    public const int SCTD_CONTROLCHAR = 2;
     
     /// <summary>
     /// <code>get TabDrawMode GetTabDrawMode=2698(, )</code>
@@ -3907,6 +3908,7 @@ public static class SciApi
     public const int SC_STATUS_OK = 0;
     public const int SC_STATUS_FAILURE = 1;
     public const int SC_STATUS_BADALLOC = 2;
+    public const int SC_STATUS_OUTSIDE_DOCUMENT = 3;
     public const int SC_STATUS_WARN_START = 1000;
     public const int SC_STATUS_WARN_REGEX = 1001;
     
@@ -5904,6 +5906,8 @@ public static class SciApi
     public const uint SC_UPDATE_SELECTION = 0x2;
     public const uint SC_UPDATE_V_SCROLL = 0x4;
     public const uint SC_UPDATE_H_SCROLL = 0x8;
+    public const uint SC_UPDATE_TEXT = 0x10;
+    public const uint SC_UPDATE_LINE_COUNT = 0x20;
     
     // FocusChange
     // ===========
@@ -5998,7 +6002,7 @@ public static class SciApi
     public const int SCN_DOUBLECLICK = 2006;
     
     /// <summary>
-    /// <code>evt void UpdateUI=2007(int updated)</code>
+    /// <code>evt void UpdateUI=2007(int updated, int position)</code>
     /// </summary>
     public const int SCN_UPDATEUI = 2007;
     
@@ -6121,6 +6125,23 @@ public static class SciApi
     /// <code>evt void AutoCSelectionChange=2032(int listType, string text, int position)</code>
     /// </summary>
     public const int SCN_AUTOCSELECTIONCHANGE = 2032;
+    
+    // ScaleTechnique
+    // ==============
+    public const int SCALE_TECHNIQUE_DEFAULT = 0;
+    public const int SCALE_TECHNIQUE_PIXEL_ALIGNED = 1;
+    
+    /// <summary>
+    /// <code>set void SetScaleTechnique=2820(ScaleTechnique technique, )</code>
+    /// Set the scale technique
+    /// </summary>
+    public const int SCI_SETSCALETECHNIQUE = 2820;
+    
+    /// <summary>
+    /// <code>get ScaleTechnique GetScaleTechnique=2821(, )</code>
+    /// Get the scale technique
+    /// </summary>
+    public const int SCI_GETSCALETECHNIQUE = 2821;
     
     // Bidirectional
     // =============

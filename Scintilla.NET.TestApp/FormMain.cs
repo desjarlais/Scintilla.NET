@@ -223,9 +223,12 @@ public partial class FormMain : Form
         scintilla.ReplaceSelection(scintilla.DescribeKeywordSets());
     }
 
-    private void scintilla_TextChanged(object sender, EventArgs e)
+    private void scintilla_UpdateUI(object sender, UpdateUIEventArgs e)
     {
-        AdjustLineNumberMargin(scintilla);
+        if (e.Change.HasFlag(UpdateChange.LineCount))
+        {
+            AdjustLineNumberMargin(scintilla);
+        }
     }
 
     private void scintilla_SavePointLeft(object sender, EventArgs e)
