@@ -33,4 +33,15 @@ public enum UpdateChange : uint
     /// May have scrolled horizontally.
     /// </summary>
     HScroll = SciApi.SC_UPDATE_H_SCROLL,
+
+    /// <summary>
+    /// Contents may have changed.
+    /// </summary>
+    Text = SciApi.SC_UPDATE_TEXT,
+
+    /// <summary>
+    /// Number of lines may have changed.
+    /// </summary>
+    LineCount = SciApi.SC_UPDATE_LINE_COUNT
+
 }
