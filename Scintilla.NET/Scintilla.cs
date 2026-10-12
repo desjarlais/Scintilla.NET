@@ -3367,7 +3367,7 @@ public class Scintilla : Control
                     break;
 
                 case SciApi.SCN_UPDATEUI:
-                    OnUpdateUI(new UpdateUIEventArgs((UpdateChange)scn.updated));
+                    OnUpdateUI(new UpdateUIEventArgs(this, (UpdateChange)scn.updated, scn.position.ToInt32()));
                     break;
 
                 case SciApi.SCN_CHARADDED:
