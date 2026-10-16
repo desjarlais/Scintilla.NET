@@ -35,16 +35,22 @@ public class Scintilla : Control
             if (File.Exists(scintillaDllPath) && File.Exists(lexillaDllPath))
             {
                 // Verify Authenticode signatures before trusting native DLLs
-                if (!AuthenticodeHelper.VerifySignature(scintillaDllPath, "CN=\"Open Source Developer, Neil Hodgson\", O=Open Source Developer, L=Artarmon, S=New South Wales, C=AU"))
+                if (ScintillaNativeLibrary.VerifyScintillaDll)
                 {
-                    searchedPathList.Add(path + " (Scintilla.dll signature invalid)");
-                    continue;
+                    if (!AuthenticodeHelper.VerifySignature(scintillaDllPath, "CN=\"Open Source Developer, Neil Hodgson\", O=Open Source Developer, L=Artarmon, S=New South Wales, C=AU"))
+                    {
+                        searchedPathList.Add(path + " (Scintilla.dll signature invalid)");
+                        continue;
+                    }
                 }
 
-                if (!AuthenticodeHelper.VerifySignature(lexillaDllPath, "CN=\"Open Source Developer, Neil Hodgson\", O=Open Source Developer, L=Artarmon, S=New South Wales, C=AU"))
+                if (ScintillaNativeLibrary.VerifyLexillaDll)
                 {
-                    searchedPathList.Add(path + " (Lexilla.dll signature invalid)");
-                    continue;
+                    if (!AuthenticodeHelper.VerifySignature(lexillaDllPath, "CN=\"Open Source Developer, Neil Hodgson\", O=Open Source Developer, L=Artarmon, S=New South Wales, C=AU"))
+                    {
+                        searchedPathList.Add(path + " (Lexilla.dll signature invalid)");
+                        continue;
+                    }
                 }
 
                 modulePathScintilla = scintillaDllPath;

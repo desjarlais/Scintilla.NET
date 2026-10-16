@@ -13,4 +13,14 @@ public static class ScintillaNativeLibrary
     /// Example Usage: ScintillaNativeLibrary.SatelliteDirectory = @"C:\MyApp\binaries";
     /// </summary>
     public static string? SatelliteDirectory { get; set; }
+
+    /// <summary>
+    /// Verify the digital signature of native `Scintilla.dll` before loading it. Enabled by default.
+    /// </summary>
+    public static bool VerifyScintillaDll { get; set; } = true;
+
+    /// <summary>
+    /// Verify the digital signature of native `Lexilla.dll` before loading it. Enabled by default.
+    /// </summary>
+    public static bool VerifyLexillaDll { get; set; } = true;
 }
